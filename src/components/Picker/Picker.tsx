@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 import PickerCircle from "./PickerCircle";
+import { ThemeStore } from "../../interfaces";
+import { connect } from "react-redux";
+import convert from "../../options/convert";
 
-export interface ObjPicker {
+interface StateProps {
+  H: number;
+}
+interface DispatchProps {}
+interface OwnProps {
   width: number;
   height: number;
 }
+
+type Props = StateProps & OwnProps;
 
 export interface BlockOptions {
   width: number;
@@ -13,7 +22,7 @@ export interface BlockOptions {
   pxY: number;
 }
 
-class Picker extends Component<ObjPicker> {
+class Picker extends Component<Props> {
   state = {
     left: 0,
     top: 0
@@ -40,13 +49,23 @@ class Picker extends Component<ObjPicker> {
       left,
       top
     });
+    block.onClick = () => {
+      console.log("click");
+    };
   }
   render() {
     const { left, top } = this.state;
     const { pxX, pxY, width, height } = this.block;
+    let { H } = this.props;
+    let rgb = "rgb(" + convert.hsv_rgb(H, 100, 100) + ")";
+
     const style = {
       width,
-      height
+      height,
+      background:
+        "linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, " +
+        rgb +
+        ", rgb(255, 255, 255))"
     };
     return (
       <div
@@ -58,10 +77,20 @@ class Picker extends Component<ObjPicker> {
         <PickerCircle
           dataCircle={{ ...this.circle }}
           dataBlock={{ left, top, width, height, pxX, pxY }}
+          position={{ left, top }}
         />
       </div>
     );
   }
 }
 
-export default Picker;
+const mapStateToProps = ({ H }: any): StateProps => {
+  return {
+    H
+  };
+};
+
+export default connect<StateProps>(
+  mapStateToProps,
+  {}
+)(Picker);

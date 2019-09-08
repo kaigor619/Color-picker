@@ -48,7 +48,6 @@ body {
 .block_picker {
 	width: 100%;
 	height: 140px;
-	background: linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, rgb(255, 0, 0), rgb(255, 255, 255));
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	user-select: none;
@@ -77,10 +76,11 @@ body {
 	height: 25px;
 	cursor: pointer;
 	position: relative;
-	background: url(opacity.svg) repeat;
+	background: url('../svg/opacity.svg') repeat;
 }
 
-.last_color {
+
+.color_cell div {
 	background-color: #fff;
 	position: absolute;
 	top: 0;
@@ -89,17 +89,6 @@ body {
 	bottom: 0;
 	width: 100%;
 	height: 100%;
-}
-
-.out_color {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-
 }
 
 .wrap_regulate_color {
@@ -146,10 +135,7 @@ body {
 }
 
 .opacity_color {
-	/*background:url(opacity.svg) repeat-x 50% 50%;*/
-	background: url(opacity.svg);
-
-
+	background: url('../svg/opacity.svg');
 }
 
 #opacity_circle {

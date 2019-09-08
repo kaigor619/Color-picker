@@ -132,11 +132,10 @@ const convert = {
       v: percentRoundFn(v * 100)
     };
   },
-  hslTohsb: function(
-    h: number,
-    s: number,
-    l: number
-  ): { h: number; s: number; v: number } {
+  hslTohsb: function(hsl: number[]): number[] {
+    let h = hsl[0];
+    let s = hsl[1];
+    let l = hsl[2];
     s = s / 100;
     l = l / 100;
     let c: number = 0;
@@ -145,11 +144,7 @@ const convert = {
     c = l > 0 ? (2 * t) / b : c;
     c = (c * 100) | 0;
     b = (b * 100) | 0;
-    return {
-      h: h,
-      s: c,
-      v: b
-    };
+    return [h, c, b];
   },
   hsb_hsl: function(h: number, s: number, b: number): number[] {
     h /= 100;
@@ -199,11 +194,16 @@ const convert = {
     if (1 === a.length) {
       a += a;
     }
-    r = parseInt(r, 16);
-    g = parseInt(g, 16);
-    b = parseInt(b, 16);
-    a = parseInt(a, 16) / 255;
-    return [r, g, b, a];
+    r = +parseInt(r, 16);
+    g = +parseInt(g, 16);
+    b = +parseInt(b, 16);
+    a = +parseInt(a, 16) / 255;
+    return [r, g, b];
+  },
+  getHfromPosit: (left: number, width: number): number => {
+    let h = Math.abs(Math.round(left / (width / 360)) - 360);
+    h = h == 360 ? 0 : h;
+    return h;
   }
 };
 

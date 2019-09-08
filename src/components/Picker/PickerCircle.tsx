@@ -7,6 +7,8 @@ import convert from "../../options/convert";
 
 interface StateProps {
   rgb_val: number[];
+  S: number;
+  V: number;
 }
 
 interface DispatchProps {
@@ -23,6 +25,10 @@ interface OwnProps {
     pxX: number;
     pxY: number;
     rgb_val?: [];
+  };
+  position: {
+    left: number;
+    top: number;
   };
 }
 
@@ -43,10 +49,13 @@ class PickerCircle extends Component<Props, State> {
     left: 0,
     top: 0
   };
+  circleMove = false;
   handleMouseDown(e: any): void {
     const { width, height, pxX, pxY } = this.props.dataBlock;
     let positX = this.props.dataBlock.left;
     let positY = this.props.dataBlock.top;
+
+    this.circleMove = true;
 
     document.onmousemove = (c: any) => {
       let left = c.clientX - positX;
@@ -67,14 +76,24 @@ class PickerCircle extends Component<Props, State> {
       this.setState({ top, left });
       this.props.add_color([null, S, V]);
     };
-    document.onmouseup = function() {
+    document.onmouseup = () => {
       document.onmousemove = null;
+      this.circleMove = false;
     };
   }
   render() {
     const { width, height } = this.props.dataCircle;
-    const { left, top } = this.state;
     const backgroundColor = convert.rgb_string(this.props.rgb_val);
+    let left, top;
+    if (this.circleMove) {
+      left = this.state.left;
+      top = this.state.top;
+    } else {
+      const { pxX, pxY } = this.props.dataBlock;
+      const { S, V } = this.props;
+      left = pxX * S + "px";
+      top = pxY * Math.abs(V - 100) + "px";
+    }
     const style = {
       width,
       height,
@@ -93,9 +112,11 @@ class PickerCircle extends Component<Props, State> {
   }
 }
 
-function mapStateToProps({ rgb_val }: any): StateProps {
+function mapStateToProps({ rgb_val, S, V }: any): StateProps {
   return {
-    rgb_val
+    rgb_val,
+    S,
+    V
   };
 }
 
