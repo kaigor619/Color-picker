@@ -1,96 +1,193 @@
 import React, { Component } from "react";
 import PickerCircle from "./PickerCircle";
 import { ThemeStore } from "../../interfaces";
+import * as Action from "../../actions";
 import { connect } from "react-redux";
 import convert from "../../options/convert";
 
+// Интерфейсы
 interface StateProps {
   H: number;
+  S: number;
+  V: number;
+  rgb_val: number[];
 }
-interface DispatchProps {}
+interface DispatchProps {
+  add_color: (mas: any) => void;
+}
 interface OwnProps {
   width: number;
   height: number;
 }
 
-type Props = StateProps & OwnProps;
-
-export interface BlockOptions {
+interface IStyleBlock {
   width: number;
   height: number;
-  pxX: number;
-  pxY: number;
+  background: string;
 }
 
+interface IStyleCircle {
+  width: number;
+  height: number;
+  backgroundColor: string;
+  left: number;
+  top: number;
+}
+type Props = StateProps & OwnProps & DispatchProps;
+
+// Компонент
 class Picker extends Component<Props> {
   state = {
     left: 0,
     top: 0
   };
-
   circle = {
     width: 12,
     height: 12
   };
 
-  block: BlockOptions = {
+  block = {
     width: this.props.width,
     height: this.props.height,
     pxX: this.props.width / 100,
-    pxY: this.props.height / 100
+    pxY: this.props.height / 100,
+    left: 0,
+    top: 0
   };
 
   blockRef: any = React.createRef();
+  circleMove = false;
+
+  constructor(props: Props) {
+    super(props);
+    this.cPos = this.cPos.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+  }
+
+  cPos(c: any) {
+    const { width, height, pxX, pxY, left: positX, top: positY } = this.block;
+
+    let left = c.clientX - positX;
+    let top = c.clientY - positY;
+
+    // Проверка left
+    left = left < 0 ? 0 : left;
+
+    left = left > width ? width : left;
+    // Проверка top
+
+    top = top > height ? height : top;
+    top = top < 0 ? 0 : top;
+
+    const S = Math.ceil(left / pxX);
+    const V = Math.ceil(Math.abs(top / pxY - 100));
+
+    this.setState({ top, left });
+    this.props.add_color([null, S, V]);
+  }
+
+  touchMove(e: any) {
+    var touches = e.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      const newEvent = {
+        clientX: touches[i].pageX,
+        clientY: touches[i].pageY
+      };
+      this.cPos(newEvent);
+    }
+  }
 
   componentDidMount() {
     let block = this.blockRef.current;
     let { left, top } = block.getBoundingClientRect();
-    this.setState({
-      left,
-      top
-    });
-    block.onClick = () => {
-      console.log("click");
+    this.block.left = left;
+    this.block.top = top;
+
+    block.onclick = this.cPos;
+    block.onmousedown = () => {
+      this.circleMove = true;
+      document.onmousemove = this.cPos;
+
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        this.circleMove = false;
+      };
     };
+
+    block.addEventListener("touchstart", this.touchMove, false);
+    block.addEventListener("touchend", this.touchMove, false);
+    block.addEventListener("touchmove", this.touchMove, false);
   }
-  render() {
-    const { left, top } = this.state;
-    const { pxX, pxY, width, height } = this.block;
+
+  getStyleBlock(): IStyleBlock {
+    const { width, height } = this.block;
     let { H } = this.props;
     let rgb = "rgb(" + convert.hsv_rgb(H, 100, 100) + ")";
+    let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
+    ${rgb} , rgb(255, 255, 255))`;
 
     const style = {
       width,
       height,
-      background:
-        "linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, " +
-        rgb +
-        ", rgb(255, 255, 255))"
+      background
     };
+    return style;
+  }
+
+  getStyleCircle(): IStyleCircle {
+    const { width, height } = this.circle;
+    const backgroundColor = convert.rgb_string(this.props.rgb_val);
+    let left, top;
+    if (this.circleMove) {
+      left = this.state.left;
+      top = this.state.top;
+    } else {
+      const { pxX, pxY } = this.block;
+      const { S, V } = this.props;
+      left = pxX * S + "px";
+      top = pxY * Math.abs(V - 100) + "px";
+    }
+    const style = {
+      width,
+      height,
+      left,
+      top,
+      backgroundColor
+    };
+    return style;
+  }
+
+  render() {
     return (
       <div
         ref={this.blockRef}
         className="block_picker"
         id="block_picker"
-        style={style}
+        style={this.getStyleBlock()}
       >
-        <PickerCircle
-          dataCircle={{ ...this.circle }}
-          dataBlock={{ left, top, width, height, pxX, pxY }}
-          position={{ left, top }}
-        />
+        <div
+          className="picker_circle"
+          id="picker_circle"
+          style={this.getStyleCircle()}
+        ></div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ H }: any): StateProps => {
+const mapStateToProps = ({ H, S, V, rgb_val }: any): StateProps => {
   return {
-    H
+    H,
+    rgb_val,
+    S,
+    V
   };
 };
+const mapDispatchToProps: DispatchProps = {
+  add_color: Action.change_hsv
+};
 
-export default connect<StateProps>(
+export default connect<StateProps, DispatchProps, OwnProps>(
   mapStateToProps,
-  {}
+  mapDispatchToProps
 )(Picker);

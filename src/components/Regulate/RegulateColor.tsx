@@ -17,7 +17,11 @@ type Props = StateProps & DispatchProps;
 class RegulateColor extends Component<Props> {
   constructor(props: Props) {
     super(props);
+    this.cPos = this.cPos.bind(this);
     this.handleDown = this.handleDown.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+    this.touchMove = this.touchMove.bind(this);
   }
   regulateLine: any = React.createRef();
 
@@ -38,25 +42,70 @@ class RegulateColor extends Component<Props> {
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
+
+    elem.onclick = this.cPos;
+    elem.onmousedown = () => {
+      this.lineMove = true;
+      document.onmousemove = this.cPos;
+
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        this.lineMove = false;
+      };
+    };
+
+    elem.addEventListener("touchstart", this.touchStart, false);
+    elem.addEventListener("touchend", this.touchEnd, false);
+    elem.addEventListener("touchmove", this.touchMove, false);
+  }
+
+  touchStart(e: any) {
+    this.lineMove = true;
+    this.touchMove(e);
+  }
+  touchEnd(e: any) {
+    this.lineMove = false;
+    this.touchMove(e);
+  }
+
+  touchMove(e: any) {
+    var touches = e.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      const newEvent = {
+        clientX: touches[i].pageX,
+        clientY: touches[i].pageY
+      };
+      this.cPos(newEvent);
+    }
   }
 
   handleDown(e: any) {
-    const { line } = this;
-    let left;
     this.lineMove = true;
-    document.onmousemove = (c: any) => {
-      left = c.clientX - line.left;
-      left = left < 0 ? 0 : left;
-      left = left > line.w ? line.w : left;
-      this.setState({ left });
+    document.onmousemove = this.cPos;
 
-      const h = convert.getHfromPosit(left, line.w);
-      this.props.add_color(h);
-    };
     document.onmouseup = () => {
       document.onmousemove = null;
       this.lineMove = false;
     };
+  }
+
+  hookCPos() {
+    const { left } = this.state;
+    const { line } = this;
+    const h = convert.getHfromPosit(left, line.w);
+    this.props.add_color(h);
+  }
+
+  cPos(c: any) {
+    const { line } = this;
+    let left, a;
+    left = c.clientX - line.left;
+    a = left < 0 ? 0 : left;
+    a = a > line.w ? line.w : a;
+    this.setState({ left: a });
+
+    const h = convert.getHfromPosit(a, line.w);
+    this.props.add_color(h);
   }
   render() {
     let left;
@@ -82,6 +131,10 @@ class RegulateColor extends Component<Props> {
           className="picker_slider"
           id="line_circle"
           onMouseDown={this.handleDown}
+          onClick={this.cPos}
+          onTouchStart={this.touchStart}
+          onTouchMove={this.touchMove}
+          onTouchEnd={this.touchEnd}
           style={style}
         ></div>
       </div>
