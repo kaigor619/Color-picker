@@ -7,7 +7,12 @@ interface ItestInputCell {
   handleChange: () => void;
 }
 
-const InputCell = ({ value, handleChange, hex, maxLength }: ItestInputCell) => {
+const TestInputCell = ({
+  value,
+  handleChange,
+  hex,
+  maxLength
+}: ItestInputCell) => {
   let classNames = "input_text_value";
   if (hex) classNames = "hex_text_value";
   return (
@@ -21,4 +26,4 @@ const InputCell = ({ value, handleChange, hex, maxLength }: ItestInputCell) => {
   );
 };
 
-export default InputCell;
+export default TestInputCell;

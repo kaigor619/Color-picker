@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import InputCell from "./InputCell";
+import TestInputCell from "./TestInputCell";
 
 interface StateProps {
   model: number[];
@@ -11,7 +11,7 @@ interface DispatchProps {}
 
 type Props = StateProps & DispatchProps;
 
-class RgbInput extends Component<Props> {
+class TestInput extends Component<Props> {
   componentDidMount() {
     const { opacity } = this.props;
     this.setState({ opacity });
@@ -24,7 +24,7 @@ class RgbInput extends Component<Props> {
 
     let inputs = masAllData.map((item, index) => {
       return (
-        <InputCell
+        <TestInputCell
           value={item}
           key={index}
           maxLength={4}
@@ -51,4 +51,4 @@ const mapStateToProps = ({ opacity, type, models }: any): StateProps => {
 export default connect(
   mapStateToProps,
   {}
-)(RgbInput);
+)(TestInput);

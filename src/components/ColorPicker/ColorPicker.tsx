@@ -6,6 +6,7 @@ import RegulateColor from "../Regulate/RegulateColor";
 import RegulateOpacity from "../Regulate/RegulateOpacity";
 import BtnChangeType from "../BtnChangeType/BtnChangeType";
 import RgbInput from "../InputColor/RgbInput";
+import TestInput from "../TestInput";
 
 class ColorPicker extends Component {
   render() {
@@ -30,6 +31,7 @@ class ColorPicker extends Component {
             <div className="w_copy_input">
               <ul className="list_type_val_color">
                 <RgbInput />
+                {/* <TestInput /> */}
               </ul>
               <div className="w_copy_color hint--top" name-custom="Copied">
                 <img
