@@ -204,6 +204,20 @@ const convert = {
     let h = Math.abs(Math.round(left / (width / 360)) - 360);
     h = h == 360 ? 0 : h;
     return h;
+  },
+  onlyNumbers: (e: any) => {
+    var key = e.charCode || e.keyCode || 0;
+
+    return (
+      key == 8 ||
+      key == 9 ||
+      key == 46 ||
+      key == 110 ||
+      key == 190 ||
+      (key >= 35 && key <= 40) ||
+      (key >= 48 && key <= 57) ||
+      (key >= 96 && key <= 105)
+    );
   }
 };
 

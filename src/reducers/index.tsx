@@ -1,9 +1,9 @@
 import { ThemeAction, ThemeStore } from "../interfaces";
 
 const InitialState: ThemeStore = {
+  H: 0,
   S: 0,
   V: 100,
-  H: 0,
   opacity: 1,
   rgb_val: [255, 255, 255],
   type: "rgb",
@@ -12,9 +12,9 @@ const InitialState: ThemeStore = {
     opacity: 0.5
   },
   models: {
-    hex: "#000",
-    hsl: [114, 0, 0],
-    rgb: [66, 135, 245]
+    hex: "#ffffff",
+    hsl: [0, 0, 100],
+    rgb: [255, 255, 255]
   }
 };
 
@@ -25,6 +25,14 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
 
     case "CHANGE_OPACITY": {
       return { ...state, opacity: action.payload };
+    }
+    case "CHANGE_TYPE": {
+      return { ...state, type: action.payload };
+    }
+
+    case "CHANGE_MODEL_VAL": {
+      let type = state.type;
+      return { ...state, model: { ...state.model, [type]: action.payload } };
     }
 
     case "CHANGE_HEX":

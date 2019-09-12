@@ -3,12 +3,38 @@ import convert from "../options/convert";
 import * as Helper from "../options/helper-functions";
 import model from "../options/modelsColor";
 
-// Пользовательское добовление цвета
+// Пользовательское добавление цвета
 export const add_rgb = (rgb: number[]): ThemeAction => {
   return {
     type: "ADD_RGB",
     payload: rgb
   };
+};
+
+// Изменение текущей модели цвета
+export const change_type = (type: string) => (
+  dispatch: any,
+  getState: () => ThemeStore
+) => {
+  if (model[type]) {
+    const action = {
+      type: "CHANGE_TYPE",
+      payload: type
+    };
+    dispatch(action);
+  }
+};
+
+// Изменение массива или строки любой модели цвета
+export const change_model_val = (val: string | number[]) => (
+  dispatch: any,
+  getState: () => ThemeStore
+) => {
+  const action = {
+    type: "CHANGE_MODEL_VAL",
+    payload: val
+  };
+  dispatch(action);
 };
 
 // Добавление rgb_val
@@ -49,6 +75,7 @@ export const change_color = (value: string) => (dispatch: any) => {
 
   dispatch(action);
   dispatch(change_opacity(opacity));
+  dispatch(change_type(type));
 
   if (type == "rgb") {
     dispatch(change_rgb(val));

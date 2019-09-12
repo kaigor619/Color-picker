@@ -4,6 +4,8 @@ import PresentColorLast from "../PresentColor/PresentColorLast";
 import PresentColorOut from "../PresentColor/PresentColorOut";
 import RegulateColor from "../Regulate/RegulateColor";
 import RegulateOpacity from "../Regulate/RegulateOpacity";
+import BtnChangeType from "../BtnChangeType/BtnChangeType";
+import RgbInput from "../InputColor/RgbInput";
 
 class ColorPicker extends Component {
   render() {
@@ -20,9 +22,29 @@ class ColorPicker extends Component {
 
             <div className="wrap_regulate_color">
               <RegulateColor />
-
               <RegulateOpacity />
             </div>
+          </div>
+
+          <div className="wrap_val_all_color">
+            <div className="w_copy_input">
+              <ul className="list_type_val_color">
+                <RgbInput />
+              </ul>
+              <div className="w_copy_color hint--top" name-custom="Copied">
+                <img
+                  src="svg/copy.svg"
+                  className="copy_color"
+                  id="copy_color"
+                  alt="Copy model color"
+                />
+              </div>
+            </div>
+            <ul className="list_select_type_color">
+              <BtnChangeType name="hex" text="Hex" />
+              <BtnChangeType name="rgb" text="Rgb" />
+              <BtnChangeType name="hsl" text="Hsl" />
+            </ul>
           </div>
         </div>
       </div>

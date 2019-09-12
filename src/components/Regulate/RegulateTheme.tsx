@@ -1,19 +1,36 @@
 import React, { Component } from "react";
 import convert from "../../options/convert";
-import { connect } from "react-redux";
 import * as Action from "../../actions";
 
-interface StateProps {
+export interface StateProps {
   H: number;
   opacity: number;
 }
 
-interface DispatchProps {
+export interface DispatchProps {
   add_color: (n: number) => void;
   add_opacity: (n: number) => void;
 }
 
-type Props = StateProps & DispatchProps;
+export const mapStateToProps = ({ H, opacity }: any) => {
+  return {
+    H,
+    opacity
+  };
+};
+export const mapDispatchToProps = (dispatch: any) => {
+  return {
+    add_color: (h: number) => {
+      dispatch(Action.change_h(h));
+      dispatch(Action.syncRGB());
+    },
+    add_opacity: (opacity: number) => {
+      dispatch(Action.change_opacity(opacity));
+    }
+  };
+};
+
+export type Props = StateProps & DispatchProps;
 
 class RegulateTheme extends Component<Props> {
   constructor(props: Props) {
@@ -29,7 +46,8 @@ class RegulateTheme extends Component<Props> {
   line = {
     w: 0,
     h: 0,
-    left: 0
+    left: 0,
+    x: 0
   };
   state = {
     left: 0
@@ -45,6 +63,8 @@ class RegulateTheme extends Component<Props> {
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
+
+    this.setState({ left: line.w });
 
     this.hookDidMount();
 
@@ -104,63 +124,8 @@ class RegulateTheme extends Component<Props> {
     a = a > line.w ? line.w : a;
     this.setState({ left: a });
 
-    const h = convert.getHfromPosit(a, line.w);
-    this.props.add_color(h);
-  }
-  render() {
-    let left;
-    const { lineMove, line } = this;
-    if (lineMove) {
-      left = this.state.left;
-    } else {
-      const { H } = this.props;
-      left = Math.abs((H - 360) * (line.w / 360)) + "px";
-    }
-    const style = {
-      left
-    };
-
-    return (
-      <div className="wrap_line_color line">
-        <div
-          id="ss_line"
-          className="hue_color line_color"
-          ref={this.regulateLine}
-        ></div>
-        <div
-          className="picker_slider"
-          id="line_circle"
-          onMouseDown={this.handleDown}
-          onClick={this.cPos}
-          onTouchStart={this.touchStart}
-          onTouchMove={this.touchMove}
-          onTouchEnd={this.touchEnd}
-          style={style}
-        ></div>
-      </div>
-    );
+    this.hookCPos();
   }
 }
-const mapStateToProps = ({ H, opacity }: any): StateProps => {
-  return {
-    H,
-    opacity
-  };
-};
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    add_color: (h: number) => {
-      dispatch(Action.change_h(h));
-      dispatch(Action.syncRGB());
-    },
-    add_opacity: (opacity: number) => {
-      dispatch(Action.change_opacity(opacity));
-    }
-  };
-};
-
-export default connect<StateProps, DispatchProps>(
-  mapStateToProps,
-  mapDispatchToProps
-)(RegulateTheme);
+export default RegulateTheme;
