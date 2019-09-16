@@ -4,7 +4,7 @@ import InputCell from "./InputCell";
 import * as Action from "../../actions";
 
 interface StateProps {
-  model: number[];
+  model: string;
   type: string;
   opacity: number;
 }
@@ -20,41 +20,40 @@ class RgbInput extends Component<Props> {
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
-
-  type = "rgb";
+  type = "hex";
 
   handleChange(text: string, index: number) {
-    let modelCopy = this.props.model.slice();
-    if (index <= 2) {
-      modelCopy[index] = +text;
-      this.props.changeModel(modelCopy);
-    } else {
-      this.props.changeOpacity(+text);
+    this.props.changeModel(text);
+
+    let opacity;
+    if (9 === text.length) {
+      opacity = text.substring(7, 9);
     }
+    if ("undefined" === typeof opacity) {
+      opacity = "ff";
+    }
+    opacity = +parseInt(opacity, 16) / 255;
+    this.props.changeOpacity(opacity);
   }
 
   render() {
     const { opacity, model, type } = this.props;
 
     if (this.type !== type) return null;
-    let masAllData = model.slice();
-    masAllData.push(opacity);
 
-    let inputs = masAllData.map((item, index) => {
-      let value = String(item);
-      return (
-        <InputCell
-          value={value}
-          key={index}
-          index={index}
-          maxLength={4}
-          handleChange={this.handleChange}
-        />
-      );
-    });
+    let input = (
+      <InputCell
+        hex={true}
+        index={0}
+        value={model}
+        maxLength={9}
+        handleChange={this.handleChange}
+      />
+    );
+
     return (
       <li className="type_val_color active">
-        <div className="wrap_color_input">{inputs}</div>
+        <div className="wrap_color_input">{input}</div>
       </li>
     );
   }

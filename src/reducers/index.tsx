@@ -30,9 +30,13 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       return { ...state, type: action.payload };
     }
 
+    case "CHANGE_HEX": {
+      return { ...state, models: { ...state.models, hex: action.payload } };
+    }
+
     case "CHANGE_MODEL_VAL": {
       let type = state.type;
-      return { ...state, model: { ...state.model, [type]: action.payload } };
+      return { ...state, models: { ...state.models, [type]: action.payload } };
     }
 
     case "CHANGE_HEX":

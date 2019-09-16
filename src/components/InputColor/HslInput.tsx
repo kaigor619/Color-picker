@@ -20,10 +20,10 @@ class RgbInput extends Component<Props> {
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
-
-  type = "rgb";
+  type = "hsl";
 
   handleChange(text: string, index: number) {
+    console.log(text);
     let modelCopy = this.props.model.slice();
     if (index <= 2) {
       modelCopy[index] = +text;
@@ -45,8 +45,8 @@ class RgbInput extends Component<Props> {
       return (
         <InputCell
           value={value}
-          key={index}
           index={index}
+          key={index}
           maxLength={4}
           handleChange={this.handleChange}
         />

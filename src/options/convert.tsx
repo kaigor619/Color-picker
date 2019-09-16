@@ -68,18 +68,25 @@ const convert = {
       mas[2].toString(16)
     );
   },
-  RGBAToHexA: function(r: number, g: number, b: number, a: number) {
+
+  RGBAToHexA: function(rgba: number[]) {
+    let [r, g, b, a] = rgba;
     let r_str = r.toString(16);
     let g_str = g.toString(16);
     let b_str = b.toString(16);
     let a_str = Math.round(a * 255).toString(16);
 
-    if (r_str.length == 1) r_str = "0" + r;
-    if (g_str.length == 1) g_str = "0" + g;
-    if (b_str.length == 1) b_str = "0" + b;
-    if (a_str.length == 1) a_str = "0" + a;
+    if (r_str.length == 1) r_str = "0" + r_str;
+    if (g_str.length == 1) g_str = "0" + g_str;
+    if (b_str.length == 1) b_str = "0" + b_str;
+    if (a_str.length == 1) a_str = "0" + a_str;
 
-    return "#" + r + g + b + a;
+    let value = "#" + r_str + g_str + b_str + a_str;
+
+    if (value.length == 9) {
+      if (value.slice(-2) == "ff") value = value.substring(0, 7);
+    }
+    return value;
   },
   rgbaToHsv: function(mas: number[]) {
     let r = mas[0],

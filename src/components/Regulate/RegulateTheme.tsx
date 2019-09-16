@@ -23,6 +23,8 @@ export const mapDispatchToProps = (dispatch: any) => {
     add_color: (h: number) => {
       dispatch(Action.change_h(h));
       dispatch(Action.syncRGB());
+      dispatch(Action.syncRGB());
+      dispatch(Action.syncModel());
     },
     add_opacity: (opacity: number) => {
       dispatch(Action.change_opacity(opacity));
