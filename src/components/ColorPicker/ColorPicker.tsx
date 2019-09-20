@@ -8,7 +8,8 @@ import BtnChangeType from "../BtnChangeType/BtnChangeType";
 import RgbInput from "../InputColor/RgbInput";
 import HslInput from "../InputColor/HslInput";
 import HexInput from "../InputColor/HexInput";
-import TestInput from "../TestInput";
+import Colors from "../Colors/Colors";
+import EditColor from "../DescriptionColor/DescriptionColor";
 
 class ColorPicker extends Component {
   render() {
@@ -50,6 +51,17 @@ class ColorPicker extends Component {
               <BtnChangeType name="rgb" text="Rgb" />
               <BtnChangeType name="hsl" text="Hsl" />
             </ul>
+            <Colors />
+            <EditColor />
+          </div>
+
+          <div className="wrap_btn_save_cancel">
+            <button className="btn_color_ok" id="btn_color_ok">
+              Ok
+            </button>
+            <button className="btn_color_cancel" id="btn_color_cancel">
+              Cancel
+            </button>
           </div>
         </div>
       </div>

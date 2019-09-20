@@ -1,27 +1,40 @@
 import { ThemeAction, ThemeStore } from "../interfaces";
 
-const InitialState: ThemeStore = {
+export const InitialState: ThemeStore = {
   H: 0,
   S: 0,
   V: 100,
   opacity: 1,
-  rgb_val: [255, 255, 255],
+  rgbMain: [255, 255, 255],
   type: "rgb",
   prevColor: {
-    rgb_val: [0, 145, 255],
+    rgbMain: [0, 145, 255],
     opacity: 0.5
   },
   models: {
     hex: "#ffffff",
     hsl: [0, 0, 100],
     rgb: [255, 255, 255]
+  },
+  userColors: {
+    description: {
+      enable: true,
+      index: 0,
+      edit: false
+    },
+    colors: [
+      { name: "Color 1", color: "#e91e63" },
+      { name: "Color 2", color: "#ff0000ff" },
+      { name: "Color 3", color: "#e91e63" },
+      { name: "Color 4", color: "#ff0000ff" }
+    ]
   }
 };
 
 const reducer = (state: any = InitialState, action: ThemeAction) => {
   switch (action.type) {
-    case "ADD_RGB":
-      return { ...state, rgb_val: action.payload };
+    case "CHANGE_RGB":
+      return { ...state, rgbMain: action.payload };
 
     case "CHANGE_OPACITY": {
       return { ...state, opacity: action.payload };
@@ -34,9 +47,58 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       return { ...state, models: { ...state.models, hex: action.payload } };
     }
 
-    case "CHANGE_MODEL_VAL": {
+    case "CHANGE_MODEL": {
       let type = state.type;
       return { ...state, models: { ...state.models, [type]: action.payload } };
+    }
+    case "CHANGE_USER_COLORS_INDEX": {
+      let obj = {
+        ...state,
+        userColors: {
+          ...state.userColors,
+          description: {
+            ...state.userColors.description,
+            index: action.payload
+          }
+        }
+      };
+
+      return obj;
+    }
+
+    case "CHANGE_USER_COLORS_EDIT": {
+      console.log("edit");
+      // let obj = {
+      //   ...state,
+      //   userColors: {
+      //     ...state.userColors,
+      //     description: {
+      //       ...state.userColors.description,
+      //       edit: action.payload
+      //     }
+      //   }
+      // };
+      // console.log(obj);
+      return state;
+    }
+
+    case "CHANGE_USER_COLORS_ENABLE":
+      return {
+        ...state.userColors.description,
+        userColors: {
+          ...state.userColors,
+          description: {
+            ...state.userColors.description,
+            enable: action.payload
+          }
+        }
+      };
+
+    case "CHANGE_USER_COLORS": {
+      return {
+        ...state,
+        userColors: { ...state.userColors, colors: action.payload }
+      };
     }
 
     case "CHANGE_HEX":

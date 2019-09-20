@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import convert from "../../options/convert";
+import Convert from "../../options/convert";
 import { connect } from "react-redux";
-import RegulateTheme, {
-  mapStateToProps,
-  mapDispatchToProps,
-  StateProps,
-  DispatchProps
-} from "./RegulateTheme";
+import * as Action from "../../actions";
+
+import RegulateTheme, { StateProps, DispatchProps } from "./RegulateTheme";
 
 class RegulateOpacity extends RegulateTheme {
+  state = {
+    left: 0
+  };
   hookDidMount() {
     const { line } = this;
     line.x = line.w / 100;
@@ -20,12 +20,6 @@ class RegulateOpacity extends RegulateTheme {
     let opacity: number = +(Math.floor(left / line.x) * 0.01).toFixed(2);
     this.props.add_opacity(opacity);
   }
-
-  getLeft(): string {
-    let { opacity } = this.props;
-    let left = (opacity * this.line.x) / 0.01 + "px";
-    return left;
-  }
   getStyle(): { left: number } {
     let left: number = 0;
     const { lineMove, line } = this;
@@ -35,6 +29,7 @@ class RegulateOpacity extends RegulateTheme {
     } else {
       left = (opacity * line.x) / 0.01;
     }
+
     const style = {
       left
     };
@@ -60,6 +55,24 @@ class RegulateOpacity extends RegulateTheme {
     );
   }
 }
+
+const mapStateToProps = ({ H, opacity }: any) => {
+  return {
+    H,
+    opacity
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    add_color: (mas: any) => {
+      dispatch(Action.compo_change_HSV(mas));
+    },
+    add_opacity: (opacity: number) => {
+      dispatch(Action.compo_change_opacity(opacity));
+    }
+  };
+};
 
 export default connect<StateProps, DispatchProps>(
   mapStateToProps,

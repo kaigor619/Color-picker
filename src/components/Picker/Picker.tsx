@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import PickerCircle from "./PickerCircle";
 import { ThemeStore } from "../../interfaces";
 import * as Action from "../../actions";
 import { connect } from "react-redux";
-import convert from "../../options/convert";
+import Convert from "../../options/convert";
+import Model from "../../options/modelsColor";
 
 // Интерфейсы
 interface StateProps {
   H: number;
   S: number;
   V: number;
-  rgb_val: number[];
+  rgbMain: number[];
 }
 interface DispatchProps {
   add_color: (mas: any) => void;
@@ -122,7 +122,7 @@ class Picker extends Component<Props> {
   getStyleBlock(): IStyleBlock {
     const { width, height } = this.block;
     let { H } = this.props;
-    let rgb = "rgb(" + convert.hsv_rgb(H, 100, 100) + ")";
+    let rgb = "rgb(" + Convert.hsv_rgb(H, 100, 100) + ")";
     let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
     ${rgb} , rgb(255, 255, 255))`;
 
@@ -136,7 +136,7 @@ class Picker extends Component<Props> {
 
   getStyleCircle(): IStyleCircle {
     const { width, height } = this.circle;
-    const backgroundColor = convert.rgb_string(this.props.rgb_val);
+    const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
     let left, top;
     if (this.circleMove) {
       left = this.state.left;
@@ -175,16 +175,16 @@ class Picker extends Component<Props> {
   }
 }
 
-const mapStateToProps = ({ H, S, V, rgb_val }: any): StateProps => {
+const mapStateToProps = ({ H, S, V, rgbMain }: any): StateProps => {
   return {
     H,
-    rgb_val,
+    rgbMain,
     S,
     V
   };
 };
 const mapDispatchToProps: DispatchProps = {
-  add_color: Action.change_hsv
+  add_color: Action.compo_change_HSV
 };
 
 export default connect<StateProps, DispatchProps, OwnProps>(

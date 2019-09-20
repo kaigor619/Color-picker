@@ -34,7 +34,7 @@ const mapStateToProps = ({ type }) => {
 };
 
 const mapDispatchToProps = {
-  changeType: Action.change_type
+  changeType: Action.compo_change_type
 };
 
 export default connect(

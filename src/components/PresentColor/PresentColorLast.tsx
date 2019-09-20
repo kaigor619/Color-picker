@@ -4,17 +4,17 @@ import * as Redux from "redux";
 import { connect } from "react-redux";
 import { ThemeStore } from "../../interfaces";
 import * as Action from "../../actions";
-import convert from "../../options/convert";
+import Model from "../../options/modelsColor";
 
 class PresentColorLast extends PresentColorTheme {
   handleClick() {
-    this.props.add_color(this.props.prevColor.rgb_val);
+    this.props.add_color(this.props.prevColor.rgbMain);
   }
   name = "last_color";
 
   getPresentStyle() {
-    let { rgb_val, opacity } = this.props.prevColor;
-    const backgroundColor = convert.rgb_string(rgb_val);
+    let { rgbMain, opacity } = this.props.prevColor;
+    const backgroundColor = Model.rgb.getStr(rgbMain);
     return {
       backgroundColor,
       opacity
@@ -25,17 +25,18 @@ class PresentColorLast extends PresentColorTheme {
 const mapStateToProps = ({
   prevColor,
   opacity,
-  rgb_val
+  rgbMain
 }: ThemeStore): StateProps => {
   return {
     prevColor,
     opacity,
-    rgb_val
+    rgbMain
   };
 };
 
 const mapDispatchToProps = {
-  add_color: Action.change_rgb
+  // add_color: Action.change_rgb
+  add_color: (mas: number[]) => {}
 };
 
 export default connect(

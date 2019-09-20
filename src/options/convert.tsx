@@ -1,7 +1,4 @@
-const convert = {
-  rgb_string: function(rgb_arr: number[]): string {
-    return "rgb(" + rgb_arr.join(",") + ")";
-  },
+const Convert = {
   hsv_rgb: function(H: number, S: number, V: number): number[] {
     let f,
       p,
@@ -58,7 +55,7 @@ const convert = {
     return [Math.floor(R * 255), Math.floor(G * 255), Math.floor(B * 255)];
   },
 
-  hex: function(mas: number[]) {
+  rgb_hex: function(mas: number[], opacity: number) {
     return (
       "#" +
       mas[0].toString(16) +
@@ -88,7 +85,7 @@ const convert = {
     }
     return value;
   },
-  rgbaToHsv: function(mas: number[]) {
+  rgb_hsv: function(mas: number[]) {
     let r = mas[0],
       g = mas[1],
       b = mas[2];
@@ -133,13 +130,14 @@ const convert = {
         h -= 1;
       }
     }
-    return {
-      h: Math.round(h * 360),
-      s: percentRoundFn(s * 100),
-      v: percentRoundFn(v * 100)
-    };
+
+    return [
+      Math.round(h * 360),
+      +parseInt(percentRoundFn(s * 100)),
+      +parseInt(percentRoundFn(v * 100))
+    ];
   },
-  hslTohsb: function(hsl: number[]): number[] {
+  hsl_hsv: function(hsl: number[]): number[] {
     let h = hsl[0];
     let s = hsl[1];
     let l = hsl[2];
@@ -153,7 +151,8 @@ const convert = {
     b = (b * 100) | 0;
     return [h, c, b];
   },
-  hsb_hsl: function(h: number, s: number, b: number): number[] {
+  hsv_hsl: function(hsvArray: number[]): number[] {
+    let [h, s, b] = hsvArray;
     h /= 100;
     s /= 100;
     b /= 100;
@@ -162,7 +161,7 @@ const convert = {
     let n = l && l < 1 ? (s * b) / (l < 0.5 ? l * 2 : 2 - l * 2) : s;
     return [Math.floor(h * 100), Math.floor(n * 100), Math.floor(l * 100)];
   },
-  hex_rgba: function(hex: string): number[] {
+  hex_rgb: function(hex: string): number[] {
     let r, g, b, a;
     hex = hex.replace("#", "");
     if (3 === hex.length) {
@@ -212,20 +211,89 @@ const convert = {
     h = h == 360 ? 0 : h;
     return h;
   },
-  onlyNumbers: (e: any) => {
-    var key = e.charCode || e.keyCode || 0;
 
-    return (
-      key == 8 ||
-      key == 9 ||
-      key == 46 ||
-      key == 110 ||
-      key == 190 ||
-      (key >= 35 && key <= 40) ||
-      (key >= 48 && key <= 57) ||
-      (key >= 96 && key <= 105)
-    );
+  rgb_hsl: function(rgb: number[], opacity: number) {
+    // Make r, g, and b fractions of 1
+    let [r, g, b] = rgb;
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    // Find greatest and smallest channel values
+    let cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+
+    if (delta == 0) h = 0;
+    // Red is max
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    // Green is max
+    else if (cmax == g) h = (b - r) / delta + 2;
+    // Blue is max
+    else h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+
+    // Make negative hues positive behind 360°
+    if (h < 0) h += 360;
+
+    l = (cmax + cmin) / 2;
+
+    // Calculate saturation
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+    // Multiply l and s by 100
+    s = +parseInt((s * 100).toFixed(1));
+    l = +parseInt((l * 100).toFixed(1));
+
+    return [h, s, l];
+  },
+  hsl_rgb: function(hsl: number[]) {
+    let [h, s, l] = hsl;
+    s /= 100;
+    l /= 100;
+
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+      m = l - c / 2,
+      r = 0,
+      g = 0,
+      b = 0;
+
+    if (0 <= h && h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (60 <= h && h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (120 <= h && h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (180 <= h && h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (240 <= h && h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else if (300 <= h && h < 360) {
+      r = c;
+      g = 0;
+      b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+
+    return [r, g, b];
   }
 };
 
-export default convert;
+export default Convert;

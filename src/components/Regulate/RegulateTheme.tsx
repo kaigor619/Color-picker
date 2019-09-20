@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import convert from "../../options/convert";
+import Convert from "../../options/convert";
 import * as Action from "../../actions";
 
 export interface StateProps {
@@ -8,7 +8,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  add_color: (n: number) => void;
+  add_color: (hsv: any) => void;
   add_opacity: (n: number) => void;
 }
 
@@ -20,11 +20,8 @@ export const mapStateToProps = ({ H, opacity }: any) => {
 };
 export const mapDispatchToProps = (dispatch: any) => {
   return {
-    add_color: (h: number) => {
-      dispatch(Action.change_h(h));
-      dispatch(Action.syncRGB());
-      dispatch(Action.syncRGB());
-      dispatch(Action.syncModel());
+    add_color: (mas: any) => {
+      dispatch(Action.compo_change_HSV(mas));
     },
     add_opacity: (opacity: number) => {
       dispatch(Action.change_opacity(opacity));

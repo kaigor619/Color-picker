@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 export interface StateProps {
-  rgb_val: number[];
-  prevColor: { rgb_val: number[]; opacity: number };
+  rgbMain: number[];
+  prevColor: { rgbMain: number[]; opacity: number };
   opacity: number;
 }
 

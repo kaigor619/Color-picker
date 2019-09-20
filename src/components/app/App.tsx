@@ -5,7 +5,7 @@ import * as Action from "../../actions";
 
 const App = function(options: any) {
   const demoClick = () => {
-    options.add_color("#a32d9599");
+    options.add_color("#a32d9587");
   };
   return (
     <div>
@@ -22,7 +22,7 @@ const App = function(options: any) {
 };
 
 const mapDispatchToProps = {
-  add_color: Action.change_color
+  add_color: Action.addColor
 };
 
 export default connect(

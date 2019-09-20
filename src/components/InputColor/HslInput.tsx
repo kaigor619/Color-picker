@@ -23,7 +23,6 @@ class RgbInput extends Component<Props> {
   type = "hsl";
 
   handleChange(text: string, index: number) {
-    console.log(text);
     let modelCopy = this.props.model.slice();
     if (index <= 2) {
       modelCopy[index] = +text;
@@ -71,8 +70,7 @@ const mapStateToProps = ({ opacity, type, models }: any): StateProps => {
 const mapDispatchToProps = (dispatch: any): DispatchProps => {
   return {
     changeModel: (val: string | number[]) => {
-      dispatch(Action.change_model_val(val));
-      dispatch(Action.syncHsvFromModel());
+      dispatch(Action.compo_change_model(val));
     },
     changeOpacity: (opacity: number) => {
       dispatch(Action.change_opacity(opacity));

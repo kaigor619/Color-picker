@@ -1,43 +1,22 @@
 import { ThemeAction, ThemeStore } from "../interfaces";
-import convert from "../options/convert";
+import Convert from "../options/convert";
 import * as Helper from "../options/helper-functions";
-import model from "../options/modelsColor";
+import Model from "../options/modelsColor";
+import Checking from "../options/checking";
 
-// Пользовательское добавление цвета
-export const add_rgb = (rgb: number[]): ThemeAction => {
+const ActionsNames = {
+  change_rgbMain: "CHANGE_RGB",
+  change_h: "CHANGE_H",
+  change_s: "CHANGE_S",
+  change_v: "CHANGE_V"
+};
+
+// Изменение rgbMain
+export const change_rgbMain = (rgb: number[]): ThemeAction => {
   return {
-    type: "ADD_RGB",
+    type: "CHANGE_RGB",
     payload: rgb
   };
-};
-
-// Изменение hex
-export const changeHex = () => (dispatch: any, getState: () => ThemeStore) => {
-  const { rgb_val, opacity } = getState();
-  let hex = convert.RGBAToHexA([...rgb_val, opacity]);
-
-  const action = {
-    type: "CHANGE_HEX",
-    payload: hex
-  };
-  dispatch(action);
-};
-
-// Изменение opacity
-export const change_opacity = (opacity: number) => (
-  dispatch: any,
-  getState: () => ThemeStore
-) => {
-  const action = {
-    type: "CHANGE_OPACITY",
-    payload: opacity
-  };
-  dispatch(action);
-
-  let { type } = getState();
-  if (type == "hex") {
-    dispatch(changeHex());
-  }
 };
 
 // Изменение H
@@ -64,126 +43,146 @@ export const change_v = (v: number): ThemeAction => {
   };
 };
 
-// Изменение типа модели цвета и синхронизация этого типа цвета
-export const change_type = (type: string) => (
-  dispatch: any,
-  getState: () => ThemeStore
-) => {
-  if (model[type]) {
-    const action = {
-      type: "CHANGE_TYPE",
-      payload: type
-    };
-    dispatch(action);
-  }
-  dispatch(syncModel());
-};
-
-// Изменение массива или строки модели цвета
-export const change_model_val = (val: string | number[]) => (
-  dispatch: any,
-  getState: () => ThemeStore
-) => {
-  const action = {
-    type: "CHANGE_MODEL_VAL",
-    payload: val
+// Изменение opacity
+export const change_opacity = (opacity: number): ThemeAction => {
+  return {
+    type: "CHANGE_OPACITY",
+    payload: opacity
   };
-  dispatch(action);
 };
 
-// Синхронизацая hsv в rgb
-export const syncRGB = () => (dispatch: any, getState: () => ThemeStore) => {
-  const { H, S, V, opacity } = getState();
-  let val = convert.hsv_rgb(H, S, V);
-  dispatch(add_rgb(val));
-};
-
-// Синхронизация текущего модели из rgb_val
-export const syncModel = () => (dispatch: any, getState: () => ThemeStore) => {
-  let { type, rgb_val, H, S, V, opacity } = getState();
-  let payload;
-  if (type == "rgb") {
-    payload = rgb_val;
-  } else if (type == "hsl") {
-    payload = convert.hsb_hsl(H, S, V);
-  } else if (type == "hex") {
-    payload = convert.RGBAToHexA([...rgb_val, opacity]);
-  }
-
-  dispatch(change_model_val(payload));
-};
-
-// Изменение HSV
-export const change_hsv = (hsv_array: number[]) => (dispatch: any) => {
-  let h = hsv_array[0],
-    s = hsv_array[1],
-    v = hsv_array[2];
-  dispatch(change_h(h));
-  dispatch(change_s(s));
-  dispatch(change_v(v));
-
-  dispatch(syncRGB());
-  dispatch(syncModel());
-};
-
-// Изменение RGB
-export const change_rgb = (rgb_array: number[]) => (dispatch: any) => {
-  let { h, s, v } = convert.rgbaToHsv(rgb_array);
-  dispatch(change_h(h));
-  dispatch(change_s(s));
-  dispatch(change_v(v));
-  dispatch(add_rgb(rgb_array));
-};
-
-export const change_color = (value: string) => (dispatch: any) => {
-  let type = Helper.check_color(value);
-  let { val, opacity } = model[type].getArr(value);
-
-  const action = {
-    type: "CHANGE_" + type.toUpperCase(),
-    payload: val
+// Изменение type
+export const change_type = (type: string): ThemeAction => {
+  return {
+    type: "CHANGE_TYPE",
+    payload: type
   };
+};
 
-  dispatch(action);
-  dispatch(change_opacity(opacity));
+// Изменение model
+export const change_model = (value: number[] | string) => {
+  return {
+    type: "CHANGE_MODEL",
+    payload: value
+  };
+};
+
+// Изменение HSV (change_h, change_s, change_v)
+export const change_HSV = (hsv: any) => (dispatch: any) => {
+  let [h, s, v] = hsv;
+  if (h !== null) dispatch(change_h(h));
+  if (s !== null) dispatch(change_s(s));
+  if (v !== null) dispatch(change_v(v));
+};
+
+// Изменение Типа и изменение полей model
+export const compo_change_type = (type: string) => (dispatch: any) => {
   dispatch(change_type(type));
-
-  if (type == "rgb") {
-    dispatch(change_rgb(val));
-  } else if (type == "hsl") {
-    let hsb = convert.hslTohsb(val);
-    dispatch(change_hsv(hsb));
-  } else if (type == "hex") {
-    let rgb = convert.hex_rgba(val);
-    dispatch(change_rgb(rgb));
-  }
-
-  dispatch(syncModel());
+  dispatch(compo_sync_model());
 };
 
-// Изменение hsv через модель цвета
-export const syncHsvFromModel = () => (
+// Изменение opacity и hex
+export const compo_change_opacity = (opacity: number) => (
   dispatch: any,
   getStore: () => ThemeStore
 ) => {
-  const { type, models } = getStore();
-
-  const model = models[type];
-  let payload: number[] = [];
-
+  dispatch(change_opacity(opacity));
+  const { type } = getStore();
   if (type == "hex") {
-    payload = convert.hex_rgba(model);
-    console.log(payload);
-    dispatch(change_rgb(payload));
-  } else if (type == "rgb") {
-    payload = model;
-    dispatch(change_rgb(payload));
-  } else if (type == "hsl") {
-    payload = convert.hslTohsb(model);
-    dispatch(change_h(payload[0]));
-    dispatch(change_s(payload[1]));
-    dispatch(change_v(payload[2]));
-
-    dispatch(syncRGB());
+    dispatch(compo_sync_model());
   }
+};
+
+// Синхронизация HSV => rgbMain
+export const compo_sync_rgbMain = () => (
+  dispatch: any,
+  getStore: () => ThemeStore
+) => {
+  const { H, S, V } = getStore();
+  let rgb = Convert.hsv_rgb(H, S, V);
+  dispatch(change_rgbMain(rgb));
+};
+
+// Синхнонизация rgbMain => model
+export const compo_sync_model = () => (
+  dispatch: any,
+  getStore: () => ThemeStore
+) => {
+  const { rgbMain, type, opacity } = getStore();
+  let modelValue = Model[type]["rgb_" + type](rgbMain, opacity);
+  dispatch(change_model(modelValue));
+};
+
+// Изменение HSV и rgbMain и model
+export const compo_change_HSV = (hsv: any) => (dispatch: any) => {
+  dispatch(change_HSV(hsv));
+  dispatch(compo_sync_rgbMain());
+  dispatch(compo_sync_model());
+};
+
+// Изменение model и затем HSV, rgbMain
+export const compo_change_model = (model: string | number[]) => (
+  dispatch: any,
+  getStore: () => ThemeStore
+) => {
+  const { type } = getStore();
+  let rgb = Model[type][type + "_rgb"](model);
+  let hsv = Convert.rgb_hsv(rgb);
+  dispatch(change_HSV(hsv));
+  dispatch(change_rgbMain(rgb));
+};
+
+export const addColor = (value: string) => (
+  dispatch: any,
+  getStore: () => ThemeStore
+) => {
+  const type = Checking.check_color(value);
+  let { val, opacity } = Model[type].getWorkView(value);
+  let rgb = Model[type][type + "_rgb"](val);
+  let hsv = Convert.rgb_hsv(rgb);
+  dispatch(compo_change_type(type));
+  dispatch(compo_change_opacity(opacity));
+  dispatch(change_HSV(hsv));
+  dispatch(change_rgbMain(rgb));
+  dispatch(compo_sync_model());
+  dispatch(compo_change_model(val));
+};
+
+export const change_users_colors = (
+  colors: { name: string; color: string }[]
+) => {
+  return {
+    type: "CHANGE_USER_COLORS",
+    payload: colors
+  };
+};
+
+export const change_users_colors_index = (index: number) => {
+  return {
+    type: "CHANGE_USER_COLORS_INDEX",
+    payload: index
+  };
+};
+
+export const change_users_colors_edit = (edit: boolean) => {
+  return {
+    type: "CHANGE_USER_COLORS_EDIT",
+    payload: edit
+  };
+};
+
+export const change_users_colors_enable = (enable: boolean) => {
+  return {
+    type: "CHANGE_USER_COLORS_ENABLE",
+    payload: enable
+  };
+};
+
+export const compo_change_colors_edit = (
+  enable: boolean,
+  index: number
+) => dispatch => {
+  // console.log(enable);
+  dispatch(change_users_colors_enable(true));
+  dispatch(change_users_colors_index(index));
 };
