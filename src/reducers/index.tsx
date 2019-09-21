@@ -67,24 +67,21 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
     }
 
     case "CHANGE_USER_COLORS_EDIT": {
-      console.log("edit");
-      // let obj = {
-      //   ...state,
-      //   userColors: {
-      //     ...state.userColors,
-      //     description: {
-      //       ...state.userColors.description,
-      //       edit: action.payload
-      //     }
-      //   }
-      // };
-      // console.log(obj);
-      return state;
+      return {
+        ...state,
+        userColors: {
+          ...state.userColors,
+          description: {
+            ...state.userColors.description,
+            edit: action.payload
+          }
+        }
+      };
     }
 
     case "CHANGE_USER_COLORS_ENABLE":
       return {
-        ...state.userColors.description,
+        ...state,
         userColors: {
           ...state.userColors,
           description: {
@@ -100,31 +97,6 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
         userColors: { ...state.userColors, colors: action.payload }
       };
     }
-
-    case "CHANGE_HEX":
-      return {
-        ...state,
-        model: {
-          ...state.model,
-          hex: action.payload
-        }
-      };
-    case "CHANGE_HSL":
-      return {
-        ...state,
-        model: {
-          ...state.model,
-          hsl: action.payload
-        }
-      };
-    case "CHANGE_RGB":
-      return {
-        ...state,
-        model: {
-          ...state.model,
-          rgb: action.payload
-        }
-      };
 
     case "CHANGE_H":
       return {
