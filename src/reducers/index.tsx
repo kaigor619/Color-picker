@@ -16,19 +16,12 @@ export const InitialState: ThemeStore = {
     hsl: [0, 0, 100],
     rgb: [255, 255, 255]
   },
-  userColors: {
-    description: {
-      enable: true,
-      index: 0,
-      edit: false
-    },
-    colors: [
-      { name: "Color 1", color: "#e91e63" },
-      { name: "Color 2", color: "#ff0000ff" },
-      { name: "Color 3", color: "#e91e63" },
-      { name: "Color 4", color: "#ff0000ff" }
-    ]
-  }
+  colors: [
+    { name: "Color 1", color: "#e91e63" },
+    { name: "Color 2", color: "#ff0000ff" },
+    { name: "Color 3", color: "#e91e63" },
+    { name: "Color 4", color: "#ff0000ff" }
+  ]
 };
 
 const reducer = (state: any = InitialState, action: ThemeAction) => {

@@ -9,7 +9,6 @@ import RgbInput from "../InputColor/RgbInput";
 import HslInput from "../InputColor/HslInput";
 import HexInput from "../InputColor/HexInput";
 import Colors from "../Colors/Colors";
-import EditColor from "../DescriptionColor/DescriptionColor";
 
 class ColorPicker extends Component {
   render() {
@@ -52,7 +51,6 @@ class ColorPicker extends Component {
               <BtnChangeType name="hsl" text="Hsl" />
             </ul>
             <Colors />
-            <EditColor />
           </div>
 
           <div className="wrap_btn_save_cancel">

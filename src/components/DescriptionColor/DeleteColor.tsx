@@ -1,6 +1,7 @@
 import React from "react";
 
-const DeleteColor = () => {
+const DeleteColor = ({ enable }) => {
+  if (!enable) return null;
   return (
     <div className="w_warning_delete" id="w_warning_delete">
       <div className="warning_delete">

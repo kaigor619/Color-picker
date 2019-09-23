@@ -4,6 +4,7 @@ import { IuserColors, Icolors } from "../../interfaces";
 import SaveColor from "./SaveColor";
 import DeleteColor from "./DeleteColor";
 import SaveEditColor from "./DeleteColor";
+import SaveWarning from "./SaveWarning";
 import * as Action from "../../actions";
 
 interface StateProps {
@@ -17,7 +18,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-class EditColor extends Component<Props> {
+class DescriptionColor extends Component<Props> {
   constructor(props: Props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -25,36 +26,61 @@ class EditColor extends Component<Props> {
     this.handleClickDelete = this.handleClickDelete.bind(this);
   }
   state = {
-    label: ""
+    label: "",
+    edit: false,
+    delete: false,
+    save: false
   };
 
+  inputColor: any = React.createRef();
+
   handleClickEdit(e) {
-    this.props.change_edit(true);
+    // this.props.change_edit(true);
+    this.setState({ edit: true });
+    // this.inputColor.current.focus();
   }
-  handleClickDelete(e) {}
+  handleClickDelete(e) {
+    let { userColors } = this.props;
+    let { colors } = userColors;
+    let { index } = userColors.description;
+    let cs = colors.slice();
+    cs.splice(index, 1);
+    this.setState({ delete: true });
+    // this.props.change_colors(cs);
+  }
 
   handleChange(e) {
-    let label = e.target.value;
-    this.setState({ label });
+    if (this.props.userColors.description.edit) {
+      let label = e.target.value;
+      this.setState({ label });
+    }
   }
-  componentWillMount() {
+  componentDidMount() {
+    this.update();
+  }
+  update() {
     const { userColors } = this.props;
     const { colors } = userColors;
-    const { index } = userColors.description;
+    const { index, edit } = userColors.description;
     const { name } = colors[index];
-    this.setState({ label: name });
+    if (edit) {
+      this.inputColor.current.focus();
+    }
+    this.setState({ label: name, edit });
   }
 
   componentDidUpdate(prevProps) {
     const { userColors } = this.props;
+    if (userColors.description.edit) {
+      this.inputColor.current.focus();
+    }
     if (
       userColors.description.index !== prevProps.userColors.description.index ||
-      userColors.description.enable !== prevProps.userColors.description.enable
+      userColors.description.enable !==
+        prevProps.userColors.description.enable ||
+      userColors.description.edit !== prevProps.userColors.description.edit
     ) {
-      const { colors } = userColors;
-      const { index } = userColors.description;
-      const { name } = colors[index];
-      this.setState({ label: name });
+      this.update();
     }
   }
   render() {
@@ -76,10 +102,11 @@ class EditColor extends Component<Props> {
               ></div>
             </div>
             <input
+              ref={this.inputColor}
               className="label_descr_color"
               id="label_descr_color"
               value={this.state.label}
-              readOnly={true}
+              // readOnly={true}
               onChange={this.handleChange}
             />
           </div>
@@ -99,9 +126,10 @@ class EditColor extends Component<Props> {
               onClick={this.handleClickDelete}
             />
           </div>
-          <SaveColor />
-          <DeleteColor />
-          <SaveEditColor />
+
+          <SaveColor enable={false} />
+          <DeleteColor enable={false} />
+          <SaveEditColor enable={false} />
         </div>
       </div>
     );
@@ -122,4 +150,4 @@ const mapDispatchToProps: DispatchProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditColor);
+)(DescriptionColor);

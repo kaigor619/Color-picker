@@ -4,6 +4,7 @@ import { IuserColors } from "../../interfaces";
 import { connect } from "react-redux";
 import Model from "../../options/modelsColor";
 import * as Action from "../../actions";
+import DescriptionColor from "../DescriptionColor/DescriptionColor";
 
 interface StateProps {
   userColors: IuserColors;
@@ -13,7 +14,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  change_type_index: (edit: boolean) => void;
+  change_type_index: (enable: boolean, index: number) => void;
   change_colors: (colors: { name: string; color: string }[]) => void;
 }
 
@@ -28,6 +29,7 @@ class Colors extends Component<Props> {
   counter = 1;
   labelCounter = "Color";
 
+
   handleAddSwatch(e) {
     const { change_colors, model, type, opacity } = this.props;
     let color = Model[type].getString(model, opacity);
@@ -38,7 +40,8 @@ class Colors extends Component<Props> {
     this.props.change_colors(colors);
   }
   handleClick(index: number) {
-    this.props.change_type_index(true);
+    // this.props.change_type_index(true, index);
+    
   }
   componentDidMount() {
     const { colors } = this.props.userColors;
@@ -57,18 +60,21 @@ class Colors extends Component<Props> {
         />
       );
     });
+    
     return (
-      <div className="custom_colors">
-        {swatches}
-
-        <div
-          onClick={this.handleAddSwatch}
-          className="add_new_color"
-          id="add_new_color"
-        >
-          <img src="./svg/plus-symbol.svg" alt="" />
+      <React.Fragment>
+        <div className="custom_colors">
+          {swatches}
+          <div
+            onClick={this.handleAddSwatch}
+            className="add_new_color"
+            id="add_new_color"
+          >
+            <img src="./svg/plus-symbol.svg" alt="" />
+          </div>
         </div>
-      </div>
+        <DescriptionColor />
+      </React.Fragment>
     );
   }
 }
@@ -82,7 +88,7 @@ const mapStateToProps = ({ userColors, models, type, opacity }): StateProps => {
 };
 
 const mapDispatchToProps: DispatchProps = {
-  change_type_index: Action.change_users_colors_edit,
+  change_type_index: Action.compo_change_colors_enable,
   change_colors: Action.change_users_colors
 };
 

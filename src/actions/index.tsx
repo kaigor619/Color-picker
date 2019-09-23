@@ -1,6 +1,5 @@
 import { ThemeAction, ThemeStore } from "../interfaces";
 import Convert from "../options/convert";
-import * as Helper from "../options/helper-functions";
 import Model from "../options/modelsColor";
 import Checking from "../options/checking";
 
@@ -178,11 +177,11 @@ export const change_users_colors_enable = (enable: boolean) => {
   };
 };
 
-export const compo_change_colors_edit = (
+// Изменение enable и index
+export const compo_change_colors_enable = (
   enable: boolean,
   index: number
 ) => dispatch => {
-  // console.log(enable);
-  dispatch(change_users_colors_enable(true));
+  dispatch(change_users_colors_enable(enable));
   dispatch(change_users_colors_index(index));
 };

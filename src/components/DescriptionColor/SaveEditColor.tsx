@@ -1,6 +1,7 @@
 import React from "react";
 
-const SaveEditColor = () => {
+const SaveEditColor = ({ enable }) => {
+  if (!enable) return null;
   return (
     <div className="w_descr_btns_save" id="w_descr_btns_save">
       <div className="descr_btns_save">
