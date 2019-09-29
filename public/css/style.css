@@ -13,7 +13,7 @@ body {
 	background-color: #6959DE;
 }
 
-.picker {
+/* .picker {
 	position: absolute;
 	margin: 0 auto;
 	top: 10%;
@@ -22,7 +22,7 @@ body {
 	-webkit-user-select: none;
 	background-color: #272f42;
 	border-radius: 3px;
-}
+} */
 
 .picker.active {
 	visibility: visible;
@@ -40,12 +40,11 @@ body {
 	cursor: pointer;
 }
 
-.picker_container {
+/* .picker_container {
 	padding: 0 10px 0 10px;
-	/*rgba(204, 71, 71, 0.63)*/
-}
+} */
 
-.block_picker {
+/* .block_picker {
 	width: 100%;
 	height: 140px;
 	-moz-user-select: none;
@@ -54,33 +53,31 @@ body {
 	-webkit-user-select: none;
 	border-radius: 3px;
 	position: relative;
-}
+} */
 
-.wrap_output_regulate {
+/* .wrap_output_regulate {
 	width: 100%;
 	display: flex;
 	align-items: center;
 	padding-top: 15px;
 	padding-bottom: 15px;
+} */
 
-
-}
-
-.wrap_output_color {
+/* .wrap_output_color {
 	width: 80px;
-}
+} */
 
-.color_cell {
+/* .color_cell {
 	margin: 0 auto;
 	width: 90%;
 	height: 25px;
 	cursor: pointer;
 	position: relative;
 	background: url('../svg/opacity.svg') repeat;
-}
+} */
 
 
-.color_cell div {
+/* .color_cell div {
 	background-color: #fff;
 	position: absolute;
 	top: 0;
@@ -89,15 +86,16 @@ body {
 	bottom: 0;
 	width: 100%;
 	height: 100%;
-}
+} */
 
+/* 
 .wrap_regulate_color {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	padding-left: 10px;
-}
+} */
 
 .wrap_line_color {
 	width: 100%;
@@ -169,10 +167,10 @@ body {
 }
 
 /*Текстовые поля*/
-.w_copy_input {
+/* .w_copy_input {
 	display: flex;
 	align-items: center;
-}
+} */
 
 .w_copy_color {
 	position: relative;
@@ -186,9 +184,9 @@ body {
 	cursor: pointer;
 }
 
-.list_type_val_color {
+/* .list_type_val_color {
 	width: 100%;
-}
+} */
 
 .type_val_color {
 	display: none;
@@ -224,12 +222,12 @@ body {
 }
 
 /*Rgba*/
-.wrap_color_input {
+/* .wrap_color_input {
 	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-}
+} */
 
 
 /*Button*/
@@ -317,16 +315,12 @@ body {
 
 /*Описание цвета*/
 .w_descr_custom_color {
-	/* display: none;
-	opacity: 0; */
+	/* visibility: hidden; */
+	/* display: none; */
+	/* opacity: 0; */
 	transition: opacity .3s;
 }
 
-.w_descr_custom_color.active {
-	display: block;
-	opacity: 1;
-	transition: opacity .3s;
-}
 
 .descr_custom_color {
 	display: flex;
@@ -365,7 +359,7 @@ body {
 }
 
 .opacity_descr_color {
-	background: url(opacity.svg) repeat;
+	background: url('../svg/opacity.svg') repeat;
 	background-size: 50% 50%;
 	position: relative;
 	width: 17px;
@@ -374,16 +368,6 @@ body {
 	cursor: pointer;
 }
 
-.client_c_color_descr {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-	border-radius: 2px;
-}
 
 .label_descr_color {
 	color: #fff;
@@ -472,7 +456,6 @@ body {
 	font-family: Arial;
 	cursor: pointer;
 	transition: background-color .3s;
-	/*	transform: skew(0deg,-10deg);*/
 }
 
 .descr_c_color:hover {
@@ -482,7 +465,7 @@ body {
 
 .descr_save_c_color {
 	margin-right: 7px;
-	/*background-color:#286092;*/
+	/* background-color: #286092; */
 }
 
 .descr_del_color {

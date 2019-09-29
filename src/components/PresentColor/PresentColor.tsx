@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { PresentCell, PresentColorDiv } from "./styles";
 
 export interface StateProps {
   rgbMain: number[];
@@ -30,15 +31,15 @@ class PresentColorTheme extends Component<Props> {
 
   render() {
     const { name } = this;
+    const style = this.getPresentStyle();
     return (
-      <div className="color_cell">
-        <div
-          id={name}
+      <PresentCell className="color_cell">
+        <PresentColorDiv
           className={"present_color " + name}
           onClick={this.handleClick}
-          style={this.getPresentStyle()}
-        ></div>
-      </div>
+          style={style}
+        ></PresentColorDiv>
+      </PresentCell>
     );
   }
 }

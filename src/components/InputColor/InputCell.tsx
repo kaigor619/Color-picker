@@ -1,4 +1,5 @@
 import React, { useState, Component } from "react";
+import { InputColor, HexInput } from "./styles";
 
 interface ItestInputCell {
   value: string;
@@ -43,17 +44,15 @@ class InputCell extends Component<Props> {
 
   render() {
     let { maxLength, hex } = this.props;
-    let classNames = "input_text_value";
-    if (hex) classNames = "hex_text_value";
-    return (
-      <input
-        type="text"
-        maxLength={maxLength}
-        value={this.state.value}
-        onChange={this.inputChange}
-        className={classNames}
-      />
-    );
+    let options = {
+      type: "text",
+      maxLength: maxLength,
+      value: this.state.value,
+      onChange: this.inputChange
+    };
+    let component = <InputColor {...options} />;
+    if (hex) component = <HexInput {...options} />;
+    return component;
   }
 }
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as Action from "../../actions";
+import { StyleBtn } from "./styles";
 
 interface IBtnChangeProps {
   name: string;
@@ -15,14 +16,13 @@ const BtnChangeType = function({
   type,
   changeType
 }: IBtnChangeProps) {
-  let classNames = "btn_select_color";
-  // const {type}=this.props;
-  if (type == name) classNames += " active";
+  let active = false;
+  if (type == name) active = true;
   return (
-    <li className="type_color">
-      <button className={classNames} onClick={() => changeType(name)}>
+    <li>
+      <StyleBtn active={active} onClick={() => changeType(name)}>
         {text}
-      </button>
+      </StyleBtn>
     </li>
   );
 };

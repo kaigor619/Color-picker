@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import InputCell from "./InputCell";
 import * as Action from "../../actions";
+import { WrapColorInputs } from "./styles";
 
 interface StateProps {
   model: number[];
@@ -53,8 +54,8 @@ class RgbInput extends Component<Props> {
       );
     });
     return (
-      <li className="type_val_color active">
-        <div className="wrap_color_input">{inputs}</div>
+      <li>
+        <WrapColorInputs>{inputs}</WrapColorInputs>
       </li>
     );
   }

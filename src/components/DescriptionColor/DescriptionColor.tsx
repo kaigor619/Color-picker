@@ -1,22 +1,42 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { IuserColors, Icolors } from "../../interfaces";
 import SaveColor from "./SaveColor";
 import DeleteColor from "./DeleteColor";
-import SaveEditColor from "./DeleteColor";
-import SaveWarning from "./SaveWarning";
-import * as Action from "../../actions";
+import SaveEditColor from "./SaveEditColor";
+import Model from "../../options/modelsColor";
+import { connect } from "react-redux";
+
+import {
+  StyleDescriptionColor,
+  DescriptionSwatch,
+  WrapDescrPart,
+  WrapDescrOpacity,
+  InputDescr,
+  ImageEdit,
+  ImageRemove
+} from "./styles";
 
 interface StateProps {
-  userColors: IuserColors;
+  model: any;
+  type: string;
+  opacity: number;
+  rgbMain: number[];
 }
 
-interface DispatchProps {
-  change_colors: (mas: Icolors) => void;
-  change_edit: (edit: boolean) => void;
+interface OwnProps {
+  name: string;
+  color: string;
+  edit?: boolean;
+  save?: boolean;
+  remove?: boolean;
+  changeSwatch: (obj: { name: string; color: string; index: number }) => void;
+  deleteSwatch: (index: number) => void;
+  addSwatch: (obj: { name: string; color: string }) => void;
+  changeEnable: (enable: boolean) => void;
+  index: number;
 }
+interface DispatchProps {}
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & OwnProps & DispatchProps;
 
 class DescriptionColor extends Component<Props> {
   constructor(props: Props) {
@@ -24,130 +44,181 @@ class DescriptionColor extends Component<Props> {
     this.handleChange = this.handleChange.bind(this);
     this.handleClickEdit = this.handleClickEdit.bind(this);
     this.handleClickDelete = this.handleClickDelete.bind(this);
+
+    this.onSaveColor = this.onSaveColor.bind(this);
+    this.onCancelColor = this.onCancelColor.bind(this);
+
+    this.onSaveEditColor = this.onSaveEditColor.bind(this);
+    this.onCancelEditColor = this.onCancelEditColor.bind(this);
+
+    this.onYesDeleteColor = this.onYesDeleteColor.bind(this);
+    this.onNoDeleteColor = this.onNoDeleteColor.bind(this);
   }
   state = {
-    label: "",
+    name: "",
+    color: "",
     edit: false,
-    delete: false,
-    save: false
+    save: false,
+    remove: false
   };
-
   inputColor: any = React.createRef();
 
-  handleClickEdit(e) {
-    // this.props.change_edit(true);
-    this.setState({ edit: true });
-    // this.inputColor.current.focus();
-  }
-  handleClickDelete(e) {
-    let { userColors } = this.props;
-    let { colors } = userColors;
-    let { index } = userColors.description;
-    let cs = colors.slice();
-    cs.splice(index, 1);
-    this.setState({ delete: true });
-    // this.props.change_colors(cs);
-  }
-
-  handleChange(e) {
-    if (this.props.userColors.description.edit) {
-      let label = e.target.value;
-      this.setState({ label });
-    }
-  }
   componentDidMount() {
     this.update();
   }
   update() {
-    const { userColors } = this.props;
-    const { colors } = userColors;
-    const { index, edit } = userColors.description;
-    const { name } = colors[index];
-    if (edit) {
-      this.inputColor.current.focus();
-    }
-    this.setState({ label: name, edit });
+    const { name, color, edit, save, remove } = this.props;
+    let ed = edit || false;
+    let sv = save || false;
+    let rw = remove || false;
+    let cl = color;
+
+    this.setState({ name, color: cl, edit: ed, save: sv, remove: rw });
   }
 
   componentDidUpdate(prevProps) {
-    const { userColors } = this.props;
-    if (userColors.description.edit) {
-      this.inputColor.current.focus();
-    }
-    if (
-      userColors.description.index !== prevProps.userColors.description.index ||
-      userColors.description.enable !==
-        prevProps.userColors.description.enable ||
-      userColors.description.edit !== prevProps.userColors.description.edit
-    ) {
+    const { name, color, edit, save, rgbMain, opacity } = this.props;
+    const { edit: ed, save: sv, remove: rw } = this.state;
+    const {
+      name: n,
+      color: c,
+      edit: e,
+      save: s,
+      rgbMain: r,
+      opacity: op
+    } = prevProps;
+    if (name !== n || color !== c || edit !== e || save !== s) {
       this.update();
     }
+    if (rgbMain !== r || opacity !== op) {
+      if (ed || sv) {
+        this.inputColor.current.removeAttribute("disabled");
+        this.inputColor.current.focus();
+        let cl = Model.rgb.getString(rgbMain, opacity);
+        this.setState({ color: cl });
+      } else if (!ed && !sv && !rw) {
+        this.props.changeEnable(false);
+      }
+    }
   }
+
+  handleClickEdit(e) {
+    this.setState({ edit: true });
+    this.inputColor.current.removeAttribute("disabled");
+    this.inputColor.current.focus();
+  }
+  handleClickDelete(e) {
+    this.setState({ remove: true });
+  }
+
+  handleChange(e) {
+    const { edit, save } = this.state;
+    if (edit || save) {
+      let name = e.target.value;
+      this.setState({ name });
+    }
+  }
+  onSaveColor() {
+    let { color, name } = this.state;
+    this.props.addSwatch({ color, name });
+    this.setState({ save: false });
+  }
+  onCancelColor() {
+    this.setState({ save: false });
+    this.props.changeEnable(false);
+  }
+  onSaveEditColor() {
+    let { color, name } = this.state;
+    let { index } = this.props;
+    this.props.changeSwatch({ color, name, index });
+    this.setState({ edit: false });
+  }
+  onCancelEditColor() {
+    let { name, color } = this.props;
+
+    this.setState({ edit: false, color, name });
+  }
+  onYesDeleteColor() {
+    let { index } = this.props;
+    this.props.deleteSwatch(index);
+    this.setState({ remove: false });
+    this.props.changeEnable(false);
+  }
+  onNoDeleteColor() {
+    this.setState({ remove: false });
+  }
+
   render() {
-    const { userColors } = this.props;
-    const { colors } = userColors;
-    const { enable, index } = userColors.description;
-    if (!enable) return null;
-    const { color, name } = colors[index];
+    const { name, color, edit, save, remove } = this.state;
+
+    let warningComponent;
+    if (save) {
+      warningComponent = (
+        <SaveColor
+          onSaveColor={this.onSaveColor}
+          onCancelColor={this.onCancelColor}
+        />
+      );
+    } else if (edit) {
+      warningComponent = (
+        <SaveEditColor
+          onSaveEditColor={this.onSaveEditColor}
+          onCancelEditColor={this.onCancelEditColor}
+        />
+      );
+    } else if (remove) {
+      warningComponent = (
+        <DeleteColor
+          onYesDeleteColor={this.onYesDeleteColor}
+          onNoDeleteColor={this.onNoDeleteColor}
+        />
+      );
+    } else {
+      warningComponent = null;
+    }
 
     return (
-      <div className="w_descr_custom_color" id="w_descr_custom_color">
-        <div className="descr_custom_color" id="descr_custom_color">
-          <div className="wrap_descr_parts">
-            <div className="opacity_descr_color">
-              <div
-                className="client_c_color_descr"
-                id="client_c_color_descr"
-                style={{ backgroundColor: color }}
-              ></div>
-            </div>
-            <input
-              ref={this.inputColor}
-              className="label_descr_color"
-              id="label_descr_color"
-              value={this.state.label}
-              // readOnly={true}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="wrap_descr_parts">
-            <img
-              className="descr_c_pencil"
-              id="descr_c_pencil"
-              src="./svg/pencil.svg"
-              alt=""
-              onClick={this.handleClickEdit}
-            />
-            <img
-              className="descr_c_delete"
-              id="descr_c_delete"
-              src="./svg/delete.svg"
-              alt=""
-              onClick={this.handleClickDelete}
-            />
-          </div>
-
-          <SaveColor enable={false} />
-          <DeleteColor enable={false} />
-          <SaveEditColor enable={false} />
-        </div>
-      </div>
+      <StyleDescriptionColor>
+        <WrapDescrPart>
+          <WrapDescrOpacity>
+            <DescriptionSwatch color={color} />
+          </WrapDescrOpacity>
+          <InputDescr
+            ref={this.inputColor}
+            className="label_descr_color"
+            value={name}
+            disabled={true}
+            onChange={this.handleChange}
+          />
+        </WrapDescrPart>
+        <WrapDescrPart>
+          <ImageEdit
+            src="./svg/pencil.svg"
+            alt="Edit color"
+            onClick={this.handleClickEdit}
+          />
+          <ImageRemove
+            src="./svg/delete.svg"
+            alt="Delete color"
+            onClick={this.handleClickDelete}
+          />
+        </WrapDescrPart>
+        {warningComponent}
+      </StyleDescriptionColor>
     );
   }
 }
 
-const mapStateToProps = ({ userColors }): StateProps => {
+const mapStateToProps = ({ models, type, opacity, rgbMain }): StateProps => {
   return {
-    userColors
+    model: models[type],
+    type,
+    opacity,
+    rgbMain
   };
-};
-
-const mapDispatchToProps: DispatchProps = {
-  change_colors: Action.change_users_colors,
-  change_edit: Action.change_users_colors_edit
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  {}
 )(DescriptionColor);

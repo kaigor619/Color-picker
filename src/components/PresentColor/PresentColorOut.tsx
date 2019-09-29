@@ -1,12 +1,29 @@
-import React from "react";
-import PresentColorTheme, { StateProps } from "./PresentColor";
+import React, { Component } from "react";
+import PresentColorTheme from "./PresentColor";
 import * as Redux from "redux";
 import { connect } from "react-redux";
 import { ThemeStore } from "../../interfaces";
 import * as Action from "../../actions";
 import Model from "../../options/modelsColor";
+import { PresentCell, PresentColorDiv } from "./styles";
 
-class PresentColorOut extends PresentColorTheme {
+interface StateProps {
+  rgbMain: number[];
+  opacity: number;
+}
+
+interface DispatchProps {
+  add_color: (mas: any) => void;
+}
+
+type Props = StateProps & DispatchProps;
+
+class PresentColorOut extends Component<Props> {
+  constructor(props: Props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
   handleClick() {
     this.props.add_color(this.props.rgbMain);
   }
@@ -21,22 +38,28 @@ class PresentColorOut extends PresentColorTheme {
       opacity
     };
   }
+  render() {
+    const { name } = this;
+    const style = this.getPresentStyle();
+    return (
+      <PresentCell className="color_cell">
+        <PresentColorDiv
+          onClick={this.handleClick}
+          style={style}
+        ></PresentColorDiv>
+      </PresentCell>
+    );
+  }
 }
 
-const mapStateToProps = ({
-  rgbMain,
-  opacity,
-  prevColor
-}: ThemeStore): StateProps => {
+const mapStateToProps = ({ rgbMain, opacity }: ThemeStore): StateProps => {
   return {
     rgbMain,
-    opacity,
-    prevColor
+    opacity
   };
 };
 
 const mapDispatchToProps = {
-  // add_color: Action.change_rgb
   add_color: (mas: number[]) => {}
 };
 

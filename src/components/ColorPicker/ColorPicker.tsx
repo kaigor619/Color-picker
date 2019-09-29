@@ -1,68 +1,83 @@
 import React, { Component } from "react";
-import Picker from "../Picker/Picker";
-import PresentColorLast from "../PresentColor/PresentColorLast";
-import PresentColorOut from "../PresentColor/PresentColorOut";
-import RegulateColor from "../Regulate/RegulateColor";
-import RegulateOpacity from "../Regulate/RegulateOpacity";
-import BtnChangeType from "../BtnChangeType/BtnChangeType";
-import RgbInput from "../InputColor/RgbInput";
-import HslInput from "../InputColor/HslInput";
-import HexInput from "../InputColor/HexInput";
-import Colors from "../Colors/Colors";
+import styled from "styled-components";
+import Picker from "../Picker";
+import { PresentColorLast, PresentColorOut } from "../PresentColor";
+import { RegulateColor, RegulateOpacity } from "../Regulate";
+import BtnChangeType from "../BtnChangeType";
+import { RgbInput, HslInput, HexInput } from "../InputColor";
+import Colors from "../Colors";
+import {
+  ColorPickerDiv,
+  ColorPickerContainer,
+  ColorSettings,
+  WrapPresentColors,
+  WrapRegulateColor,
+  WrapListModelsInput,
+  ListModelsInput,
+  CopyColor,
+  ListTypeColor,
+  BtnOk,
+  BtnCancel,
+  WrapMainBtns
+} from "./styles";
 
 class ColorPicker extends Component {
   render() {
     return (
-      <div className="picker" id="picker">
+      <ColorPickerDiv
+        active={true}
+        className="kai-color-picker"
+        id="kai-color-picker"
+      >
         <Picker width={250} height={140} />
 
-        <div className="picker_container">
-          <div className="wrap_output_regulate">
-            <div className="wrap_output_color">
+        <ColorPickerContainer className="colorpicker-container">
+          <ColorSettings className="color-setting">
+            <WrapPresentColors className="wrap-presents-color">
               <PresentColorLast />
               <PresentColorOut />
-            </div>
+            </WrapPresentColors>
 
-            <div className="wrap_regulate_color">
+            <WrapRegulateColor className="wrap-regulate-color">
               <RegulateColor />
               <RegulateOpacity />
-            </div>
-          </div>
+            </WrapRegulateColor>
+          </ColorSettings>
 
-          <div className="wrap_val_all_color">
-            <div className="w_copy_input">
-              <ul className="list_type_val_color">
+          {/* <div className="wrap-models-color">
+            <WrapListModelsInput>
+              <ListModelsInput>
                 <RgbInput />
                 <HslInput />
                 <HexInput />
-              </ul>
-              <div className="w_copy_color hint--top" name-custom="Copied">
+              </ListModelsInput>
+              <CopyColor className="copy-color" name-custom="Copied">
                 <img
                   src="svg/copy.svg"
-                  className="copy_color"
-                  id="copy_color"
-                  alt="Copy model color"
+                  className="copy-color"
+                  id="copy-color"
+                  alt="Copy color"
                 />
-              </div>
-            </div>
-            <ul className="list_select_type_color">
+              </CopyColor>
+            </WrapListModelsInput>
+            <ListTypeColor className="list-type-color">
               <BtnChangeType name="hex" text="Hex" />
               <BtnChangeType name="rgb" text="Rgb" />
               <BtnChangeType name="hsl" text="Hsl" />
-            </ul>
-            <Colors />
+            </ListTypeColor>
           </div>
+          <Colors /> */}
 
-          <div className="wrap_btn_save_cancel">
-            <button className="btn_color_ok" id="btn_color_ok">
+          <WrapMainBtns>
+            <BtnOk className="btn_color_ok" id="btn_color_ok">
               Ok
-            </button>
-            <button className="btn_color_cancel" id="btn_color_cancel">
+            </BtnOk>
+            <BtnCancel className="btn_color_cancel" id="btn_color_cancel">
               Cancel
-            </button>
-          </div>
-        </div>
-      </div>
+            </BtnCancel>
+          </WrapMainBtns>
+        </ColorPickerContainer>
+      </ColorPickerDiv>
     );
   }
 }

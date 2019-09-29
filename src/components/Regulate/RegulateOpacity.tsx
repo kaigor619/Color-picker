@@ -1,7 +1,12 @@
 import React, { Component } from "react";
-import Convert from "../../options/convert";
 import { connect } from "react-redux";
 import * as Action from "../../actions";
+import {
+  WrapLineRegulate,
+  StyleRegulateOpacity,
+  RegulateCircle,
+  LinearOpacity
+} from "./styles";
 
 import RegulateTheme, { StateProps, DispatchProps } from "./RegulateTheme";
 
@@ -20,10 +25,11 @@ class RegulateOpacity extends RegulateTheme {
     let opacity: number = +(Math.floor(left / line.x) * 0.01).toFixed(2);
     this.props.add_opacity(opacity);
   }
-  getStyle(): { left: number } {
+  getStyle(): { left: string } {
     let left: number = 0;
     const { lineMove, line } = this;
     const { opacity } = this.props;
+    // debugger;
     if (lineMove) {
       left = this.state.left;
     } else {
@@ -31,27 +37,25 @@ class RegulateOpacity extends RegulateTheme {
     }
 
     const style = {
-      left
+      left: left + "px"
     };
     return style;
   }
   render() {
     return (
-      <div className="wrap_line_color opacity" ref={this.regulateLine}>
-        <div className="opacity_color line_color" id="opacity_color">
-          <div className="linear_cover"></div>
-        </div>
-        <div
-          className="picker_slider"
-          id="opacity_circle"
+      <WrapLineRegulate>
+        <StyleRegulateOpacity ref={this.regulateLine}>
+          <LinearOpacity></LinearOpacity>
+        </StyleRegulateOpacity>
+        <RegulateCircle
           onMouseDown={this.handleDown}
           onClick={this.cPos}
           onTouchStart={this.touchStart}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
-          style={this.getStyle()}
-        ></div>
-      </div>
+          {...this.getStyle()}
+        ></RegulateCircle>
+      </WrapLineRegulate>
     );
   }
 }

@@ -1,18 +1,23 @@
 import React from "react";
-import ColorPicker from "../ColorPicker/ColorPicker";
+import ColorPicker from "../ColorPicker";
 import { connect } from "react-redux";
 import * as Action from "../../actions";
 
-const App = function(options: any) {
+const App = function({ add_color }) {
   const demoClick = () => {
-    options.add_color("#a32d9587");
+    add_color("#a32d9587");
   };
+  const color = "#a32d9587";
   return (
     <div>
       <div className="picker_demonstration">
         <div className="wrap_my_swatch">
           <div className="my_swatch_opacity"></div>
-          <div className="my_swatch" onClick={demoClick}></div>
+          <div
+            className="my_swatch"
+            onClick={demoClick}
+            style={{ backgroundColor: color }}
+          ></div>
         </div>
         <input type="text" className="my_color_value" />
       </div>

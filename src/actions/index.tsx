@@ -155,33 +155,3 @@ export const change_users_colors = (
     payload: colors
   };
 };
-
-export const change_users_colors_index = (index: number) => {
-  return {
-    type: "CHANGE_USER_COLORS_INDEX",
-    payload: index
-  };
-};
-
-export const change_users_colors_edit = (edit: boolean) => {
-  return {
-    type: "CHANGE_USER_COLORS_EDIT",
-    payload: edit
-  };
-};
-
-export const change_users_colors_enable = (enable: boolean) => {
-  return {
-    type: "CHANGE_USER_COLORS_ENABLE",
-    payload: enable
-  };
-};
-
-// Изменение enable и index
-export const compo_change_colors_enable = (
-  enable: boolean,
-  index: number
-) => dispatch => {
-  dispatch(change_users_colors_enable(enable));
-  dispatch(change_users_colors_index(index));
-};

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { ThemeStore } from "../../interfaces";
 import * as Action from "../../actions";
 import { connect } from "react-redux";
 import Convert from "../../options/convert";
 import Model from "../../options/modelsColor";
 
+import { BlockPicker, BlockCircle } from "./styles";
 // Интерфейсы
 interface StateProps {
   H: number;
@@ -21,17 +21,17 @@ interface OwnProps {
 }
 
 interface IStyleBlock {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   background: string;
 }
 
 interface IStyleCircle {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   backgroundColor: string;
-  left: number;
-  top: number;
+  left: string;
+  top: string;
 }
 type Props = StateProps & OwnProps & DispatchProps;
 
@@ -113,6 +113,7 @@ class Picker extends Component<Props> {
         this.circleMove = false;
       };
     };
+    console.log("Picker");
 
     block.addEventListener("touchstart", this.touchMove, false);
     block.addEventListener("touchend", this.touchMove, false);
@@ -127,8 +128,8 @@ class Picker extends Component<Props> {
     ${rgb} , rgb(255, 255, 255))`;
 
     const style = {
-      width,
-      height,
+      width: width + "px",
+      height: height + "px",
       background
     };
     return style;
@@ -144,14 +145,14 @@ class Picker extends Component<Props> {
     } else {
       const { pxX, pxY } = this.block;
       const { S, V } = this.props;
-      left = pxX * S + "px";
-      top = pxY * Math.abs(V - 100) + "px";
+      left = pxX * S;
+      top = pxY * Math.abs(V - 100);
     }
     const style = {
-      width,
-      height,
-      left,
-      top,
+      width: width + "px",
+      height: height + "px",
+      left: left + "px",
+      top: top + "px",
       backgroundColor
     };
     return style;
@@ -159,18 +160,16 @@ class Picker extends Component<Props> {
 
   render() {
     return (
-      <div
+      <BlockPicker
         ref={this.blockRef}
-        className="block_picker"
-        id="block_picker"
-        style={this.getStyleBlock()}
+        className="block-picker"
+        {...this.getStyleBlock()}
       >
-        <div
-          className="picker_circle"
-          id="picker_circle"
+        <BlockCircle
+          className="picker-circle"
           style={this.getStyleCircle()}
-        ></div>
-      </div>
+        ></BlockCircle>
+      </BlockPicker>
     );
   }
 }

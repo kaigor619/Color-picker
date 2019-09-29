@@ -44,53 +44,12 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       let type = state.type;
       return { ...state, models: { ...state.models, [type]: action.payload } };
     }
-    case "CHANGE_USER_COLORS_INDEX": {
-      let obj = {
-        ...state,
-        userColors: {
-          ...state.userColors,
-          description: {
-            ...state.userColors.description,
-            index: action.payload
-          }
-        }
-      };
-
-      return obj;
-    }
-
-    case "CHANGE_USER_COLORS_EDIT": {
-      return {
-        ...state,
-        userColors: {
-          ...state.userColors,
-          description: {
-            ...state.userColors.description,
-            edit: action.payload
-          }
-        }
-      };
-    }
-
-    case "CHANGE_USER_COLORS_ENABLE":
-      return {
-        ...state,
-        userColors: {
-          ...state.userColors,
-          description: {
-            ...state.userColors.description,
-            enable: action.payload
-          }
-        }
-      };
-
     case "CHANGE_USER_COLORS": {
       return {
         ...state,
-        userColors: { ...state.userColors, colors: action.payload }
+        colors: action.payload
       };
     }
-
     case "CHANGE_H":
       return {
         ...state,

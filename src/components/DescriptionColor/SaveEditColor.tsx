@@ -1,27 +1,15 @@
 import React from "react";
+import { StyleWrapWarning, BtnYes, BtnNo, StyleWarningLabel } from "./styles";
 
-const SaveEditColor = ({ enable }) => {
-  if (!enable) return null;
+const SaveEditColor = ({ onCancelEditColor, onSaveEditColor }) => {
   return (
-    <div className="w_descr_btns_save" id="w_descr_btns_save">
-      <div className="descr_btns_save">
-        <p className="warning_lab_c_color">Save changes?</p>
-        <div>
-          <button
-            className="descr_save_c_color descr_c_color"
-            id="descr_save_c_color"
-          >
-            Save
-          </button>
-          <button
-            className="descr_cancel_c_color descr_c_color"
-            id="descr_cancel_c_color"
-          >
-            Cancel
-          </button>
-        </div>
+    <StyleWrapWarning>
+      <StyleWarningLabel>Save changes?</StyleWarningLabel>
+      <div>
+        <BtnYes onClick={onSaveEditColor}>Save</BtnYes>
+        <BtnNo onClick={onCancelEditColor}>Cancel</BtnNo>
       </div>
-    </div>
+    </StyleWrapWarning>
   );
 };
 

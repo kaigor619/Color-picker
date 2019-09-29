@@ -52,9 +52,16 @@ const SwatchColor = styled.div`
   }
 `;
 
+const OpacitySwatch = styled.div`
+  background: url("../svg/opacity.svg") repeat;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+`;
+
 const Swatch = ({ color, name, handleClick, index }) => {
   return (
-    <div className="opacity_client_color">
+    <OpacitySwatch>
       <SwatchColor
         color={color}
         name={name}
@@ -62,7 +69,7 @@ const Swatch = ({ color, name, handleClick, index }) => {
           handleClick(index);
         }}
       />
-    </div>
+    </OpacitySwatch>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Convert from "../../options/convert";
 import { connect } from "react-redux";
 import * as Action from "../../actions";
 import RegulateTheme, { StateProps, DispatchProps } from "./RegulateTheme";
+import { WrapLineRegulate, StyleRegulateColor, RegulateCircle } from "./styles";
 
 class RegulateColor extends RegulateTheme {
   state = {
@@ -19,7 +19,7 @@ class RegulateColor extends RegulateTheme {
     this.props.add_color([h, null, null]);
   }
 
-  getStyle(): { left: number } {
+  getStyle(): { left: string } {
     let left;
 
     const { lineMove, line } = this;
@@ -32,30 +32,24 @@ class RegulateColor extends RegulateTheme {
       left = Math.abs((H - 360) * (line.w / 360));
     }
     const style = {
-      left
+      left: left + "px"
     };
     return style;
   }
 
   render() {
     return (
-      <div className="wrap_line_color line">
-        <div
-          id="ss_line"
-          className="hue_color line_color"
-          ref={this.regulateLine}
-        ></div>
-        <div
-          className="picker_slider"
-          id="line_circle"
+      <WrapLineRegulate>
+        <StyleRegulateColor ref={this.regulateLine}></StyleRegulateColor>
+        <RegulateCircle
           onMouseDown={this.handleDown}
           onClick={this.cPos}
           onTouchStart={this.touchStart}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
-          style={this.getStyle()}
-        ></div>
-      </div>
+          {...this.getStyle()}
+        ></RegulateCircle>
+      </WrapLineRegulate>
     );
   }
 }

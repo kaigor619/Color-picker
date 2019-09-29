@@ -4,18 +4,18 @@ import { IuserColors } from "../../interfaces";
 import { connect } from "react-redux";
 import Model from "../../options/modelsColor";
 import * as Action from "../../actions";
-import DescriptionColor from "../DescriptionColor/DescriptionColor";
-
+import DescriptionColor from "../DescriptionColor";
+import { Icolors } from "../../interfaces";
+import { StyleCustomColors, StyleAddColor } from "./styles";
 interface StateProps {
-  userColors: IuserColors;
-  model: number[] | any;
+  colors: Icolors;
   type: string;
+  model: string;
   opacity: number;
 }
 
 interface DispatchProps {
-  change_type_index: (enable: boolean, index: number) => void;
-  change_colors: (colors: { name: string; color: string }[]) => void;
+  change_colors: (colors: Icolors) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -25,30 +25,78 @@ class Colors extends Component<Props> {
     super(props);
     this.handleAddSwatch = this.handleAddSwatch.bind(this);
     this.handleClick = this.handleClick.bind(this);
+
+    this.changeSwatch = this.changeSwatch.bind(this);
+    this.deleteSwatch = this.deleteSwatch.bind(this);
+    this.addSwatch = this.addSwatch.bind(this);
+
+    this.changeEnable = this.changeEnable.bind(this);
   }
+
+  state = {
+    name: "color 1",
+    color: "#000",
+    index: 0,
+    save: false,
+    edit: false,
+    remove: false,
+    enable: false
+  };
+
   counter = 1;
   labelCounter = "Color";
 
+  changeSwatch(obj) {
+    let { index, color, name } = obj;
+    let colors = this.props.colors.slice();
+    colors[index] = { name, color };
+
+    this.props.change_colors(colors);
+  }
+  deleteSwatch(index) {
+    let colors = this.props.colors.slice();
+    colors.splice(index, 1);
+    this.props.change_colors(colors);
+  }
+  addSwatch(obj) {
+    let { color, name } = obj;
+    let colors = this.props.colors.slice();
+    colors.push({ color, name });
+
+    this.props.change_colors(colors);
+  }
 
   handleAddSwatch(e) {
-    const { change_colors, model, type, opacity } = this.props;
+    const { colors, model, type, opacity } = this.props;
     let color = Model[type].getString(model, opacity);
     this.counter += 1;
     let name = `${this.labelCounter} ${this.counter}`;
-    const colors = this.props.userColors.colors.slice();
-    colors.push({ name, color });
-    this.props.change_colors(colors);
+    this.setState({
+      name,
+      color,
+      save: true,
+      edit: false,
+      remove: false,
+      enable: true
+    });
+  }
+  changeEnable(enable) {
+    this.setState({ enable });
   }
   handleClick(index: number) {
-    // this.props.change_type_index(true, index);
-    
+    const edit = false;
+    const save = false;
+    const remove = false;
+    const enable = true;
+    let { color, name } = this.props.colors[index];
+    this.setState({ name, color, edit, save, remove, enable, index });
   }
   componentDidMount() {
-    const { colors } = this.props.userColors;
+    const { colors } = this.props;
     this.counter = colors.length;
   }
   render() {
-    const { colors } = this.props.userColors;
+    const { colors } = this.props;
     let swatches = colors.map(({ name, color }, index) => {
       return (
         <Swatch
@@ -60,27 +108,39 @@ class Colors extends Component<Props> {
         />
       );
     });
-    
+
+    let descriptionComponent;
+    if (this.state.enable)
+      descriptionComponent = (
+        <DescriptionColor
+          {...this.state}
+          changeSwatch={this.changeSwatch}
+          deleteSwatch={this.deleteSwatch}
+          addSwatch={this.addSwatch}
+          changeEnable={this.changeEnable}
+        />
+      );
+
     return (
       <React.Fragment>
-        <div className="custom_colors">
+        <StyleCustomColors className="custom-colors">
           {swatches}
-          <div
+          <StyleAddColor
             onClick={this.handleAddSwatch}
             className="add_new_color"
             id="add_new_color"
           >
             <img src="./svg/plus-symbol.svg" alt="" />
-          </div>
-        </div>
-        <DescriptionColor />
+          </StyleAddColor>
+        </StyleCustomColors>
+        {descriptionComponent}
       </React.Fragment>
     );
   }
 }
-const mapStateToProps = ({ userColors, models, type, opacity }): StateProps => {
+const mapStateToProps = ({ colors, models, type, opacity }): StateProps => {
   return {
-    userColors,
+    colors,
     model: models[type],
     type,
     opacity
@@ -88,7 +148,6 @@ const mapStateToProps = ({ userColors, models, type, opacity }): StateProps => {
 };
 
 const mapDispatchToProps: DispatchProps = {
-  change_type_index: Action.compo_change_colors_enable,
   change_colors: Action.change_users_colors
 };
 

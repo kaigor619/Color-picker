@@ -31,5 +31,5 @@ export interface ThemeStore {
   prevColor: { rgbMain: number[]; opacity: number };
   type: string;
   models: Models;
-  userColors: IuserColors;
+  colors: Icolors;
 }
