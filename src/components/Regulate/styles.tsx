@@ -58,6 +58,5 @@ export const RegulateCircle = styled.div`
   transform: translateY(-50%) translateX(-50%);
   position: absolute;
   top: 50%;
-  left: ${({ left }) => left};
   cursor: pointer;
 `;

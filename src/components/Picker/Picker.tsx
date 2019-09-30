@@ -82,8 +82,8 @@ class Picker extends Component<Props> {
     const S = Math.ceil(left / pxX);
     const V = Math.ceil(Math.abs(top / pxY - 100));
 
-    this.setState({ top, left });
     this.props.add_color([null, S, V]);
+    this.setState({ top, left });
   }
 
   touchMove(e: any) {
@@ -104,20 +104,42 @@ class Picker extends Component<Props> {
     this.block.top = top;
 
     block.onclick = this.cPos;
-    block.onmousedown = () => {
-      this.circleMove = true;
-      document.onmousemove = this.cPos;
+    // block.onmousedown = e => {
+    //   this.circleMove = true;
+    //   // this.cPos(e);
+    //   document.onmousemove = this.cPos;
 
-      document.onmouseup = () => {
-        document.onmousemove = null;
-        this.circleMove = false;
-      };
-    };
-    console.log("Picker");
+    //   document.onmouseup = () => {
+    //     document.onmousemove = null;
+    //     this.circleMove = false;
+    //   };
+    // };
 
-    block.addEventListener("touchstart", this.touchMove, false);
-    block.addEventListener("touchend", this.touchMove, false);
-    block.addEventListener("touchmove", this.touchMove, false);
+    // block.addEventListener("touchstart", this.touchMove, false);
+    // block.addEventListener("touchend", this.touchMove, false);
+    // block.addEventListener("touchmove", this.touchMove, false);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(this.state, nextState);
+
+    const boolState =
+      nextState.top !== this.state.top || nextState.left !== this.state.left;
+
+    if (boolState) return true;
+    if (this.circleMove == false) {
+      if (nextProps.rgbMain !== this.props.rgbMain) return true;
+    }
+    // else if (this.circleMove == true) {
+    //   if (
+    //     nextProps.rgbMain == this.props.rgbMain ||
+    //     nextProps.S == this.props.S ||
+    //     nextProps.V == this.props.V
+    //   )
+    //     return false;
+    // }
+
+    return false;
   }
 
   getStyleBlock(): IStyleBlock {
@@ -159,6 +181,7 @@ class Picker extends Component<Props> {
   }
 
   render() {
+    console.log("pickerrender");
     return (
       <BlockPicker
         ref={this.blockRef}
