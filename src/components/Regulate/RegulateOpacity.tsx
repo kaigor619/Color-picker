@@ -35,11 +35,6 @@ class RegulateOpacity extends Component<Props> {
     left: 0,
     x: 0
   };
-  state = {
-    left: 0
-  };
-
-  lineMove = false;
 
   componentDidMount() {
     let elem = this.regulateLine.current;
@@ -48,19 +43,15 @@ class RegulateOpacity extends Component<Props> {
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
 
-    this.setState({ left: line.w });
-
     this.hookDidMount();
 
     // Events
     elem.onclick = this.cPos;
     elem.onmousedown = () => {
-      this.lineMove = true;
       document.onmousemove = this.cPos;
 
       document.onmouseup = () => {
         document.onmousemove = null;
-        this.lineMove = false;
       };
     };
 
@@ -70,11 +61,9 @@ class RegulateOpacity extends Component<Props> {
   }
 
   touchStart(e: any) {
-    this.lineMove = true;
     this.touchMove(e);
   }
   touchEnd(e: any) {
-    this.lineMove = false;
     this.touchMove(e);
   }
 
@@ -90,12 +79,10 @@ class RegulateOpacity extends Component<Props> {
   }
 
   handleDown(e: any) {
-    this.lineMove = true;
     document.onmousemove = this.cPos;
 
     document.onmouseup = () => {
       document.onmousemove = null;
-      this.lineMove = false;
     };
   }
 
@@ -105,9 +92,11 @@ class RegulateOpacity extends Component<Props> {
     left = c.clientX - line.left;
     a = left < 0 ? 0 : left;
     a = a > line.w ? line.w : a;
-    this.setState({ left: a });
 
-    this.hookCPos();
+    let opacity: number = +(Math.floor(a / line.x) * 0.01).toFixed(2);
+    this.props.add_opacity(opacity);
+
+    // this.hookCPos();
   }
 
   hookDidMount() {
@@ -115,22 +104,12 @@ class RegulateOpacity extends Component<Props> {
     line.x = line.w / 100;
   }
 
-  hookCPos() {
-    const { left } = this.state;
-    const { line } = this;
-    let opacity: number = +(Math.floor(left / line.x) * 0.01).toFixed(2);
-    this.props.add_opacity(opacity);
-  }
   getStyle(): { left: string } {
     let left: number = 0;
-    const { lineMove, line } = this;
+    const { line } = this;
     const { opacity } = this.props;
-    // debugger;
-    if (lineMove) {
-      left = this.state.left;
-    } else {
-      left = (opacity * line.x) / 0.01;
-    }
+
+    left = (opacity * line.x) / 0.01;
 
     const style = {
       left: left + "px"
@@ -149,7 +128,7 @@ class RegulateOpacity extends Component<Props> {
           onTouchStart={this.touchStart}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
-          {...this.getStyle()}
+          style={this.getStyle()}
         ></RegulateCircle>
       </WrapLineRegulate>
     );

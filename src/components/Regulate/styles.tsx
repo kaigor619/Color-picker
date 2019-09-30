@@ -48,6 +48,7 @@ export const LinearOpacity = styled.div`
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, #000);
+  user-select: none;
 `;
 
 export const RegulateCircle = styled.div`

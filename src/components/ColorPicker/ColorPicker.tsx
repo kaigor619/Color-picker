@@ -44,7 +44,7 @@ class ColorPicker extends Component {
             </WrapRegulateColor>
           </ColorSettings>
 
-          {/* <div className="wrap-models-color">
+          <div className="wrap-models-color">
             <WrapListModelsInput>
               <ListModelsInput>
                 <RgbInput />
@@ -61,12 +61,12 @@ class ColorPicker extends Component {
               </CopyColor>
             </WrapListModelsInput>
             <ListTypeColor className="list-type-color">
-              <BtnChangeType name="hex" text="Hex" />
+              {/* <BtnChangeType name="hex" text="Hex" />
               <BtnChangeType name="rgb" text="Rgb" />
-              <BtnChangeType name="hsl" text="Hsl" />
+              <BtnChangeType name="hsl" text="Hsl" /> */}
             </ListTypeColor>
           </div>
-          <Colors /> */}
+          {/* <Colors /> */}
 
           <WrapMainBtns>
             <BtnOk className="btn_color_ok" id="btn_color_ok">

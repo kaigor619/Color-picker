@@ -53,6 +53,7 @@ class RgbInput extends Component<Props> {
         />
       );
     });
+    console.log("RGB input");
     return (
       <li>
         <WrapColorInputs>{inputs}</WrapColorInputs>

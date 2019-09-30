@@ -31,14 +31,9 @@ class RegulateColor extends Component<Props> {
     left: 0,
     x: 0
   };
-  state = {
-    left: 0
-  };
-
-  lineMove = false;
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState !== this.state) return true;
+    if (nextProps.H !== this.props.H) return true;
     else return false;
   }
 
@@ -49,18 +44,14 @@ class RegulateColor extends Component<Props> {
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
 
-    this.setState({ left: line.w });
-
     // Events
     // elem.onclick = this.cPos;
     elem.onmousedown = e => {
-      this.lineMove = true;
       this.cPos(e);
       document.onmousemove = this.cPos;
 
       document.onmouseup = () => {
         document.onmousemove = null;
-        this.lineMove = false;
       };
     };
 
@@ -70,11 +61,9 @@ class RegulateColor extends Component<Props> {
   }
 
   touchStart(e: any) {
-    this.lineMove = true;
     this.touchMove(e);
   }
   touchEnd(e: any) {
-    this.lineMove = false;
     this.touchMove(e);
   }
 
@@ -90,53 +79,45 @@ class RegulateColor extends Component<Props> {
   }
 
   handleDown(e: any) {
-    this.lineMove = true;
     document.onmousemove = this.cPos;
 
     document.onmouseup = () => {
       document.onmousemove = null;
-      this.lineMove = false;
     };
   }
 
   cPos(c: any) {
     const { line } = this;
     let left, a;
-    left = c.clientX - line.left;
+    left = Number(c.clientX - line.left).toFixed(2);
     a = left < 0 ? 0 : left;
     a = a > line.w ? line.w : a;
 
+    // debugger;
     let h = Math.abs(Math.round(a / (line.w / 360)) - 360);
-    h = h == 360 ? 0 : h;
-
     this.props.add_color([h, null, null]);
-    this.setState({ left: a });
-
-    // this.hookCPos();
   }
 
   hookCPos() {
-    const { left } = this.state;
-    const { line } = this;
-
-    let h = Math.abs(Math.round(left / (line.w / 360)) - 360);
-    h = h == 360 ? 0 : h;
-
-    this.props.add_color([h, null, null]);
+    // const { left } = this.state;
+    // const { line } = this;
+    // let h = Math.abs(Math.round(left / (line.w / 360)) - 360);
+    // h = h == 360 ? 0 : h;
+    // this.props.add_color([h, null, null]);
   }
 
   getStyle(): { left: string } {
     let left;
 
-    const { lineMove, line } = this;
-    if (lineMove) {
-      left = this.state.left;
-    } else {
-      left = 10;
+    const { line } = this;
+    left = 0;
 
-      const { H } = this.props;
-      left = Math.abs((H - 360) * (line.w / 360));
-    }
+    const { H } = this.props;
+    left = Math.abs((H - 360) * (line.w / 360));
+
+    left = left < 0 ? 0 : left;
+    left = left > line.w ? line.w : left;
+
     const style = {
       left: left + "px"
     };
@@ -144,7 +125,6 @@ class RegulateColor extends Component<Props> {
   }
 
   render() {
-    // console.log("render");
     return (
       <WrapLineRegulate>
         <StyleRegulateColor ref={this.regulateLine}></StyleRegulateColor>

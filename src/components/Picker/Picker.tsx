@@ -37,10 +37,6 @@ type Props = StateProps & OwnProps & DispatchProps;
 
 // Компонент
 class Picker extends Component<Props> {
-  state = {
-    left: 0,
-    top: 0
-  };
   circle = {
     width: 12,
     height: 12
@@ -56,7 +52,6 @@ class Picker extends Component<Props> {
   };
 
   blockRef: any = React.createRef();
-  circleMove = false;
 
   constructor(props: Props) {
     super(props);
@@ -83,7 +78,6 @@ class Picker extends Component<Props> {
     const V = Math.ceil(Math.abs(top / pxY - 100));
 
     this.props.add_color([null, S, V]);
-    this.setState({ top, left });
   }
 
   touchMove(e: any) {
@@ -103,41 +97,25 @@ class Picker extends Component<Props> {
     this.block.left = left;
     this.block.top = top;
 
-    block.onclick = this.cPos;
-    // block.onmousedown = e => {
-    //   this.circleMove = true;
-    //   // this.cPos(e);
-    //   document.onmousemove = this.cPos;
+    // block.onclick = this.cPos;
+    block.onmousedown = e => {
+      this.cPos(e);
+      document.onmousemove = this.cPos;
 
-    //   document.onmouseup = () => {
-    //     document.onmousemove = null;
-    //     this.circleMove = false;
-    //   };
-    // };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+      };
+    };
 
-    // block.addEventListener("touchstart", this.touchMove, false);
-    // block.addEventListener("touchend", this.touchMove, false);
-    // block.addEventListener("touchmove", this.touchMove, false);
+    block.addEventListener("touchstart", this.touchMove, false);
+    block.addEventListener("touchend", this.touchMove, false);
+    block.addEventListener("touchmove", this.touchMove, false);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.state, nextState);
+    const boolProps = nextProps.rgbMain !== this.props.rgbMain;
 
-    const boolState =
-      nextState.top !== this.state.top || nextState.left !== this.state.left;
-
-    if (boolState) return true;
-    if (this.circleMove == false) {
-      if (nextProps.rgbMain !== this.props.rgbMain) return true;
-    }
-    // else if (this.circleMove == true) {
-    //   if (
-    //     nextProps.rgbMain == this.props.rgbMain ||
-    //     nextProps.S == this.props.S ||
-    //     nextProps.V == this.props.V
-    //   )
-    //     return false;
-    // }
+    if (boolProps) return true;
 
     return false;
   }
@@ -157,19 +135,26 @@ class Picker extends Component<Props> {
     return style;
   }
 
-  getStyleCircle(): IStyleCircle {
+  getStyleCircle() {
     const { width, height } = this.circle;
+    const { width: W, height: H } = this.block;
     const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
     let left, top;
-    if (this.circleMove) {
-      left = this.state.left;
-      top = this.state.top;
-    } else {
-      const { pxX, pxY } = this.block;
-      const { S, V } = this.props;
-      left = pxX * S;
-      top = pxY * Math.abs(V - 100);
-    }
+
+    const { pxX, pxY } = this.block;
+    const { S, V } = this.props;
+    left = pxX * S;
+    top = pxY * Math.abs(V - 100);
+
+    // Проверка left
+    left = left < 0 ? 0 : left;
+
+    left = left > W ? W : left;
+    // Проверка top
+
+    top = top > H ? H : top;
+    top = top < 0 ? 0 : top;
+
     const style = {
       width: width + "px",
       height: height + "px",
@@ -177,16 +162,16 @@ class Picker extends Component<Props> {
       top: top + "px",
       backgroundColor
     };
+
     return style;
   }
 
   render() {
-    console.log("pickerrender");
     return (
       <BlockPicker
         ref={this.blockRef}
         className="block-picker"
-        {...this.getStyleBlock()}
+        style={this.getStyleBlock()}
       >
         <BlockCircle
           className="picker-circle"
