@@ -21,7 +21,16 @@ class InputCell extends Component<Props> {
   };
   componentDidMount() {
     const { value } = this.props;
+
     this.setState({ value });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const boolProps = nextProps.rgbMain !== this.props.rgbMain;
+
+    if (boolProps) return true;
+
+    return false;
   }
 
   componentDidUpdate(prevProps) {

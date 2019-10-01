@@ -13,6 +13,5 @@ export const BlockCircle = styled.div`
   border-radius: 50%;
   box-shadow: 0 0 5px #7f7f7f;
   transform: translate(-50%, -50%);
-  cursor: pointer;
   user-select: none;
 `;

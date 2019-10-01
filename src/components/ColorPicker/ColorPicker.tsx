@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import Picker from "../Picker";
 import { PresentColorLast, PresentColorOut } from "../PresentColor";
 import { RegulateColor, RegulateOpacity } from "../Regulate";
@@ -48,8 +47,8 @@ class ColorPicker extends Component {
             <WrapListModelsInput>
               <ListModelsInput>
                 <RgbInput />
-                <HslInput />
-                <HexInput />
+                {/* <HslInput /> */}
+                {/* <HexInput /> */}
               </ListModelsInput>
               <CopyColor className="copy-color" name-custom="Copied">
                 <img

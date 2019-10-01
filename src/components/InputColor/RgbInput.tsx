@@ -41,22 +41,29 @@ class RgbInput extends Component<Props> {
     let masAllData = model.slice();
     masAllData.push(opacity);
 
-    let inputs = masAllData.map((item, index) => {
-      let value = String(item);
-      return (
-        <InputCell
-          value={value}
-          key={index}
-          index={index}
-          maxLength={4}
-          handleChange={this.handleChange}
-        />
-      );
-    });
-    console.log("RGB input");
     return (
       <li>
-        <WrapColorInputs>{inputs}</WrapColorInputs>
+        <WrapColorInputs>
+          {/* {masAllData.map((item, index) => {
+            let value = String(item);
+            return (
+              <InputCell
+                value={value}
+                key={index}
+                index={index}
+                maxLength={4}
+                handleChange={this.handleChange}
+              />
+            );
+          })} */}
+          <InputCell
+            value={"255"}
+            key={"fdfd"}
+            index={0}
+            maxLength={4}
+            handleChange={this.handleChange}
+          />
+        </WrapColorInputs>
       </li>
     );
   }
