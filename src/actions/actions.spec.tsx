@@ -65,18 +65,4 @@ describe("Тестирование Actions", () => {
 
     expect(store.getActions()).toEqual(expectedActions);
   });
-  it("Изменение enable и index", () => {
-    const expectedActions = [
-      { type: "CHANGE_USER_COLORS_ENABLE", payload: true },
-      { type: "CHANGE_USER_COLORS_INDEX", payload: 2 }
-    ];
-
-    const state = {
-      ...InitialState
-    };
-    const store = mockStore(state);
-    store.dispatch(Action.compo_change_colors_enable(true, 2));
-
-    expect(store.getActions()).toEqual(expectedActions);
-  });
 });

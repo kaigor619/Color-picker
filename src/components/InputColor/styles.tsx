@@ -10,7 +10,7 @@ export const WrapColorInputs = styled.div`
 
 export const InputColor = styled.input`
   display: block;
-  max-width: 40px;
+  width: ${({ hex }) => (hex ? "100%" : "40px")};
   border-radius: 3px;
   border: none;
   outline: none;

@@ -47,8 +47,8 @@ class ColorPicker extends Component {
             <WrapListModelsInput>
               <ListModelsInput>
                 <RgbInput />
-                {/* <HslInput /> */}
-                {/* <HexInput /> */}
+                <HslInput />
+                <HexInput />
               </ListModelsInput>
               <CopyColor className="copy-color" name-custom="Copied">
                 <img
@@ -60,9 +60,9 @@ class ColorPicker extends Component {
               </CopyColor>
             </WrapListModelsInput>
             <ListTypeColor className="list-type-color">
-              {/* <BtnChangeType name="hex" text="Hex" />
+              <BtnChangeType name="hex" text="Hex" />
               <BtnChangeType name="rgb" text="Rgb" />
-              <BtnChangeType name="hsl" text="Hsl" /> */}
+              <BtnChangeType name="hsl" text="Hsl" />
             </ListTypeColor>
           </div>
           {/* <Colors /> */}

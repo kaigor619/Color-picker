@@ -155,3 +155,31 @@ export const change_users_colors = (
     payload: colors
   };
 };
+
+// Изменение model и затем HSV, rgbMain
+export const compo_change_model_for_index = (
+  value: string | number,
+  index: number
+) => (dispatch: any, getStore: () => ThemeStore) => {
+  const { type, models } = getStore();
+  let model = models[type];
+  let val;
+
+  if (type == "hex") {
+    val = model;
+  } else {
+    val = model.slice();
+    val[index] = +value;
+  }
+  // console.log(model);
+  let rgb = Model[type][type + "_rgb"](model);
+  let hsv = Convert.rgb_hsv(rgb);
+  dispatch(change_HSV(hsv));
+  dispatch(change_rgbMain(rgb));
+
+  if (type == "hex") {
+    dispatch(change_model(val));
+  } else {
+    dispatch(change_model([...val]));
+  }
+};

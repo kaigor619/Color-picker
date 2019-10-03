@@ -12,7 +12,7 @@ export const InitialState: ThemeStore = {
     opacity: 0.5
   },
   models: {
-    hex: "#ffffff",
+    hex: "#fefefe",
     hsl: [0, 0, 100],
     rgb: [255, 255, 255]
   },
