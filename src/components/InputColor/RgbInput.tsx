@@ -12,16 +12,6 @@ type Props = StateProps;
 class RgbInput extends Component<Props> {
   type = "rgb";
 
-  // handleChange(text: string, index: number) {
-  //   let modelCopy = this.props.model.slice();
-  //   if (index <= 2) {
-  //     modelCopy[index] = +text;
-  //     this.props.changeModel(modelCopy);
-  //   } else {
-  //     this.props.changeOpacity(+text);
-  //   }
-  // }
-
   render() {
     const { type } = this.props;
     const { rgb } = InitialState.models;

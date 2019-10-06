@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as Action from "../../actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as Action from '../../actions';
 import {
   WrapLineRegulate,
   StyleRegulateOpacity,
   RegulateCircle,
-  LinearOpacity
-} from "./styles";
+  LinearOpacity,
+} from './styles';
 
 export interface StateProps {
   opacity: number;
@@ -33,7 +33,7 @@ class RegulateOpacity extends Component<Props> {
     w: 0,
     h: 0,
     left: 0,
-    x: 0
+    x: 0,
   };
 
   componentDidMount() {
@@ -55,9 +55,9 @@ class RegulateOpacity extends Component<Props> {
       };
     };
 
-    elem.addEventListener("touchstart", this.touchStart, false);
-    elem.addEventListener("touchend", this.touchEnd, false);
-    elem.addEventListener("touchmove", this.touchMove, false);
+    elem.addEventListener('touchstart', this.touchStart, false);
+    elem.addEventListener('touchend', this.touchEnd, false);
+    elem.addEventListener('touchmove', this.touchMove, false);
   }
 
   touchStart(e: any) {
@@ -72,7 +72,7 @@ class RegulateOpacity extends Component<Props> {
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
         clientX: touches[i].pageX,
-        clientY: touches[i].pageY
+        clientY: touches[i].pageY,
       };
       this.cPos(newEvent);
     }
@@ -112,7 +112,7 @@ class RegulateOpacity extends Component<Props> {
     left = (opacity * line.x) / 0.01;
 
     const style = {
-      left: left + "px"
+      left: left + 'px',
     };
     return style;
   }
@@ -137,7 +137,7 @@ class RegulateOpacity extends Component<Props> {
 
 const mapStateToProps = ({ opacity }: any) => {
   return {
-    opacity
+    opacity,
   };
 };
 
@@ -145,11 +145,11 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     add_opacity: (opacity: number) => {
       dispatch(Action.compo_change_opacity(opacity));
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(RegulateOpacity);

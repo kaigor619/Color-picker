@@ -1,7 +1,8 @@
-import React, { useState, Component } from "react";
-import { InputColor, HexInput } from "./styles";
-import { connect } from "react-redux";
-import * as Action from "../../actions";
+import React, { Component } from 'react';
+import { InputColor } from './styles';
+import { connect } from 'react-redux';
+import * as Action from '../../actions';
+import { nextTick } from 'q';
 
 interface StateProps {
   model: number[] | string[];
@@ -27,95 +28,80 @@ class InputCell extends Component<Props> {
     super(props);
     this.inputChange = this.inputChange.bind(this);
   }
-  label = "";
+  state = {
+    label: '',
+  };
   componentWillMount() {
     const { opacityBool, hexBool, opacity, model, index } = this.props;
     let value;
     if (opacityBool) {
-      value = String(opacity);
+      value = opacity;
     } else if (hexBool) value = model;
-    else if (!hexBool) value = model[index];
+    else if (!hexBool) value = String(model[index]);
 
-    this.label = value;
+    this.setState({ label: value });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const { opacityBool, hexBool, opacity, model, index } = this.props;
+    let bool = false;
+    let label = '';
     if (opacityBool) {
       if (nextProps.opacity !== opacity) {
-        this.label = String(nextProps.opacity);
-        return true;
+        label = String(nextProps.opacity);
       }
     } else if (!hexBool) {
+      // debugger;
       if (nextProps.model[index] !== model[index]) {
-        this.label = String(nextProps.model[index]);
-        // console.log("should" + nextProps.model[index]);
-        return true;
+        label = String(nextProps.model[index]);
       }
     } else if (hexBool) {
       if (nextProps.model !== model) {
-        this.label = String(nextProps.model);
-        return true;
+        label = String(nextProps.model);
       }
     }
+    if (nextState.label !== this.state.label) {
+      label = String(nextState.label);
+      bool = true;
+    }
 
-    return false;
+    if (label !== '') {
+      this.setState({ label });
+    }
+
+    return bool;
   }
-  // componentWillUpdate(prevProps) {
-  //   const { opacityBool, hexBool, opacity, model, index } = this.props;
-  //   if (opacityBool) {
-  //     if (prevProps.opacity !== opacity) this.label = String(opacity);
-  //   } else if (!hexBool) {
-  //     if (prevProps.model[index] !== model[index])
-  //       this.label = String(model[index]);
-  //   } else if (hexBool) {
-  //     if (prevProps.model !== model) this.label = String(model);
-  //   }
-  //   console.log(this.label);
-  // }
 
   inputChange(e) {
     const { hexBool, index, model, opacityBool } = this.props;
-    let value;
-    if (hexBool) value = model;
-    else value = model[index];
+    let value,
+      label = '';
+
     let text: string = e.target.value;
     if (!hexBool) {
-      text = text.replace(/[^\d.-]/g, "");
+      text = text.replace(/[^\d.-]/g, '');
     }
-    this.label = text;
-    console.log(this.label);
-    // if (text.indexOf(".") > -1) {
-    //   text += "5";
-    //   console.log(text);
-    // }
-    if (text !== value) {
+    label = text;
+    if (text !== this.state.label) {
       if (opacityBool) {
         this.props.changeOpacity(+text);
       } else {
-        // this.props.changeModel(text, index);
+        this.props.changeModel(text, index);
       }
+      this.setState({ label });
     }
-    // }
   }
 
   render() {
-    console.log("render " + this.label);
-    let { label } = this;
+    let { label } = this.state;
     let { maxLength, model, index, opacityBool, hexBool } = this.props;
-    let value;
-    if (opacityBool) {
-      value = this.props.opacity;
-    } else if (hexBool) {
-      value = label;
-    } else value = label;
 
     let options = {
-      type: "text",
+      type: 'text',
       maxLength: maxLength,
-      value: String(value),
+      value: String(label),
       onChange: this.inputChange,
-      hex: hexBool
+      hex: hexBool,
     };
 
     let component = <InputColor {...options} />;
@@ -127,13 +113,13 @@ const mapStateToProps = ({ type, models, opacity }: any): StateProps => {
   return {
     type,
     model: models[type],
-    opacity
+    opacity,
   };
 };
 
 const mapDispatchToProps: DispatchProps = {
   changeModel: Action.compo_change_model_for_index,
-  changeOpacity: Action.change_opacity
+  changeOpacity: Action.change_opacity,
 };
 
 // changeOpacity: (opacity: number) => {
@@ -142,5 +128,5 @@ const mapDispatchToProps: DispatchProps = {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(InputCell);

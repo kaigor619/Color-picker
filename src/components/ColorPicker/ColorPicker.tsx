@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import Picker from "../Picker";
-import { PresentColorLast, PresentColorOut } from "../PresentColor";
-import { RegulateColor, RegulateOpacity } from "../Regulate";
-import BtnChangeType from "../BtnChangeType";
-import { RgbInput, HslInput, HexInput } from "../InputColor";
-import Colors from "../Colors";
+import React, { Component } from 'react';
+import Picker from '../Picker';
+import { PresentColorLast, PresentColorOut } from '../PresentColor';
+import { RegulateColor, RegulateOpacity } from '../Regulate';
+import BtnChangeType from '../BtnChangeType';
+import { RgbInput, HslInput, HexInput } from '../InputColor';
+import Colors from '../Colors';
 import {
   ColorPickerDiv,
   ColorPickerContainer,
@@ -17,8 +17,8 @@ import {
   ListTypeColor,
   BtnOk,
   BtnCancel,
-  WrapMainBtns
-} from "./styles";
+  WrapMainBtns,
+} from './styles';
 
 class ColorPicker extends Component {
   render() {
@@ -65,7 +65,7 @@ class ColorPicker extends Component {
               <BtnChangeType name="hsl" text="Hsl" />
             </ListTypeColor>
           </div>
-          {/* <Colors /> */}
+          <Colors />
 
           <WrapMainBtns>
             <BtnOk className="btn_color_ok" id="btn_color_ok">

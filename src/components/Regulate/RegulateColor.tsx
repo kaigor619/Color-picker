@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as Action from "../../actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as Action from '../../actions';
 // import RegulateTheme, { StateProps, DispatchProps } from "./RegulateTheme";
-import { WrapLineRegulate, StyleRegulateColor, RegulateCircle } from "./styles";
+import { WrapLineRegulate, StyleRegulateColor, RegulateCircle } from './styles';
 
 export interface StateProps {
   H: number;
@@ -29,7 +29,7 @@ class RegulateColor extends Component<Props> {
     w: 0,
     h: 0,
     left: 0,
-    x: 0
+    x: 0,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -55,9 +55,9 @@ class RegulateColor extends Component<Props> {
       };
     };
 
-    elem.addEventListener("touchstart", this.touchStart, false);
-    elem.addEventListener("touchend", this.touchEnd, false);
-    elem.addEventListener("touchmove", this.touchMove, false);
+    elem.addEventListener('touchstart', this.touchStart, false);
+    elem.addEventListener('touchend', this.touchEnd, false);
+    elem.addEventListener('touchmove', this.touchMove, false);
   }
 
   touchStart(e: any) {
@@ -72,7 +72,7 @@ class RegulateColor extends Component<Props> {
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
         clientX: touches[i].pageX,
-        clientY: touches[i].pageY
+        clientY: touches[i].pageY,
       };
       this.cPos(newEvent);
     }
@@ -92,8 +92,6 @@ class RegulateColor extends Component<Props> {
     left = Number(c.clientX - line.left).toFixed(2);
     a = left < 0 ? 0 : left;
     a = a > line.w ? line.w : a;
-
-    // debugger;
     let h = Math.abs(Math.round(a / (line.w / 360)) - 360);
     this.props.add_color([h, null, null]);
   }
@@ -119,7 +117,7 @@ class RegulateColor extends Component<Props> {
     left = left > line.w ? line.w : left;
 
     const style = {
-      left: left + "px"
+      left: left + 'px',
     };
     return style;
   }
@@ -143,18 +141,18 @@ class RegulateColor extends Component<Props> {
 
 const mapStateToProps = ({ H }) => {
   return {
-    H
+    H,
   };
 };
 const mapDispatchToProps = (dispatch: any) => {
   return {
     add_color: (mas: any) => {
       dispatch(Action.compo_change_HSV(mas));
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(RegulateColor);

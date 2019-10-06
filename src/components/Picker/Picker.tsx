@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import * as Action from "../../actions";
-import { connect } from "react-redux";
-import Convert from "../../options/convert";
-import Model from "../../options/modelsColor";
+import React, { Component } from 'react';
+import * as Action from '../../actions';
+import { connect } from 'react-redux';
+import Convert from '../../options/convert';
+import Model from '../../options/modelsColor';
 
-import { BlockPicker, BlockCircle } from "./styles";
+import { BlockPicker, BlockCircle } from './styles';
 // Интерфейсы
 interface StateProps {
   H: number;
@@ -39,7 +39,7 @@ type Props = StateProps & OwnProps & DispatchProps;
 class Picker extends Component<Props> {
   circle = {
     width: 12,
-    height: 12
+    height: 12,
   };
 
   block = {
@@ -48,7 +48,7 @@ class Picker extends Component<Props> {
     pxX: this.props.width / 100,
     pxY: this.props.height / 100,
     left: 0,
-    top: 0
+    top: 0,
   };
 
   blockRef: any = React.createRef();
@@ -85,7 +85,7 @@ class Picker extends Component<Props> {
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
         clientX: touches[i].pageX,
-        clientY: touches[i].pageY
+        clientY: touches[i].pageY,
       };
       this.cPos(newEvent);
     }
@@ -107,9 +107,9 @@ class Picker extends Component<Props> {
       };
     };
 
-    block.addEventListener("touchstart", this.touchMove, false);
-    block.addEventListener("touchend", this.touchMove, false);
-    block.addEventListener("touchmove", this.touchMove, false);
+    block.addEventListener('touchstart', this.touchMove, false);
+    block.addEventListener('touchend', this.touchMove, false);
+    block.addEventListener('touchmove', this.touchMove, false);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -123,14 +123,14 @@ class Picker extends Component<Props> {
   getStyleBlock(): IStyleBlock {
     const { width, height } = this.block;
     let { H } = this.props;
-    let rgb = "rgb(" + Convert.hsv_rgb(H, 100, 100) + ")";
+    let rgb = 'rgb(' + Convert.hsv_rgb(H, 100, 100) + ')';
     let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
     ${rgb} , rgb(255, 255, 255))`;
 
     const style = {
-      width: width + "px",
-      height: height + "px",
-      background
+      width: width + 'px',
+      height: height + 'px',
+      background,
     };
     return style;
   }
@@ -156,11 +156,11 @@ class Picker extends Component<Props> {
     top = top < 0 ? 0 : top;
 
     const style = {
-      width: width + "px",
-      height: height + "px",
-      left: left + "px",
-      top: top + "px",
-      backgroundColor
+      width: width + 'px',
+      height: height + 'px',
+      left: left + 'px',
+      top: top + 'px',
+      backgroundColor,
     };
 
     return style;
@@ -187,14 +187,14 @@ const mapStateToProps = ({ H, S, V, rgbMain }: any): StateProps => {
     H,
     rgbMain,
     S,
-    V
+    V,
   };
 };
 const mapDispatchToProps: DispatchProps = {
-  add_color: Action.compo_change_HSV
+  add_color: Action.compo_change_HSV,
 };
 
 export default connect<StateProps, DispatchProps, OwnProps>(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Picker);

@@ -36,6 +36,7 @@ class RegulateTheme extends Component<Props> {
     super(props);
     this.cPos = this.cPos.bind(this);
     this.handleDown = this.handleDown.bind(this);
+
     this.touchStart = this.touchStart.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
     this.touchMove = this.touchMove.bind(this);
@@ -113,10 +114,12 @@ class RegulateTheme extends Component<Props> {
       this.lineMove = false;
     };
   }
+
   hookCPos() {}
 
   cPos(c: any) {
     const { line } = this;
+
     let left, a;
     left = c.clientX - line.left;
     a = left < 0 ? 0 : left;

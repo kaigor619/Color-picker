@@ -1,4 +1,4 @@
-import { ThemeAction, ThemeStore } from "../interfaces";
+import { ThemeAction, ThemeStore } from '../interfaces';
 
 export const InitialState: ThemeStore = {
   H: 0,
@@ -6,64 +6,64 @@ export const InitialState: ThemeStore = {
   V: 100,
   opacity: 1,
   rgbMain: [255, 255, 255],
-  type: "rgb",
+  type: 'rgb',
   prevColor: {
     rgbMain: [0, 145, 255],
-    opacity: 0.5
+    opacity: 0.5,
   },
   models: {
-    hex: "#fefefe",
+    hex: '#fefefe',
     hsl: [0, 0, 100],
-    rgb: [255, 255, 255]
+    rgb: [255, 255, 255],
   },
   colors: [
-    { name: "Color 1", color: "#e91e63" },
-    { name: "Color 2", color: "#ff0000ff" },
-    { name: "Color 3", color: "#e91e63" },
-    { name: "Color 4", color: "#ff0000ff" }
-  ]
+    { name: 'Color 1', color: '#e91e63' },
+    { name: 'Color 2', color: '#ff0000ff' },
+    { name: 'Color 3', color: '#e91e63' },
+    { name: 'Color 4', color: '#ff0000ff' },
+  ],
 };
 
 const reducer = (state: any = InitialState, action: ThemeAction) => {
   switch (action.type) {
-    case "CHANGE_RGB":
+    case 'CHANGE_RGB':
       return { ...state, rgbMain: action.payload };
 
-    case "CHANGE_OPACITY": {
+    case 'CHANGE_OPACITY': {
       return { ...state, opacity: action.payload };
     }
-    case "CHANGE_TYPE": {
+    case 'CHANGE_TYPE': {
       return { ...state, type: action.payload };
     }
 
-    case "CHANGE_HEX": {
+    case 'CHANGE_HEX': {
       return { ...state, models: { ...state.models, hex: action.payload } };
     }
 
-    case "CHANGE_MODEL": {
+    case 'CHANGE_MODEL': {
       let type = state.type;
       return { ...state, models: { ...state.models, [type]: action.payload } };
     }
-    case "CHANGE_USER_COLORS": {
+    case 'CHANGE_USER_COLORS': {
       return {
         ...state,
-        colors: action.payload
+        colors: action.payload,
       };
     }
-    case "CHANGE_H":
+    case 'CHANGE_H':
       return {
         ...state,
-        H: action.payload == null ? state.H : action.payload
+        H: action.payload == null ? state.H : action.payload,
       };
-    case "CHANGE_S":
+    case 'CHANGE_S':
       return {
         ...state,
-        S: action.payload == null ? state.S : action.payload
+        S: action.payload == null ? state.S : action.payload,
       };
-    case "CHANGE_V":
+    case 'CHANGE_V':
       return {
         ...state,
-        V: action.payload == null ? state.V : action.payload
+        V: action.payload == null ? state.V : action.payload,
       };
 
     default:

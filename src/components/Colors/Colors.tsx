@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import Swatch from "./Swatch";
-import { IuserColors } from "../../interfaces";
-import { connect } from "react-redux";
-import Model from "../../options/modelsColor";
-import * as Action from "../../actions";
-import DescriptionColor from "../DescriptionColor";
-import { Icolors } from "../../interfaces";
-import { StyleCustomColors, StyleAddColor } from "./styles";
+import React, { Component } from 'react';
+import Swatch from './Swatch';
+import { IuserColors } from '../../interfaces';
+import { connect } from 'react-redux';
+import Model from '../../options/modelsColor';
+import * as Action from '../../actions';
+import DescriptionColor from '../DescriptionColor';
+import { Icolors } from '../../interfaces';
+import { StyleCustomColors, StyleAddColor } from './styles';
+import { bool } from 'prop-types';
 interface StateProps {
   colors: Icolors;
   type: string;
@@ -34,17 +35,17 @@ class Colors extends Component<Props> {
   }
 
   state = {
-    name: "color 1",
-    color: "#000",
+    name: 'color 1',
+    color: '#000',
     index: 0,
     save: false,
     edit: false,
     remove: false,
-    enable: false
+    enable: false,
   };
 
   counter = 1;
-  labelCounter = "Color";
+  labelCounter = 'Color';
 
   changeSwatch(obj) {
     let { index, color, name } = obj;
@@ -77,7 +78,7 @@ class Colors extends Component<Props> {
       save: true,
       edit: false,
       remove: false,
-      enable: true
+      enable: true,
     });
   }
   changeEnable(enable) {
@@ -94,6 +95,20 @@ class Colors extends Component<Props> {
   componentDidMount() {
     const { colors } = this.props;
     this.counter = colors.length;
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    let bool = false;
+
+    if (this.props.colors !== nextProps.colors) {
+      bool = true;
+    }
+    for (let key in this.state) {
+      if (this.state[key] !== nextState[key]) {
+        bool = true;
+      }
+    }
+
+    return bool;
   }
   render() {
     const { colors } = this.props;
@@ -120,7 +135,6 @@ class Colors extends Component<Props> {
           changeEnable={this.changeEnable}
         />
       );
-
     return (
       <React.Fragment>
         <StyleCustomColors className="custom-colors">
@@ -143,15 +157,15 @@ const mapStateToProps = ({ colors, models, type, opacity }): StateProps => {
     colors,
     model: models[type],
     type,
-    opacity
+    opacity,
   };
 };
 
 const mapDispatchToProps: DispatchProps = {
-  change_colors: Action.change_users_colors
+  change_colors: Action.change_users_colors,
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Colors);

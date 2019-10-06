@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import SaveColor from "./SaveColor";
-import DeleteColor from "./DeleteColor";
-import SaveEditColor from "./SaveEditColor";
-import Model from "../../options/modelsColor";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import SaveColor from './SaveColor';
+import DeleteColor from './DeleteColor';
+import SaveEditColor from './SaveEditColor';
+import Model from '../../options/modelsColor';
+import { connect } from 'react-redux';
 
 import {
   StyleDescriptionColor,
@@ -12,8 +12,8 @@ import {
   WrapDescrOpacity,
   InputDescr,
   ImageEdit,
-  ImageRemove
-} from "./styles";
+  ImageRemove,
+} from './styles';
 
 interface StateProps {
   model: any;
@@ -55,56 +55,133 @@ class DescriptionColor extends Component<Props> {
     this.onNoDeleteColor = this.onNoDeleteColor.bind(this);
   }
   state = {
-    name: "",
-    color: "",
+    name: '',
+    color: '',
     edit: false,
     save: false,
-    remove: false
+    remove: false,
   };
   inputColor: any = React.createRef();
 
   componentDidMount() {
+    console.log('didmount');
     this.update();
   }
+
   update() {
     const { name, color, edit, save, remove } = this.props;
-    let ed = edit || false;
-    let sv = save || false;
-    let rw = remove || false;
-    let cl = color;
 
-    this.setState({ name, color: cl, edit: ed, save: sv, remove: rw });
+    this.setState({ name, color, edit, save, remove });
   }
 
-  componentDidUpdate(prevProps) {
-    const { name, color, edit, save, rgbMain, opacity } = this.props;
-    const { edit: ed, save: sv, remove: rw } = this.state;
-    const {
+  // componentDidUpdate(prevProps) {
+  //   console.log('update');
+  //   const { name, color, edit, save, rgbMain, opacity } = this.props;
+  //   const { edit: ed, save: sv, remove: rw } = this.state;
+  //   const {
+  //     name: n,
+  //     color: c,
+  //     edit: e,
+  //     save: s,
+  //     rgbMain: r,
+  //     opacity: op,
+  //   } = prevProps;
+  // if (name !== n || color !== c || edit !== e || save !== s) {
+  //   this.update();
+  // }
+  // if (rgbMain !== r || opacity !== op) {
+  //   if (ed || sv) {
+  //     this.inputColor.current.removeAttribute('disabled');
+  //     this.inputColor.current.focus();
+  //     let cl = Model.rgb.getString(rgbMain, opacity);
+  //     this.setState({ color: cl });
+  //   } else if (!ed && !sv && !rw) {
+  //     this.props.changeEnable(false);
+  //   }
+  // }
+  // }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('should');
+    // Props
+    let {
+      name,
+      color,
+      index,
+      save,
+      edit,
+      remove,
+      rgbMain,
+      opacity,
+    } = this.props;
+    let {
       name: n,
       color: c,
-      edit: e,
-      save: s,
+      index: ind,
+      save: sv,
+      edit: ed,
+      remove: rv,
       rgbMain: r,
-      opacity: op
-    } = prevProps;
-    if (name !== n || color !== c || edit !== e || save !== s) {
-      this.update();
+      opacity: op,
+    } = nextProps;
+
+    let cx = false;
+
+    if (
+      name !== n ||
+      color !== c ||
+      index !== ind ||
+      edit !== ed ||
+      save !== sv ||
+      remove !== rv
+    ) {
+      this.setState({
+        name: n,
+        color: c,
+        edit: ed,
+        save: sv,
+        remove: rv,
+        index: ind,
+      });
     }
+
+    // if (ed || sv) {
+    //   this.inputColor.current.removeAttribute('disabled');
+    //   this.inputColor.current.focus();
+    //   if (rgbMain !== r || opacity !== op) {
+    //     let cl = Model.rgb.getString(r, opacity);
+    //     this.setState({ color: cl });
+    //   }
+    // }
+    // else if (!ed && !sv && !rv) {
+    //   this.props.changeEnable(false);
+    // }
     if (rgbMain !== r || opacity !== op) {
-      if (ed || sv) {
-        this.inputColor.current.removeAttribute("disabled");
+      console.log(nextState.edit);
+      if (nextState.edit || nextState.save) {
+        this.inputColor.current.removeAttribute('disabled');
         this.inputColor.current.focus();
-        let cl = Model.rgb.getString(rgbMain, opacity);
+        let cl = Model.rgb.getString(r, opacity);
         this.setState({ color: cl });
-      } else if (!ed && !sv && !rw) {
+      } else if (!nextState.edit && !nextState.save && !nextState.remove) {
         this.props.changeEnable(false);
       }
     }
+
+    let bool = false;
+
+    for (let key in this.state) {
+      if (this.state[key] !== nextState[key]) {
+        bool = true;
+      }
+    }
+
+    return bool;
   }
 
   handleClickEdit(e) {
     this.setState({ edit: true });
-    this.inputColor.current.removeAttribute("disabled");
+    this.inputColor.current.removeAttribute('disabled');
     this.inputColor.current.focus();
   }
   handleClickDelete(e) {
@@ -149,8 +226,8 @@ class DescriptionColor extends Component<Props> {
   }
 
   render() {
+    console.log('render');
     const { name, color, edit, save, remove } = this.state;
-
     let warningComponent;
     if (save) {
       warningComponent = (
@@ -214,11 +291,11 @@ const mapStateToProps = ({ models, type, opacity, rgbMain }): StateProps => {
     model: models[type],
     type,
     opacity,
-    rgbMain
+    rgbMain,
   };
 };
 
 export default connect(
   mapStateToProps,
-  {}
+  {},
 )(DescriptionColor);

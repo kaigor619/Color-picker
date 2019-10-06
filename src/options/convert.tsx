@@ -9,6 +9,7 @@ const Convert = {
       G: number = 0,
       B: number = 0;
 
+    H = H == 360 ? 0 : H;
     S /= 100;
     V /= 100;
 
@@ -57,11 +58,11 @@ const Convert = {
 
   rgb_hex: function(mas: number[], opacity: number) {
     return (
-      "#" +
+      '#' +
       mas[0].toString(16) +
-      "" +
+      '' +
       mas[1].toString(16) +
-      "" +
+      '' +
       mas[2].toString(16)
     );
   },
@@ -73,15 +74,15 @@ const Convert = {
     let b_str = b.toString(16);
     let a_str = Math.round(a * 255).toString(16);
 
-    if (r_str.length == 1) r_str = "0" + r_str;
-    if (g_str.length == 1) g_str = "0" + g_str;
-    if (b_str.length == 1) b_str = "0" + b_str;
-    if (a_str.length == 1) a_str = "0" + a_str;
+    if (r_str.length == 1) r_str = '0' + r_str;
+    if (g_str.length == 1) g_str = '0' + g_str;
+    if (b_str.length == 1) b_str = '0' + b_str;
+    if (a_str.length == 1) a_str = '0' + a_str;
 
-    let value = "#" + r_str + g_str + b_str + a_str;
+    let value = '#' + r_str + g_str + b_str + a_str;
 
     if (value.length == 9) {
-      if (value.slice(-2) == "ff") value = value.substring(0, 7);
+      if (value.slice(-2) == 'ff') value = value.substring(0, 7);
     }
     return value;
   },
@@ -134,7 +135,7 @@ const Convert = {
     return [
       Math.round(h * 360),
       +parseInt(percentRoundFn(s * 100)),
-      +parseInt(percentRoundFn(v * 100))
+      +parseInt(percentRoundFn(v * 100)),
     ];
   },
   hsl_hsv: function(hsl: number[]): number[] {
@@ -163,7 +164,7 @@ const Convert = {
   },
   hex_rgb: function(hex: string): number[] {
     let r, g, b, a;
-    hex = hex.replace("#", "");
+    hex = hex.replace('#', '');
     if (3 === hex.length) {
       r = hex.charAt(0);
       g = hex.charAt(1);
@@ -185,8 +186,8 @@ const Convert = {
     } else {
       return [];
     }
-    if ("undefined" === typeof a) {
-      a = "ff";
+    if ('undefined' === typeof a) {
+      a = 'ff';
     }
     if (1 === r.length) {
       r += r;
@@ -293,7 +294,7 @@ const Convert = {
     b = Math.round((b + m) * 255);
 
     return [r, g, b];
-  }
+  },
 };
 
 export default Convert;

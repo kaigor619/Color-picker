@@ -30,6 +30,9 @@ const mapDispatchToProps = {
   add_color: Action.addColor
 };
 
+let a=10;
+
+
 export default connect(
   null,
   mapDispatchToProps
