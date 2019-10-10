@@ -42,11 +42,6 @@ class Picker extends Component<Props> {
     height: 12,
   };
 
-  state = {
-    left: 0,
-    top: 0,
-  };
-
   block = {
     width: this.props.width,
     height: this.props.height,
@@ -57,7 +52,6 @@ class Picker extends Component<Props> {
   };
 
   blockRef: any = React.createRef();
-  circleMove = false;
 
   constructor(props: Props) {
     super(props);
@@ -71,6 +65,7 @@ class Picker extends Component<Props> {
 
     let left = +(c.clientX - positX).toFixed(2);
     let top = +(c.clientY - positY).toFixed(2);
+    const { H } = this.props;
 
     // Проверка left
     left = left < 0 ? 0 : left;
@@ -84,9 +79,7 @@ class Picker extends Component<Props> {
     const S = Math.ceil(left / pxX);
     const V = Math.ceil(Math.abs(top / pxY - 100));
 
-    this.setState({ left, top });
-
-    this.props.add_color([null, S, V]);
+    this.props.add_color([H, S, V]);
   }
 
   touchMove(e: any) {
@@ -108,13 +101,11 @@ class Picker extends Component<Props> {
     this.block.top = top;
 
     block.onmousedown = e => {
-      this.circleMove = true;
       this.cPos(e);
       document.onmousemove = this.cPos;
 
       document.onmouseup = () => {
         document.onmousemove = null;
-        this.circleMove = false;
       };
     };
 
@@ -125,9 +116,7 @@ class Picker extends Component<Props> {
 
   shouldComponentUpdate(nextProps, nextState) {
     let bool = false;
-    if (this.circleMove) {
-      if (nextProps.rgbMain !== this.props.rgbMain) bool = true;
-    } else if (nextProps.rgbMain !== this.props.rgbMain) bool = true;
+    if (nextProps.rgbMain !== this.props.rgbMain) bool = true;
 
     return bool;
   }
@@ -153,24 +142,19 @@ class Picker extends Component<Props> {
     const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
     let left, top;
 
-    if (this.circleMove) {
-      left = this.state.left;
-      top = this.state.top;
-    } else {
-      const { pxX, pxY } = this.block;
-      const { S, V } = this.props;
-      left = pxX * S;
-      top = pxY * Math.abs(V - 100);
+    const { pxX, pxY } = this.block;
+    const { S, V } = this.props;
+    left = pxX * S;
+    top = pxY * Math.abs(V - 100);
 
-      // Проверка left
-      left = left < 0 ? 0 : left;
+    // Проверка left
+    left = left < 0 ? 0 : left;
 
-      left = left > W ? W : left;
-      // Проверка top
+    left = left > W ? W : left;
+    // Проверка top
 
-      top = top > H ? H : top;
-      top = top < 0 ? 0 : top;
-    }
+    top = top > H ? H : top;
+    top = top < 0 ? 0 : top;
 
     const style = {
       width: width + 'px',
@@ -184,7 +168,6 @@ class Picker extends Component<Props> {
   }
 
   render() {
-    console.log('render');
     return (
       <BlockPicker
         ref={this.blockRef}
