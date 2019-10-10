@@ -22,13 +22,22 @@ export interface IuserColors {
   colors: Icolors;
 }
 
+export interface IDescription {
+  enable: boolean;
+  save: boolean;
+  edit: boolean;
+  remove: boolean;
+  index: number;
+}
+
 export interface ThemeStore {
   S: number;
   V: number;
   H: number;
   opacity: number;
   rgbMain: number[];
-  prevColor: { rgbMain: number[]; opacity: number };
+  prevColor: string;
+  description: IDescription;
   type: string;
   models: Models;
   colors: Icolors;

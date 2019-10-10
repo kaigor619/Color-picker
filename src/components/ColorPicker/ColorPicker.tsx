@@ -5,6 +5,8 @@ import { RegulateColor, RegulateOpacity } from '../Regulate';
 import BtnChangeType from '../BtnChangeType';
 import { RgbInput, HslInput, HexInput } from '../InputColor';
 import Colors from '../Colors';
+import CopyColor from '../CopyColor';
+import MainBtns from '../MainBtns';
 import {
   ColorPickerDiv,
   ColorPickerContainer,
@@ -13,11 +15,7 @@ import {
   WrapRegulateColor,
   WrapListModelsInput,
   ListModelsInput,
-  CopyColor,
   ListTypeColor,
-  BtnOk,
-  BtnCancel,
-  WrapMainBtns,
 } from './styles';
 
 class ColorPicker extends Component {
@@ -31,7 +29,7 @@ class ColorPicker extends Component {
         <Picker width={250} height={140} />
 
         <ColorPickerContainer className="colorpicker-container">
-          <ColorSettings className="color-setting">
+          {/* <ColorSettings className="color-setting">
             <WrapPresentColors className="wrap-presents-color">
               <PresentColorLast />
               <PresentColorOut />
@@ -50,14 +48,7 @@ class ColorPicker extends Component {
                 <HslInput />
                 <HexInput />
               </ListModelsInput>
-              <CopyColor className="copy-color" name-custom="Copied">
-                <img
-                  src="svg/copy.svg"
-                  className="copy-color"
-                  id="copy-color"
-                  alt="Copy color"
-                />
-              </CopyColor>
+              <CopyColor />
             </WrapListModelsInput>
             <ListTypeColor className="list-type-color">
               <BtnChangeType name="hex" text="Hex" />
@@ -65,16 +56,9 @@ class ColorPicker extends Component {
               <BtnChangeType name="hsl" text="Hsl" />
             </ListTypeColor>
           </div>
-          <Colors />
+          <Colors /> */}
 
-          <WrapMainBtns>
-            <BtnOk className="btn_color_ok" id="btn_color_ok">
-              Ok
-            </BtnOk>
-            <BtnCancel className="btn_color_cancel" id="btn_color_cancel">
-              Cancel
-            </BtnCancel>
-          </WrapMainBtns>
+          {/* <MainBtns /> */}
         </ColorPickerContainer>
       </ColorPickerDiv>
     );

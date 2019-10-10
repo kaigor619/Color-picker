@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const SwatchColor = styled.div`
   background-color: ${props => props.color};
@@ -53,7 +53,7 @@ const SwatchColor = styled.div`
 `;
 
 const OpacitySwatch = styled.div`
-  background: url("../svg/opacity.svg") repeat;
+  background: url('../svg/opacity.svg') repeat;
   border-radius: 3px;
   cursor: pointer;
   position: relative;

@@ -33,7 +33,7 @@ class RegulateColor extends Component<Props> {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.H !== this.props.H) return true;
+    if (nextProps.H !== this.props.H || this.line.w !== 0) return true;
     else return false;
   }
 
@@ -43,6 +43,8 @@ class RegulateColor extends Component<Props> {
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
+
+    this.setState({});
 
     // Events
     // elem.onclick = this.cPos;
@@ -68,6 +70,7 @@ class RegulateColor extends Component<Props> {
   }
 
   touchMove(e: any) {
+    e.preventDefault();
     var touches = e.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
@@ -87,6 +90,7 @@ class RegulateColor extends Component<Props> {
   }
 
   cPos(c: any) {
+    c.preventDefault();
     const { line } = this;
     let left, a;
     left = Number(c.clientX - line.left).toFixed(2);
@@ -133,6 +137,7 @@ class RegulateColor extends Component<Props> {
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
           style={this.getStyle()}
+          draggable={false}
         ></RegulateCircle>
       </WrapLineRegulate>
     );

@@ -1,68 +1,68 @@
-import { ThemeAction, ThemeStore } from "../interfaces";
-import Convert from "../options/convert";
-import Model from "../options/modelsColor";
-import Checking from "../options/checking";
+import { ThemeAction, ThemeStore, IDescription } from '../interfaces';
+import Convert from '../options/convert';
+import Model from '../options/modelsColor';
+import Checking from '../options/checking';
 
 const ActionsNames = {
-  change_rgbMain: "CHANGE_RGB",
-  change_h: "CHANGE_H",
-  change_s: "CHANGE_S",
-  change_v: "CHANGE_V"
+  change_rgbMain: 'CHANGE_RGB',
+  change_h: 'CHANGE_H',
+  change_s: 'CHANGE_S',
+  change_v: 'CHANGE_V',
 };
 
 // Изменение rgbMain
 export const change_rgbMain = (rgb: number[]): ThemeAction => {
   return {
-    type: "CHANGE_RGB",
-    payload: rgb
+    type: 'CHANGE_RGB',
+    payload: rgb,
   };
 };
 
 // Изменение H
 export const change_h = (h: number): ThemeAction => {
   return {
-    type: "CHANGE_H",
-    payload: h
+    type: 'CHANGE_H',
+    payload: h,
   };
 };
 
 // Изменение S
 export const change_s = (s: number): ThemeAction => {
   return {
-    type: "CHANGE_S",
-    payload: s
+    type: 'CHANGE_S',
+    payload: s,
   };
 };
 
 // Изменение V
 export const change_v = (v: number): ThemeAction => {
   return {
-    type: "CHANGE_V",
-    payload: v
+    type: 'CHANGE_V',
+    payload: v,
   };
 };
 
 // Изменение opacity
 export const change_opacity = (opacity: number): ThemeAction => {
   return {
-    type: "CHANGE_OPACITY",
-    payload: opacity
+    type: 'CHANGE_OPACITY',
+    payload: opacity,
   };
 };
 
 // Изменение type
 export const change_type = (type: string): ThemeAction => {
   return {
-    type: "CHANGE_TYPE",
-    payload: type
+    type: 'CHANGE_TYPE',
+    payload: type,
   };
 };
 
 // Изменение model
 export const change_model = (value: number[] | string) => {
   return {
-    type: "CHANGE_MODEL",
-    payload: value
+    type: 'CHANGE_MODEL',
+    payload: value,
   };
 };
 
@@ -83,11 +83,11 @@ export const compo_change_type = (type: string) => (dispatch: any) => {
 // Изменение opacity и hex
 export const compo_change_opacity = (opacity: number) => (
   dispatch: any,
-  getStore: () => ThemeStore
+  getStore: () => ThemeStore,
 ) => {
   dispatch(change_opacity(opacity));
   const { type } = getStore();
-  if (type == "hex") {
+  if (type == 'hex') {
     dispatch(compo_sync_model());
   }
 };
@@ -95,7 +95,7 @@ export const compo_change_opacity = (opacity: number) => (
 // Синхронизация HSV => rgbMain
 export const compo_sync_rgbMain = () => (
   dispatch: any,
-  getStore: () => ThemeStore
+  getStore: () => ThemeStore,
 ) => {
   const { H, S, V } = getStore();
   let rgb = Convert.hsv_rgb(H, S, V);
@@ -105,27 +105,31 @@ export const compo_sync_rgbMain = () => (
 // Синхнонизация rgbMain => model
 export const compo_sync_model = () => (
   dispatch: any,
-  getStore: () => ThemeStore
+  getStore: () => ThemeStore,
 ) => {
   const { rgbMain, type, opacity } = getStore();
-  let modelValue = Model[type]["rgb_" + type](rgbMain, opacity);
+  let modelValue = Model[type]['rgb_' + type](rgbMain, opacity);
   dispatch(change_model(modelValue));
 };
 
 // Изменение HSV и rgbMain и model
 export const compo_change_HSV = (hsv: any) => (dispatch: any) => {
-  dispatch(change_HSV(hsv));
-  dispatch(compo_sync_rgbMain());
-  dispatch(compo_sync_model());
+  const [H, S, V] = hsv;
+  let rgbMain = Convert.hsv_rgb(H, S, V);
+  // dispatch(change_HSV(hsv));
+  // dispatch(compo_sync_rgbMain());
+  // dispatch(compo_sync_model());
+
+  dispatch(change_store({ H, S, V, rgbMain }));
 };
 
 // Изменение model и затем HSV, rgbMain
 export const compo_change_model = (model: string | number[]) => (
   dispatch: any,
-  getStore: () => ThemeStore
+  getStore: () => ThemeStore,
 ) => {
   const { type } = getStore();
-  let rgb = Model[type][type + "_rgb"](model);
+  let rgb = Model[type][type + '_rgb'](model);
   let hsv = Convert.rgb_hsv(rgb);
   dispatch(change_HSV(hsv));
   dispatch(change_rgbMain(rgb));
@@ -133,53 +137,80 @@ export const compo_change_model = (model: string | number[]) => (
 
 export const addColor = (value: string) => (
   dispatch: any,
-  getStore: () => ThemeStore
+  getStore: () => ThemeStore,
 ) => {
   const type = Checking.check_color(value);
+
   let { val, opacity } = Model[type].getWorkView(value);
-  let rgb = Model[type][type + "_rgb"](val);
+  console.log(val);
+  let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
   dispatch(compo_change_type(type));
   dispatch(compo_change_opacity(opacity));
   dispatch(change_HSV(hsv));
   dispatch(change_rgbMain(rgb));
-  dispatch(compo_sync_model());
-  dispatch(compo_change_model(val));
+  dispatch(change_model(val));
+  // dispatch(compo_sync_model());
+  // dispatch(compo_change_model(val));
+  // dispatch(change_prev_color(value));
 };
 
 export const change_users_colors = (
-  colors: { name: string; color: string }[]
+  colors: { name: string; color: string }[],
 ) => {
   return {
-    type: "CHANGE_USER_COLORS",
-    payload: colors
+    type: 'CHANGE_USER_COLORS',
+    payload: colors,
   };
 };
 
 // Изменение model и затем HSV, rgbMain
 export const compo_change_model_for_index = (
   value: string | number,
-  index: number
+  index: number,
 ) => (dispatch: any, getStore: () => ThemeStore) => {
   const { type, models } = getStore();
   let model = models[type];
   let val;
 
-  if (type == "hex") {
+  if (type == 'hex') {
     val = model;
   } else {
     val = model.slice();
     val[index] = +value;
   }
   // console.log(model);
-  let rgb = Model[type][type + "_rgb"](model);
+  let rgb = Model[type][type + '_rgb'](model);
   let hsv = Convert.rgb_hsv(rgb);
   dispatch(change_HSV(hsv));
   dispatch(change_rgbMain(rgb));
 
-  if (type == "hex") {
+  if (type == 'hex') {
     dispatch(change_model(val));
   } else {
     dispatch(change_model([...val]));
   }
+};
+
+// Изменение PrevColor
+export const change_prev_color = prev_color => {
+  return {
+    type: 'CHANGE_PREV_COLOR',
+    payload: prev_color,
+  };
+};
+
+// Изменение description
+export const change_description = (obj: IDescription) => {
+  return {
+    type: 'CHANGE_DESCRIPTION',
+    payload: obj,
+  };
+};
+
+const change_store = obj => {
+  return {
+    type: 'CHANGE_STORE',
+    payload: obj,
+  };
 };

@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import Model from '../../options/modelsColor';
 import * as Action from '../../actions';
 import DescriptionColor from '../DescriptionColor';
-import { Icolors } from '../../interfaces';
+import { Icolors, IDescription } from '../../interfaces';
 import { StyleCustomColors, StyleAddColor } from './styles';
-import { bool } from 'prop-types';
 interface StateProps {
   colors: Icolors;
   type: string;
@@ -17,6 +16,8 @@ interface StateProps {
 
 interface DispatchProps {
   change_colors: (colors: Icolors) => void;
+  add_color: (color: string) => void;
+  change_description: (obj: IDescription) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -27,75 +28,60 @@ class Colors extends Component<Props> {
     this.handleAddSwatch = this.handleAddSwatch.bind(this);
     this.handleClick = this.handleClick.bind(this);
 
-    this.changeSwatch = this.changeSwatch.bind(this);
-    this.deleteSwatch = this.deleteSwatch.bind(this);
-    this.addSwatch = this.addSwatch.bind(this);
-
-    this.changeEnable = this.changeEnable.bind(this);
+    // this.changeSwatch = this.changeSwatch.bind(this);
+    // this.deleteSwatch = this.deleteSwatch.bind(this);
+    // this.addSwatch = this.addSwatch.bind(this);
   }
 
-  state = {
-    name: 'color 1',
-    color: '#000',
-    index: 0,
-    save: false,
-    edit: false,
-    remove: false,
-    enable: false,
-  };
+  // counter = 1;
+  // labelCounter = 'Color';
 
-  counter = 1;
-  labelCounter = 'Color';
+  // changeSwatch(obj) {
+  //   let { index, color, name } = obj;
+  //   let colors = this.props.colors.slice();
+  //   colors[index] = { name, color };
 
-  changeSwatch(obj) {
-    let { index, color, name } = obj;
-    let colors = this.props.colors.slice();
-    colors[index] = { name, color };
+  //   this.props.change_colors(colors);
+  // }
+  // deleteSwatch(index) {
+  //   let colors = this.props.colors.slice();
+  //   colors.splice(index, 1);
+  //   this.props.change_colors(colors);
+  // }
+  // addSwatch(obj) {
+  //   let { color, name } = obj;
+  //   let colors = this.props.colors.slice();
+  //   colors.push({ color, name });
 
-    this.props.change_colors(colors);
-  }
-  deleteSwatch(index) {
-    let colors = this.props.colors.slice();
-    colors.splice(index, 1);
-    this.props.change_colors(colors);
-  }
-  addSwatch(obj) {
-    let { color, name } = obj;
-    let colors = this.props.colors.slice();
-    colors.push({ color, name });
-
-    this.props.change_colors(colors);
-  }
+  //   this.props.change_colors(colors);
+  // }
 
   handleAddSwatch(e) {
-    const { colors, model, type, opacity } = this.props;
-    let color = Model[type].getString(model, opacity);
-    this.counter += 1;
-    let name = `${this.labelCounter} ${this.counter}`;
-    this.setState({
-      name,
-      color,
-      save: true,
+    // const { colors, model, type, opacity } = this.props;
+    // let color = Model[type].getString(model, opacity);
+    // this.counter += 1;
+    // let name = `${this.labelCounter} ${this.counter}`;
+    // this.setState({
+    //   name,
+    //   color,
+    //   save: true,
+    //   edit: false,
+    //   remove: false,
+    // });
+  }
+
+  handleClick(index: number) {
+    let objDescr = {
       edit: false,
+      save: false,
       remove: false,
       enable: true,
-    });
+      index,
+    };
+    // this.props.add_color(color);
+    this.props.change_description(objDescr);
   }
-  changeEnable(enable) {
-    this.setState({ enable });
-  }
-  handleClick(index: number) {
-    const edit = false;
-    const save = false;
-    const remove = false;
-    const enable = true;
-    let { color, name } = this.props.colors[index];
-    this.setState({ name, color, edit, save, remove, enable, index });
-  }
-  componentDidMount() {
-    const { colors } = this.props;
-    this.counter = colors.length;
-  }
+
   shouldComponentUpdate(nextProps, nextState) {
     let bool = false;
 
@@ -124,17 +110,6 @@ class Colors extends Component<Props> {
       );
     });
 
-    let descriptionComponent;
-    if (this.state.enable)
-      descriptionComponent = (
-        <DescriptionColor
-          {...this.state}
-          changeSwatch={this.changeSwatch}
-          deleteSwatch={this.deleteSwatch}
-          addSwatch={this.addSwatch}
-          changeEnable={this.changeEnable}
-        />
-      );
     return (
       <React.Fragment>
         <StyleCustomColors className="custom-colors">
@@ -147,7 +122,7 @@ class Colors extends Component<Props> {
             <img src="./svg/plus-symbol.svg" alt="" />
           </StyleAddColor>
         </StyleCustomColors>
-        {descriptionComponent}
+        <DescriptionColor />
       </React.Fragment>
     );
   }
@@ -161,8 +136,16 @@ const mapStateToProps = ({ colors, models, type, opacity }): StateProps => {
   };
 };
 
-const mapDispatchToProps: DispatchProps = {
-  change_colors: Action.change_users_colors,
+const mapDispatchToProps = dispatch => {
+  return {
+    change_colors: colors => {
+      dispatch(Action.change_users_colors(colors));
+    },
+    add_color: (color: string) => {
+      dispatch(Action.addColor(color));
+    },
+    change_description: obj => dispatch(Action.change_description(obj)),
+  };
 };
 
 export default connect(

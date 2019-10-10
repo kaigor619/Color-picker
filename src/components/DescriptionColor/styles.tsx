@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export const StyleDescriptionColor = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export const WrapDescrPart = styled.div`
 `;
 
 export const WrapDescrOpacity = styled.div`
-  background: url("../svg/opacity.svg") repeat;
+  background: url('../svg/opacity.svg') repeat;
   background-size: 50% 50%;
   position: relative;
   width: 17px;
@@ -76,36 +76,12 @@ export const ImageRemove = styled(HoverImage)`
   height: auto;
 `;
 
-export const StyleWrapWarning = styled.div`
-  position: absolute;
-  top: 104%;
-  right: 0;
-  width: 100%;
-  padding: 5px 0 5px 0;
-  background-color: #272f42;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ::before {
-    display: block;
-    content: "";
-    width: 100%;
-    height: 1px;
-    background-color: #ffffff29;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-`;
+export const StyleWrapWarning = styled.div``;
 
 export const StyleWarningLabel = styled.p`
   color: #ffffffad;
   font-size: 12px;
-  font-family: "Arial";
+  font-family: 'Arial';
 `;
 
 const BtnWarning = styled.button`

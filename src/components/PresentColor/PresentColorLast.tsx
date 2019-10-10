@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import PresentColorTheme from "./PresentColor";
-import * as Redux from "redux";
-import { connect } from "react-redux";
-import { ThemeStore } from "../../interfaces";
-import * as Action from "../../actions";
-import Model from "../../options/modelsColor";
-import { PresentCell, PresentColorDiv } from "./styles";
+import React, { Component } from 'react';
+import PresentColorTheme from './PresentColor';
+import * as Redux from 'redux';
+import { connect } from 'react-redux';
+import { ThemeStore } from '../../interfaces';
+import * as Action from '../../actions';
+import Model from '../../options/modelsColor';
+import { PresentCell, PresentColorDiv } from './styles';
 
 interface StateProps {
-  prevColor: { rgbMain: number[]; opacity: number };
+  prevColor: string;
 }
 
 interface DispatchProps {
@@ -24,16 +24,15 @@ class PresentColorLast extends Component<Props> {
   }
 
   handleClick() {
-    this.props.add_color(this.props.prevColor.rgbMain);
+    this.props.add_color(this.props.prevColor);
   }
-  name = "last_color";
+  name = 'last_color';
 
   getPresentStyle() {
-    let { rgbMain, opacity } = this.props.prevColor;
-    const backgroundColor = Model.rgb.getStr(rgbMain);
+    // let { rgbMain, opacity } = this.props.prevColor;
+    const backgroundColor = this.props.prevColor;
     return {
       backgroundColor,
-      opacity
     };
   }
   render() {
@@ -42,7 +41,7 @@ class PresentColorLast extends Component<Props> {
     return (
       <PresentCell className="color_cell">
         <PresentColorDiv
-          className={"present_color " + name}
+          className={'present_color ' + name}
           onClick={this.handleClick}
           style={style}
         ></PresentColorDiv>
@@ -53,15 +52,15 @@ class PresentColorLast extends Component<Props> {
 
 const mapStateToProps = ({ prevColor }: ThemeStore): StateProps => {
   return {
-    prevColor
+    prevColor,
   };
 };
 
 const mapDispatchToProps = {
-  add_color: (mas: number[]) => {}
+  add_color: (mas: number[]) => {},
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(PresentColorLast);

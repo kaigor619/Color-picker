@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { WrapColorInputs } from "./styles";
-import { InitialState } from "../../reducers";
-import InputCell from "./InputCell";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { WrapColorInputs } from './styles';
+import { InitialState } from '../../reducers';
+import InputCell from './InputCell';
 
 interface StateProps {
   type: string;
@@ -10,7 +10,7 @@ interface StateProps {
 type Props = StateProps;
 
 class HslInput extends Component<Props> {
-  type = "hex";
+  type = 'hex';
 
   render() {
     const { type } = this.props;
@@ -19,7 +19,7 @@ class HslInput extends Component<Props> {
     return (
       <li>
         <WrapColorInputs>
-          <InputCell key={1} index={1} hexBool={true} maxLength={9} />;
+          <InputCell key={1} index={1} hexBool={true} maxLength={9} />
         </WrapColorInputs>
       </li>
     );

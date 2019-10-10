@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleWrapWarning, BtnYes, BtnNo, StyleWarningLabel } from "./styles";
+import React from 'react';
+import { StyleWrapWarning, BtnYes, BtnNo, StyleWarningLabel } from './styles';
 
 const DeleteColor = ({ onYesDeleteColor, onNoDeleteColor }) => {
   return (

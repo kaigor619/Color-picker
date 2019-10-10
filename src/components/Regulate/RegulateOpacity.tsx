@@ -42,6 +42,7 @@ class RegulateOpacity extends Component<Props> {
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
+    this.setState({});
 
     this.hookDidMount();
 
@@ -68,6 +69,7 @@ class RegulateOpacity extends Component<Props> {
   }
 
   touchMove(e: any) {
+    e.preventDefault();
     var touches = e.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
@@ -87,6 +89,7 @@ class RegulateOpacity extends Component<Props> {
   }
 
   cPos(c: any) {
+    c.preventDefault();
     const { line } = this;
     let left, a;
     left = c.clientX - line.left;
@@ -111,9 +114,13 @@ class RegulateOpacity extends Component<Props> {
 
     left = (opacity * line.x) / 0.01;
 
+    left = left < 0 ? 0 : left;
+    left = left > line.w ? line.w : left;
+
     const style = {
       left: left + 'px',
     };
+
     return style;
   }
   render() {
@@ -129,6 +136,7 @@ class RegulateOpacity extends Component<Props> {
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
           style={this.getStyle()}
+          draggable={false}
         ></RegulateCircle>
       </WrapLineRegulate>
     );
