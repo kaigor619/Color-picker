@@ -149,12 +149,8 @@ const mapStateToProps = ({ opacity }: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    add_opacity: (opacity: number) => {
-      dispatch(Action.compo_change_opacity(opacity));
-    },
-  };
+const mapDispatchToProps = {
+  add_opacity: Action.eventOpacity,
 };
 
 export default connect(

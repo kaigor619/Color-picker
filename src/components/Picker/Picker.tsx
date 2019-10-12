@@ -65,7 +65,6 @@ class Picker extends Component<Props> {
 
     let left = +(c.clientX - positX).toFixed(2);
     let top = +(c.clientY - positY).toFixed(2);
-    const { H } = this.props;
 
     // Проверка left
     left = left < 0 ? 0 : left;
@@ -79,7 +78,7 @@ class Picker extends Component<Props> {
     const S = Math.ceil(left / pxX);
     const V = Math.ceil(Math.abs(top / pxY - 100));
 
-    this.props.add_color([H, S, V]);
+    this.props.add_color([null, S, V]);
   }
 
   touchMove(e: any) {
@@ -193,7 +192,7 @@ const mapStateToProps = ({ H, S, V, rgbMain }: any): StateProps => {
   };
 };
 const mapDispatchToProps: DispatchProps = {
-  add_color: Action.compo_change_HSV,
+  add_color: Action.eventHSV,
 };
 
 export default connect<StateProps, DispatchProps, OwnProps>(

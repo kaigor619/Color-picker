@@ -118,7 +118,7 @@ const mapStateToProps = ({ type, models, opacity }: any): StateProps => {
 };
 
 const mapDispatchToProps: DispatchProps = {
-  changeModel: Action.compo_change_model_for_index,
+  changeModel: (val: string | number, index: number) => {},
   changeOpacity: Action.change_opacity,
 };
 

@@ -1,13 +1,13 @@
-import React from "react";
-import ColorPicker from "../ColorPicker";
-import { connect } from "react-redux";
-import * as Action from "../../actions";
+import React from 'react';
+import ColorPicker from '../ColorPicker';
+import { connect } from 'react-redux';
+import * as Action from '../../actions';
 
 const App = function({ add_color }) {
   const demoClick = () => {
-    add_color("#a32d9587");
+    add_color('#a32d9587');
   };
-  const color = "#a32d9587";
+  const color = '#a32d9587';
   return (
     <div>
       <div className="picker_demonstration">
@@ -27,13 +27,12 @@ const App = function({ add_color }) {
 };
 
 const mapDispatchToProps = {
-  add_color: Action.addColor
+  add_color: color => {},
 };
 
-let a=10;
-
+let a = 10;
 
 export default connect(
   null,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(App);

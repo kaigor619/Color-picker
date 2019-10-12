@@ -29,7 +29,7 @@ class ColorPicker extends Component {
         <Picker width={250} height={140} />
 
         <ColorPickerContainer className="colorpicker-container">
-          {/* <ColorSettings className="color-setting">
+          <ColorSettings className="color-setting">
             <WrapPresentColors className="wrap-presents-color">
               <PresentColorLast />
               <PresentColorOut />
@@ -56,9 +56,9 @@ class ColorPicker extends Component {
               <BtnChangeType name="hsl" text="Hsl" />
             </ListTypeColor>
           </div>
-          <Colors /> */}
+          <Colors />
 
-          {/* <MainBtns /> */}
+          <MainBtns />
         </ColorPickerContainer>
       </ColorPickerDiv>
     );

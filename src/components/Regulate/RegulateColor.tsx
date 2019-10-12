@@ -149,12 +149,8 @@ const mapStateToProps = ({ H }) => {
     H,
   };
 };
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    add_color: (mas: any) => {
-      dispatch(Action.compo_change_HSV(mas));
-    },
-  };
+const mapDispatchToProps = {
+  add_color: Action.eventHSV,
 };
 
 export default connect(

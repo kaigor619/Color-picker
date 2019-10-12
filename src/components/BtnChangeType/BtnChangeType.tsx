@@ -1,7 +1,7 @@
-import React from "react";
-import { connect } from "react-redux";
-import * as Action from "../../actions";
-import { StyleBtn } from "./styles";
+import React from 'react';
+import { connect } from 'react-redux';
+import * as Action from '../../actions';
+import { StyleBtn } from './styles';
 
 interface IBtnChangeProps {
   name: string;
@@ -14,7 +14,7 @@ const BtnChangeType = function({
   name,
   text,
   type,
-  changeType
+  changeType,
 }: IBtnChangeProps) {
   let active = false;
   if (type == name) active = true;
@@ -29,15 +29,15 @@ const BtnChangeType = function({
 
 const mapStateToProps = ({ type }) => {
   return {
-    type
+    type,
   };
 };
 
 const mapDispatchToProps = {
-  changeType: Action.compo_change_type
+  changeType: Action.eventBtnChangeType,
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(BtnChangeType);

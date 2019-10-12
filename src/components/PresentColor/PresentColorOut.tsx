@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import PresentColorTheme from "./PresentColor";
-import * as Redux from "redux";
-import { connect } from "react-redux";
-import { ThemeStore } from "../../interfaces";
-import * as Action from "../../actions";
-import Model from "../../options/modelsColor";
-import { PresentCell, PresentColorDiv } from "./styles";
+import React, { Component } from 'react';
+import PresentColorTheme from './PresentColor';
+import * as Redux from 'redux';
+import { connect } from 'react-redux';
+import { ThemeStore } from '../../interfaces';
+import * as Action from '../../actions';
+import Model from '../../options/modelsColor';
+import { PresentCell, PresentColorDiv } from './styles';
 
 interface StateProps {
   rgbMain: number[];
@@ -28,14 +28,13 @@ class PresentColorOut extends Component<Props> {
     this.props.add_color(this.props.rgbMain);
   }
 
-  name = "out_color";
+  name = 'out_color';
 
   getPresentStyle() {
-    const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
-    const opacity = this.props.opacity;
+    let { opacity, rgbMain } = this.props;
+    const backgroundColor = Model.rgb.getString(rgbMain, opacity);
     return {
       backgroundColor,
-      opacity
     };
   }
   render() {
@@ -52,18 +51,18 @@ class PresentColorOut extends Component<Props> {
   }
 }
 
-const mapStateToProps = ({ rgbMain, opacity }: ThemeStore): StateProps => {
+const mapStateToProps = ({ rgbMain, opacity }: ThemeStore) => {
   return {
     rgbMain,
-    opacity
+    opacity,
   };
 };
 
 const mapDispatchToProps = {
-  add_color: (mas: number[]) => {}
+  add_color: (mas: number[]) => {},
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(PresentColorOut);
