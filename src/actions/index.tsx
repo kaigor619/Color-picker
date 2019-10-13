@@ -3,6 +3,8 @@ import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
 
+let virtualStore = {};
+
 // Изменение rgbMain
 export const change_rgbMain = (rgb: number[]) => {
   return { rgbMain: rgb };
@@ -74,14 +76,15 @@ export const compo_change_type = (type: string, store) => {
 // Изменение opacity и hex
 export const compo_change_opacity = (opacity: number, store) => {
   let a = change_opacity(opacity);
-  let obj = { ...a };
+  let b;
   const { type, models } = store;
   if (type == 'hex') {
-    let b = compo_sync_model(store);
-    obj = { ...obj, ...b };
+    b = compo_sync_model({ ...store, ...a });
+    console.log(b);
   }
 
-  return obj;
+  // console.log({ ...a, ...b });
+  return { ...a, ...b };
 };
 
 // Синхронизация HSV => rgbMain
@@ -170,7 +173,7 @@ export const compo_change_model_for_index = (
   let val;
 
   if (type == 'hex') {
-    val = model;
+    val = value;
   } else {
     val = model.slice();
     val[index] = +value;
@@ -189,7 +192,6 @@ export const compo_change_model_for_index = (
     c = change_model([...val], store);
   }
 
-  console.log({ ...a, ...b, ...c });
   return { ...a, ...b, ...c };
 };
 
@@ -252,5 +254,5 @@ export const eventChangeInputCell = (val, index) => (dispatch, getStore) => {
   let store = getStore();
   let obj = compo_change_model_for_index(val, index, store);
 
-  // dispatch(change_store(obj));
+  dispatch(change_store(obj));
 };
