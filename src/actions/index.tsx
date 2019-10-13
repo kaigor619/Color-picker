@@ -131,13 +131,14 @@ export const compo_change_HSV = (hsv: any, store) => {
 };
 
 // Изменение model и затем HSV, rgbMain
-// export const compo_change_model = (model: string | number[])  => {
-//   const { type } = getStore();
-//   let rgb = Model[type][type + '_rgb'](model);
-//   let hsv = Convert.rgb_hsv(rgb);
-//   dispatch(change_HSV(hsv));
-//   dispatch(change_rgbMain(rgb));
-// };
+export const compo_change_model = (model: string | number[], store) => {
+  const { type } = store;
+  let rgb = Model[type][type + '_rgb'](model);
+  let hsv = Convert.rgb_hsv(rgb);
+  let a = change_HSV(hsv, store);
+  let b = change_rgbMain(rgb);
+  return { ...a, ...b };
+};
 
 // export const addColor = (value: string) => (
 //   dispatch: any,
@@ -159,32 +160,38 @@ export const compo_change_HSV = (hsv: any, store) => {
 //   // dispatch(change_prev_color(value));
 // };
 
-// export const compo_change_model_for_index = (
-//   value: string | number,
-//   index: number,
-// ) => (dispatch: any, getStore: () => ThemeStore) => {
-//   const { type, models } = getStore();
-//   let model = models[type];
-//   let val;
+export const compo_change_model_for_index = (
+  value: string | number,
+  index: number,
+  store,
+) => {
+  const { type, models } = store;
+  let model = models[type];
+  let val;
 
-//   if (type == 'hex') {
-//     val = model;
-//   } else {
-//     val = model.slice();
-//     val[index] = +value;
-//   }
-//   // console.log(model);
-//   let rgb = Model[type][type + '_rgb'](model);
-//   let hsv = Convert.rgb_hsv(rgb);
-//   dispatch(change_HSV(hsv));
-//   dispatch(change_rgbMain(rgb));
+  if (type == 'hex') {
+    val = model;
+  } else {
+    val = model.slice();
+    val[index] = +value;
+  }
+  // console.log(val);
 
-//   if (type == 'hex') {
-//     dispatch(change_model(val));
-//   } else {
-//     dispatch(change_model([...val]));
-//   }
-// };
+  let rgb = Model[type][type + '_rgb'](val);
+  let hsv = Convert.rgb_hsv(rgb);
+  let a = change_HSV(hsv, store);
+  let b = change_rgbMain(rgb);
+
+  let c;
+  if (type == 'hex') {
+    c = change_model(val, store);
+  } else {
+    c = change_model([...val], store);
+  }
+
+  console.log({ ...a, ...b, ...c });
+  return { ...a, ...b, ...c };
+};
 
 export const eventHSV = hsv => (dispatch, getStore) => {
   const store = getStore();
@@ -225,7 +232,6 @@ export const eventClickSwatch = index => (dispatch, getStore) => {
     index,
   };
   let obj = change_description(description);
-  // let b =
 
   dispatch(change_store(obj));
 };
@@ -240,4 +246,11 @@ export const eventClickAddSwatch = () => (dispatch, getStore) => {
   };
   let obj = change_description(description);
   dispatch(change_store(obj));
+};
+
+export const eventChangeInputCell = (val, index) => (dispatch, getStore) => {
+  let store = getStore();
+  let obj = compo_change_model_for_index(val, index, store);
+
+  // dispatch(change_store(obj));
 };

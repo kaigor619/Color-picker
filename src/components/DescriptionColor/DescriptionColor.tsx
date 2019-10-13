@@ -97,8 +97,9 @@ class DescriptionColor extends Component<Props> {
 
     if (model !== md || opacity !== op) {
       if (descr.edit || descr.save) {
-        let cl = Model[type].getString(model, opacity);
-        this.setState({ color: cl });
+        // let cl = Model[type].getString(model, opacity);
+        // this.setState({ color: cl });
+        bool = true;
       } else if (!descr.edit && !descr.save && !descr.remove) {
         this.props.change_description({
           ...descr,
@@ -131,7 +132,6 @@ class DescriptionColor extends Component<Props> {
     this.inputColor.current.focus();
   }
   handleClickDelete(e) {
-    // this.setState({ remove: true });
     const { description } = this.props;
     this.props.change_description({
       ...description,
@@ -158,6 +158,14 @@ class DescriptionColor extends Component<Props> {
     let colors = this.props.colors.slice();
     colors.push({ name, color });
     this.props.change_colors(colors);
+
+    this.props.change_description({
+      ...description,
+      edit: false,
+      remove: false,
+      save: false,
+      enable: true,
+    });
   }
   onCancelColor() {
     const { description } = this.props;
@@ -215,7 +223,6 @@ class DescriptionColor extends Component<Props> {
     });
   }
   onNoDeleteColor() {
-    // this.setState({ remove: false });
     const { description } = this.props;
     this.props.change_description({
       ...description,
@@ -226,8 +233,8 @@ class DescriptionColor extends Component<Props> {
   }
 
   render() {
-    const { description } = this.props;
-    const { enable, index } = description;
+    const { description, type, model, opacity } = this.props;
+    const { enable, index, save, edit } = description;
     if (!enable) return null;
     const { warningOptions } = this;
 
@@ -239,6 +246,13 @@ class DescriptionColor extends Component<Props> {
     }
 
     let { color, name } = this.state;
+    if (save || edit) {
+      color = Model[type].getString(model, opacity);
+      if (save) {
+        this.inputColor.current.removeAttribute('disabled');
+        this.inputColor.current.focus();
+      }
+    }
 
     return (
       <StyleDescriptionColor>
