@@ -26,15 +26,13 @@ export const change_model = (value: number[] | string, store) => {
   return { models: { ...models, [type]: value } };
 };
 
-export const change_users_colors = (
-  colors: { name: string; color: string }[],
-) => {
+export const change_colors = (colors: { name: string; color: string }[]) => {
   return { colors };
 };
 
 // Изменение PrevColor
-export const change_prev_color = prevColor => {
-  return { prevColor };
+export const change_prevColor = (prevColor, main) => {
+  return main ? { prevColor } : {};
 };
 
 // Изменение description
@@ -67,28 +65,26 @@ export const change_HSV = (hsv: any, store) => {
 };
 
 // Изменение Типа и изменение полей model
-export const compo_change_type = (type: string, store) => {
+export const cx_type_model = (type: string, store) => {
   let a = change_type(type);
-  let b = compo_sync_model({ ...store, type });
+  let b = sync_model_from_rgbMain({ ...store, type });
   return { ...a, ...b };
 };
 
 // Изменение opacity и hex
-export const compo_change_opacity = (opacity: number, store) => {
+export const cx_opacity_hex = (opacity: number, store) => {
   let a = change_opacity(opacity);
   let b;
   const { type, models } = store;
   if (type == 'hex') {
-    b = compo_sync_model({ ...store, ...a });
+    b = sync_model_from_rgbMain({ ...store, ...a });
     console.log(b);
   }
-
-  // console.log({ ...a, ...b });
   return { ...a, ...b };
 };
 
 // Синхронизация HSV => rgbMain
-export const compo_sync_rgbMain = store => {
+export const sync_rgbMain = store => {
   const { H, S, V } = store;
   let rgb = Convert.hsv_rgb(H, S, V);
   let obj = change_rgbMain(rgb);
@@ -96,7 +92,7 @@ export const compo_sync_rgbMain = store => {
 };
 
 // Синхнонизация rgbMain => model
-export const compo_sync_model = store => {
+export const sync_model_from_rgbMain = store => {
   const { rgbMain, type, opacity } = store;
   let modelValue = Model[type]['rgb_' + type](rgbMain, opacity);
   let a = change_model(modelValue, store);
@@ -105,7 +101,8 @@ export const compo_sync_model = store => {
 };
 
 // Изменение HSV и rgbMain и model
-export const compo_change_HSV = (hsv: any, store) => {
+export const cx_HSV_rgbMain_model = (hsv: any, store) => {
+  // let { type, opacity, models } = store;
   let { type, opacity, models } = store;
   let objStore = {};
   let [H, S, V] = hsv;
@@ -121,7 +118,7 @@ export const compo_change_HSV = (hsv: any, store) => {
 
   objStore['rgbMain'] = Convert.hsv_rgb(H, S, V);
 
-  let b = compo_sync_model({
+  let b = sync_model_from_rgbMain({
     type,
     opacity,
     rgbMain: objStore['rgbMain'],
@@ -133,37 +130,18 @@ export const compo_change_HSV = (hsv: any, store) => {
   return objStore;
 };
 
-// Изменение model и затем HSV, rgbMain
-export const compo_change_model = (model: string | number[], store) => {
-  const { type } = store;
-  let rgb = Model[type][type + '_rgb'](model);
+export const addColor = (value: string, main: boolean, store) => {
+  const type = Checking.check_color(value);
+  let { val, opacity } = Model[type].getWorkView(value);
+  let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
-  let a = change_HSV(hsv, store);
-  let b = change_rgbMain(rgb);
-  return { ...a, ...b };
+  let a = cx_HSV_rgbMain_model(hsv, store);
+  let b = cx_opacity_hex(opacity, store);
+  let c = change_prevColor(value, main);
+  return { ...a, ...b, ...c };
 };
 
-// export const addColor = (value: string) => (
-//   dispatch: any,
-//   getStore: () => ThemeStore,
-// ) => {
-//   const type = Checking.check_color(value);
-
-//   let { val, opacity } = Model[type].getWorkView(value);
-//   console.log(val);
-//   let rgb = Model[type][type + '_rgb'](val);
-//   let hsv = Convert.rgb_hsv(rgb);
-//   dispatch(compo_change_type(type));
-//   dispatch(compo_change_opacity(opacity));
-//   dispatch(change_HSV(hsv));
-//   dispatch(change_rgbMain(rgb));
-//   dispatch(change_model(val));
-//   // dispatch(compo_sync_model());
-//   // dispatch(compo_change_model(val));
-//   // dispatch(change_prev_color(value));
-// };
-
-export const compo_change_model_for_index = (
+export const cx_HSV_rgbMain_model_from_model = (
   value: string | number,
   index: number,
   store,
@@ -178,7 +156,6 @@ export const compo_change_model_for_index = (
     val = model.slice();
     val[index] = +value;
   }
-  // console.log(val);
 
   let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
@@ -197,25 +174,25 @@ export const compo_change_model_for_index = (
 
 export const eventHSV = hsv => (dispatch, getStore) => {
   const store = getStore();
-  let obj = compo_change_HSV(hsv, store);
+  let obj = cx_HSV_rgbMain_model(hsv, store);
   dispatch(change_store(obj));
 };
 
 export const eventOpacity = opacity => (dispatch, getStore) => {
   const store = getStore();
-  let obj = compo_change_opacity(opacity, store);
+  let obj = cx_opacity_hex(opacity, store);
   dispatch(change_store(obj));
 };
 
 export const eventBtnChangeType = type => (dispatch, getStore) => {
   const store = getStore();
-  let obj = compo_change_type(type, store);
+  let obj = cx_type_model(type, store);
   dispatch(change_store(obj));
 };
 
 export const eventChangeColors = colors => (dispatch, getStore) => {
   const store = getStore();
-  let obj = change_users_colors(colors);
+  let obj = change_colors(colors);
   dispatch(change_store(obj));
 };
 
@@ -233,7 +210,12 @@ export const eventClickSwatch = index => (dispatch, getStore) => {
     enable: true,
     index,
   };
-  let obj = change_description(description);
+  let store = getStore();
+  let color = store.colors[index].color;
+  let a = addColor(color, false, store);
+  let b = change_description(description);
+
+  let obj = { ...a, ...b };
 
   dispatch(change_store(obj));
 };
@@ -250,9 +232,23 @@ export const eventClickAddSwatch = () => (dispatch, getStore) => {
   dispatch(change_store(obj));
 };
 
-export const eventChangeInputCell = (val, index) => (dispatch, getStore) => {
+export const eventChangeInputModel = (val, index) => (dispatch, getStore) => {
   let store = getStore();
-  let obj = compo_change_model_for_index(val, index, store);
+  let obj = cx_HSV_rgbMain_model_from_model(val, index, store);
+
+  dispatch(change_store(obj));
+};
+
+export const eventChangeInputOpacity = val => (dispatch, getStore) => {
+  let store = getStore();
+  let obj = cx_opacity_hex(val, store);
+
+  dispatch(change_store(obj));
+};
+
+export const eventClickPrevColor = () => (dispatch, getStore) => {
+  let store = getStore();
+  let obj = addColor(store.prevColor, true, store);
 
   dispatch(change_store(obj));
 };

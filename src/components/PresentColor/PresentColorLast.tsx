@@ -12,7 +12,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  add_color: (mas: any) => void;
+  add_color: () => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -24,7 +24,7 @@ class PresentColorLast extends Component<Props> {
   }
 
   handleClick() {
-    this.props.add_color(this.props.prevColor);
+    this.props.add_color();
   }
   name = 'last_color';
 
@@ -57,7 +57,7 @@ const mapStateToProps = ({ prevColor }: ThemeStore): StateProps => {
 };
 
 const mapDispatchToProps = {
-  add_color: (mas: number[]) => {},
+  add_color: Action.eventClickPrevColor,
 };
 
 export default connect(

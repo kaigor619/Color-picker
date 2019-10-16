@@ -100,7 +100,12 @@ class DescriptionColor extends Component<Props> {
         // let cl = Model[type].getString(model, opacity);
         // this.setState({ color: cl });
         bool = true;
-      } else if (!descr.edit && !descr.save && !descr.remove) {
+      } else if (
+        !descr.edit &&
+        !descr.save &&
+        !descr.remove &&
+        descr.index == description.index
+      ) {
         this.props.change_description({
           ...descr,
           enable: false,

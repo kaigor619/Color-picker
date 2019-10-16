@@ -118,13 +118,9 @@ const mapStateToProps = ({ type, models, opacity }: any): StateProps => {
 };
 
 const mapDispatchToProps: DispatchProps = {
-  changeModel: Action.eventChangeInputCell,
-  changeOpacity: Action.change_opacity,
+  changeModel: Action.eventChangeInputModel,
+  changeOpacity: Action.eventChangeInputOpacity,
 };
-
-// changeOpacity: (opacity: number) => {
-//   dispatch(Action.change_opacity(opacity));
-// }
 
 export default connect(
   mapStateToProps,

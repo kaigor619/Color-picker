@@ -1,5 +1,9 @@
 import { ThemeAction, ThemeStore } from '../interfaces';
 
+function showWork(str) {
+  console.log(str);
+}
+
 export const InitialState: ThemeStore = {
   H: 0,
   S: 0,
@@ -12,6 +16,10 @@ export const InitialState: ThemeStore = {
     hex: '#fefefe',
     hsl: [0, 0, 100],
     rgb: [255, 255, 255],
+  },
+  sync: {
+    main: false,
+    functions: [showWork, showWork],
   },
   description: {
     enable: false,
@@ -95,11 +103,12 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
         V: action.payload == null ? state.V : action.payload,
       };
 
-    case 'CHANGE_STORE':
+    case 'CHANGE_STORE': {
       return {
         ...state,
         ...action.payload,
       };
+    }
 
     default:
       return state;

@@ -17,6 +17,12 @@ export interface Idescr {
   edit: boolean;
 }
 
+type Ifunctions = (str: string) => void;
+export interface Isync {
+  main: boolean;
+  functions: Ifunctions[];
+}
+
 export interface IuserColors {
   description: Idescr;
   colors: Icolors;
@@ -41,4 +47,5 @@ export interface ThemeStore {
   type: string;
   models: Models;
   colors: Icolors;
+  sync: Isync;
 }
