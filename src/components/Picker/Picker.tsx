@@ -5,6 +5,7 @@ import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
 
 import { BlockPicker, BlockCircle } from './styles';
+
 // Интерфейсы
 interface StateProps {
   H: number;

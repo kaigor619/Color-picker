@@ -13,6 +13,20 @@ const Checking = {
 
     return type;
   },
+  check_arrFunctions: (functions): boolean => {
+    let bool = false;
+
+    if (functions == undefined) return false;
+
+    if (typeof functions == 'object' && functions.slice) {
+      if (functions.length > 0) {
+        if (functions.every(item => typeof item == 'function')) {
+          return true;
+        }
+      }
+    }
+    return bool;
+  },
 };
 
 export default Checking;

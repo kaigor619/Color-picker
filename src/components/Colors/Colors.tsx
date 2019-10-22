@@ -6,7 +6,7 @@ import { Icolors, IDescription } from '../../interfaces';
 import DescriptionColor from '../DescriptionColor';
 import { StyleCustomColors, StyleAddColor } from './styles';
 interface StateProps {
-  colors: Icolors;
+  colors: Icolors[];
   description: IDescription;
 }
 

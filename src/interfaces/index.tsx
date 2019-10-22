@@ -9,7 +9,7 @@ export interface Models {
   rgb: number[];
 }
 
-export type Icolors = { name: string; color: string }[];
+export type Icolors = { name: string; color: string };
 
 export interface Idescr {
   enable: boolean;
@@ -17,16 +17,7 @@ export interface Idescr {
   edit: boolean;
 }
 
-type Ifunctions = (str: string) => void;
-export interface Isync {
-  main: boolean;
-  functions: Ifunctions[];
-}
-
-export interface IuserColors {
-  description: Idescr;
-  colors: Icolors;
-}
+export type Ifunctions = (str: string, prevColor: string) => void;
 
 export interface IDescription {
   enable: boolean;
@@ -34,6 +25,20 @@ export interface IDescription {
   edit: boolean;
   remove: boolean;
   index: number;
+}
+
+export interface ISync {
+  syncColor: Ifunctions[];
+  callSave: Ifunctions[];
+  callCancel: Ifunctions[];
+}
+
+export interface IColorsOptions {
+  color: string;
+  syncColors: Ifunctions[] | [];
+  callSave: Ifunctions[] | [];
+  callCancel: Ifunctions[] | [];
+  on: boolean;
 }
 
 export interface ThemeStore {
@@ -46,6 +51,8 @@ export interface ThemeStore {
   description: IDescription;
   type: string;
   models: Models;
-  colors: Icolors;
-  sync: Isync;
+  colors: Icolors[];
+  main: boolean;
+  enable: boolean;
+  sync: ISync;
 }

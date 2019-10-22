@@ -20,12 +20,12 @@ interface StateProps {
   type: string;
   opacity: number;
   description: IDescription;
-  colors: Icolors;
+  colors: Icolors[];
 }
 
 interface DispatchProps {
   change_description: (obj: IDescription) => void;
-  change_colors: (colors: Icolors) => void;
+  change_colors: (colors: Icolors[]) => void;
 }
 
 type Props = StateProps & DispatchProps;

@@ -1,8 +1,6 @@
 import { ThemeAction, ThemeStore } from '../interfaces';
 
-function showWork(str) {
-  console.log(str);
-}
+function showWork(str: string) {}
 
 export const InitialState: ThemeStore = {
   H: 0,
@@ -17,9 +15,12 @@ export const InitialState: ThemeStore = {
     hsl: [0, 0, 100],
     rgb: [255, 255, 255],
   },
+  enable: false,
+  main: false,
   sync: {
-    main: false,
-    functions: [showWork, showWork],
+    syncColor: [showWork, showWork],
+    callSave: [showWork, showWork],
+    callCancel: [showWork, showWork],
   },
   description: {
     enable: false,

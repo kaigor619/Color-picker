@@ -1,4 +1,9 @@
-import { ThemeAction, ThemeStore, IDescription } from '../interfaces';
+import {
+  ThemeAction,
+  ThemeStore,
+  IDescription,
+  Ifunctions,
+} from '../interfaces';
 import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
@@ -6,8 +11,13 @@ import Checking from '../options/checking';
 let virtualStore = {};
 
 // Изменение rgbMain
-export const change_rgbMain = (rgb: number[]) => {
-  return { rgbMain: rgb };
+export const change_rgbMain = (rgbMain: number[]) => {
+  return { rgbMain };
+};
+
+// Изменение enable picker
+export const change_enable = (enable: boolean) => {
+  return { enable };
 };
 
 // Изменение opacity
@@ -22,7 +32,15 @@ export const change_type = (type: string) => {
 
 // Изменение model
 export const change_model = (value: number[] | string, store) => {
-  const { type, models } = store;
+  const { type, models, main, sync, opacity } = store;
+  let { syncColors } = sync;
+  if (main) {
+    let color = Model[type].getString(value, opacity);
+    syncColors.forEach(element => {
+      element(color);
+    });
+  }
+
   return { models: { ...models, [type]: value } };
 };
 
@@ -40,6 +58,27 @@ export const change_description = (description: IDescription) => {
   return { description };
 };
 
+// Изменение main
+export const change_main = (main: boolean) => {
+  return { main };
+};
+
+// Изменение syncColors
+export const change_syncColors = (syncColors: Ifunctions[]) => {
+  return { syncColors };
+};
+
+// Изменение callSave
+export const change_callSave = (callSave: Ifunctions[]) => {
+  return { callSave };
+};
+
+// Изменение callCancel
+export const change_callCancel = (callCancel: Ifunctions[]) => {
+  return { callCancel };
+};
+
+// Изменение Store
 const change_store = obj => {
   return {
     type: 'CHANGE_STORE',
@@ -48,7 +87,7 @@ const change_store = obj => {
 };
 
 // Изменение HSV (change_h, change_s, change_v)
-export const change_HSV = (hsv: any, store) => {
+export const cx_HSV = (hsv: any, store) => {
   let objStore = {};
   let [H, S, V] = hsv;
 
@@ -75,10 +114,19 @@ export const cx_type_model = (type: string, store) => {
 export const cx_opacity_hex = (opacity: number, store) => {
   let a = change_opacity(opacity);
   let b;
-  const { type, models } = store;
+  const { models, main, sync, type } = store;
+  let { syncColors } = sync;
   if (type == 'hex') {
     b = sync_model_from_rgbMain({ ...store, ...a });
-    console.log(b);
+  }
+
+  if (main) {
+    console.log(models[type]);
+    let color = Model[type].getString(b.models.hex, a.opacity);
+    // console.log(color);
+    syncColors.forEach(element => {
+      element(color);
+    });
   }
   return { ...a, ...b };
 };
@@ -119,6 +167,7 @@ export const cx_HSV_rgbMain_model = (hsv: any, store) => {
   objStore['rgbMain'] = Convert.hsv_rgb(H, S, V);
 
   let b = sync_model_from_rgbMain({
+    ...store,
     type,
     opacity,
     rgbMain: objStore['rgbMain'],
@@ -135,10 +184,13 @@ export const addColor = (value: string, main: boolean, store) => {
   let { val, opacity } = Model[type].getWorkView(value);
   let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
-  let a = cx_HSV_rgbMain_model(hsv, store);
-  let b = cx_opacity_hex(opacity, store);
-  let c = change_prevColor(value, main);
-  return { ...a, ...b, ...c };
+  let a = cx_HSV(hsv, store);
+  let b = change_rgbMain(rgb);
+  let e = change_opacity(opacity);
+  let c = change_type(type);
+  let d = change_model(val, { ...store, type });
+  let k = change_prevColor(value, main);
+  return { ...a, ...b, ...c, ...d, ...e, ...k };
 };
 
 export const cx_HSV_rgbMain_model_from_model = (
@@ -159,7 +211,7 @@ export const cx_HSV_rgbMain_model_from_model = (
 
   let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
-  let a = change_HSV(hsv, store);
+  let a = cx_HSV(hsv, store);
   let b = change_rgbMain(rgb);
 
   let c;
@@ -251,4 +303,78 @@ export const eventClickPrevColor = () => (dispatch, getStore) => {
   let obj = addColor(store.prevColor, true, store);
 
   dispatch(change_store(obj));
+};
+
+export const eventAddColor = options => (dispatch, getStore) => {
+  let store = getStore();
+  const { enable } = store;
+  let { color, syncColors, callSave, callCancel } = options;
+
+  let a = addColor(color, true, store);
+
+  let b = change_main(false);
+  let c = change_syncColors([]);
+  let d = change_callSave([]);
+  let e = change_callCancel([]);
+
+  if (Checking.check_arrFunctions(syncColors)) {
+    b = change_main(true);
+    c = change_syncColors(syncColors);
+  }
+  if (Checking.check_arrFunctions(callSave)) {
+    d = change_callSave(callSave);
+  }
+  if (Checking.check_arrFunctions(callCancel)) {
+    e = change_callCancel(callCancel);
+  }
+
+  let k;
+  if (!enable) k = change_enable(true);
+
+  let obj = { ...a, ...b, ...k, sync: { ...c, ...d, ...e } };
+
+  dispatch(change_store(obj));
+};
+
+export const eventClickOk = () => (dispatch, getStore) => {
+  let {
+    sync: { callSave },
+    models,
+    type,
+    opacity,
+  } = getStore();
+  let color = Model[type].getString(models[type], opacity);
+
+  callSave.forEach(func => {
+    func(color);
+  });
+
+  let a = change_enable(false);
+  let b = change_main(false);
+
+  let obj = { ...a, ...b };
+
+  dispatch(change_store(obj));
+};
+
+export const eventClickCancel = () => (dispatch, getStore) => {
+  let {
+    sync: { callCancel },
+    models,
+    type,
+    opacity,
+    prevColor,
+  } = getStore();
+  let color = Model[type].getString(models[type], opacity);
+
+  callCancel.forEach(func => {
+    func(color, prevColor);
+  });
+
+  let a = change_enable(false);
+  let b = change_main(false);
+
+  let obj = { ...a, ...b };
+
+  dispatch(change_store(a));
 };
