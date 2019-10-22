@@ -27,6 +27,7 @@ let Model = {
 
       str_arr.forEach((item, i) => {
         val[i] = +parseInt(item);
+        if (i == 3) val[i] = +Number(item).toFixed(2);
       });
 
       if (str.indexOf('rgba') >= 0 && val[3]) {
@@ -64,9 +65,11 @@ let Model = {
 
       let val: number[] = [];
       let opacity: number = 1;
+      // debugger;
 
       str_arr.forEach((item, i) => {
         val[i] = +parseInt(item);
+        if (i == 3) val[i] = +Number(item).toFixed(2);
       });
 
       if (str.indexOf('hsla') >= 0 && val[3]) {

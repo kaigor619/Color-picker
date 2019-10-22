@@ -10,6 +10,14 @@ import Checking from '../options/checking';
 
 let virtualStore = {};
 
+export function connect_obj(...mas) {
+  let obj = {};
+  mas.forEach(element => {
+    obj = { ...obj, ...element };
+  });
+  return obj;
+}
+
 // Изменение rgbMain
 export const change_rgbMain = (rgbMain: number[]) => {
   return { rgbMain };
@@ -107,28 +115,30 @@ export const cx_HSV = (hsv: any, store) => {
 export const cx_type_model = (type: string, store) => {
   let a = change_type(type);
   let b = sync_model_from_rgbMain({ ...store, type });
-  return { ...a, ...b };
+  // return { ...a, ...b };
+  return connect_obj(a, b);
 };
 
 // Изменение opacity и hex
 export const cx_opacity_hex = (opacity: number, store) => {
   let a = change_opacity(opacity);
-  let b;
+
   const { models, main, sync, type } = store;
+  let b = { models };
   let { syncColors } = sync;
   if (type == 'hex') {
     b = sync_model_from_rgbMain({ ...store, ...a });
   }
 
   if (main) {
-    console.log(models[type]);
-    let color = Model[type].getString(b.models.hex, a.opacity);
+    let color = Model[type].getString(b.models[type], a.opacity);
     // console.log(color);
     syncColors.forEach(element => {
       element(color);
     });
   }
-  return { ...a, ...b };
+  // return { ...a, ...b };
+  return connect_obj(a, b);
 };
 
 // Синхронизация HSV => rgbMain
@@ -182,6 +192,7 @@ export const cx_HSV_rgbMain_model = (hsv: any, store) => {
 export const addColor = (value: string, main: boolean, store) => {
   const type = Checking.check_color(value);
   let { val, opacity } = Model[type].getWorkView(value);
+  // console.log(opacity);
   let rgb = Model[type][type + '_rgb'](val);
   let hsv = Convert.rgb_hsv(rgb);
   let a = cx_HSV(hsv, store);
@@ -190,7 +201,8 @@ export const addColor = (value: string, main: boolean, store) => {
   let c = change_type(type);
   let d = change_model(val, { ...store, type });
   let k = change_prevColor(value, main);
-  return { ...a, ...b, ...c, ...d, ...e, ...k };
+  return connect_obj(a, b, c, d, e, k);
+  // return { ...a, ...b, ...c, ...d, ...e, ...k };
 };
 
 export const cx_HSV_rgbMain_model_from_model = (
@@ -221,7 +233,8 @@ export const cx_HSV_rgbMain_model_from_model = (
     c = change_model([...val], store);
   }
 
-  return { ...a, ...b, ...c };
+  // return { ...a, ...b, ...c };
+  return connect_obj(a, b, c);
 };
 
 export const eventHSV = hsv => (dispatch, getStore) => {
@@ -267,7 +280,7 @@ export const eventClickSwatch = index => (dispatch, getStore) => {
   let a = addColor(color, false, store);
   let b = change_description(description);
 
-  let obj = { ...a, ...b };
+  let obj = connect_obj(a, b);
 
   dispatch(change_store(obj));
 };
@@ -331,7 +344,9 @@ export const eventAddColor = options => (dispatch, getStore) => {
   let k;
   if (!enable) k = change_enable(true);
 
-  let obj = { ...a, ...b, ...k, sync: { ...c, ...d, ...e } };
+  // let obj = { ...a, ...b, ...k, sync: { ...c, ...d, ...e } };
+  let sync = connect_obj(c, d, e);
+  let obj = connect_obj(a, b, k, { sync });
 
   dispatch(change_store(obj));
 };
@@ -345,16 +360,19 @@ export const eventClickOk = () => (dispatch, getStore) => {
   } = getStore();
   let color = Model[type].getString(models[type], opacity);
 
-  callSave.forEach(func => {
-    func(color);
-  });
-
   let a = change_enable(false);
   let b = change_main(false);
 
-  let obj = { ...a, ...b };
+  // let obj = { ...a, ...b };
+  let obj = connect_obj(a, b);
 
   dispatch(change_store(obj));
+
+  Promise.resolve().then(() => {
+    callSave.forEach(func => {
+      func(color);
+    });
+  });
 };
 
 export const eventClickCancel = () => (dispatch, getStore) => {
@@ -367,14 +385,17 @@ export const eventClickCancel = () => (dispatch, getStore) => {
   } = getStore();
   let color = Model[type].getString(models[type], opacity);
 
-  callCancel.forEach(func => {
-    func(color, prevColor);
-  });
-
   let a = change_enable(false);
   let b = change_main(false);
 
-  let obj = { ...a, ...b };
+  // let obj = { ...a, ...b };
+  let obj = connect_obj(a, b);
 
-  dispatch(change_store(a));
+  dispatch(change_store(obj));
+
+  Promise.resolve().then(() => {
+    callCancel.forEach(func => {
+      func(color, prevColor);
+    });
+  });
 };

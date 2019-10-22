@@ -10,46 +10,41 @@ class App extends Component<any, any> {
     this.saveColor = this.saveColor.bind(this);
   }
   syncColor(color) {
-    // this.swatch.current.style.backgroundColor = color;
-    // this.input.current.value = color;
-    this.setState({ syncColor: color });
+    this.swatch.current.style.backgroundColor = color;
+    this.input.current.value = color;
   }
   saveColor(color, prevColor) {
-    this.setState({ color, sync: false, on: false });
-
-    // this.swatch.current.backgroundColor = color;
+    this.setState({ color, on: false });
+    this.swatch.current.backgroundColor = color;
   }
   cancelColor(color, prevColor) {
-    this.setState({ color: prevColor, sync: false });
-    // this.swatch.current.backgroundColor = prevColor;
+    this.setState({ color: prevColor, on: false });
+    this.swatch.current.style.backgroundColor = prevColor;
   }
 
   handleChange(e) {
     this.setState({ color: e.target.value });
   }
   handleClick(e) {
-    this.setState({ on: true, sync: true });
+    this.setState({ on: true });
   }
   swatch: any = createRef();
   input: any = createRef();
   state = {
-    color: '#fff',
-    syncColor: '#fff',
-    sync: false,
+    color: 'hsla(154, 64%, 44%, 0.22)',
     on: false,
   };
 
   render() {
-    let { color, on, sync, syncColor } = this.state;
-    if (sync) color = syncColor;
-
+    const { color, on } = this.state;
     let ColorOptions: IColorsOptions = {
-      color: this.state.color,
+      color,
       syncColors: [this.syncColor],
       callSave: [this.saveColor],
       callCancel: [this.cancelColor],
       on,
     };
+    console.log(color);
 
     return (
       <div>
@@ -58,7 +53,6 @@ class App extends Component<any, any> {
             <div className="my_swatch_opacity"></div>
             <div
               className="my_swatch"
-              style={{ color }}
               id="my_swatch"
               onClick={this.handleClick.bind(this)}
               ref={this.swatch}
