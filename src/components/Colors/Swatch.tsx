@@ -54,6 +54,7 @@ const SwatchColor = styled.div`
 
 const OpacitySwatch = styled.div`
   background: url('../svg/opacity.svg') repeat;
+  background-size: 100% 100%;
   border-radius: 3px;
   cursor: pointer;
   position: relative;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import { Icolors, IDescription } from '../../interfaces';
 import DescriptionColor from '../DescriptionColor';
-import { StyleCustomColors, StyleAddColor } from './styles';
+import './styles.css';
 interface StateProps {
   colors: Icolors[];
   description: IDescription;
@@ -39,16 +39,16 @@ class Colors extends Component<Props> {
 
     return (
       <React.Fragment>
-        <StyleCustomColors className="custom-colors">
+        <div className="cp_custom-colors">
           {swatches}
-          <StyleAddColor
+          <div
             onClick={() => this.props.swatchAdd()}
-            className="add_new_color"
-            id="add_new_color"
+            className="cp_add-color"
+            id="cp_add-color"
           >
             <img src="./svg/plus-symbol.svg" alt="" />
-          </StyleAddColor>
-        </StyleCustomColors>
+          </div>
+        </div>
         {DescriptionComponent}
       </React.Fragment>
     );

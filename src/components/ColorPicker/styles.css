@@ -1,0 +1,46 @@
+.cp {
+  position: absolute;
+  margin: 0 auto;
+  top: 10%;
+  left: 40%;
+  background-color: #272f42;
+  border-radius: 3px;
+}
+
+.cp_container {
+  padding: 0 10px 0 10px;
+}
+
+.cp_settings {
+  display: flex;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.cp_presents-color {
+  width: 70px;
+}
+
+.cp_regulate-color {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.cp_models-copy {
+  display: flex;
+  align-items: center;
+}
+
+.cp_list-models {
+  width: 100%;
+}
+.cp_list-type-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}

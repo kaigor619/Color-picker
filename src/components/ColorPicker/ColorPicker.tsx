@@ -11,29 +11,34 @@ import MainBtns from '../MainBtns';
 import { Ifunctions, IColorsOptions } from '../../interfaces';
 import * as Action from '../../actions';
 import Checking from '../../options/checking';
-import {
-  ColorPickerDiv,
-  ColorPickerContainer,
-  ColorSettings,
-  WrapPresentColors,
-  WrapRegulateColor,
-  WrapListModelsInput,
-  ListModelsInput,
-  ListTypeColor,
-} from './styles';
+import hotkeys from 'kai-hotkeys';
+
+import './styles.css';
 
 interface StateProps {
   enable: boolean;
 }
 interface DispatchProps {
   addColor: (options: IColorsOptions) => void;
+  change_enable: (enable: boolean) => void;
 }
 interface OwnProps {
   options: IColorsOptions;
 }
 type Props = StateProps & DispatchProps & OwnProps;
 
-class ColorPicker extends Component<Props> {
+class cp extends Component<Props> {
+  componentDidMount() {
+    hotkeys.add(
+      'ctrl+alt+c',
+      (event, handler) => {
+        const { enable, change_enable } = this.props;
+        if (enable) change_enable(false);
+        else change_enable(true);
+      },
+      { pressingOnce: true },
+    );
+  }
   shouldComponentUpdate(nextProps, nextState) {
     let boolProps = false;
     let bool = false;
@@ -76,46 +81,42 @@ class ColorPicker extends Component<Props> {
   render() {
     if (!this.props.enable) return null;
     return (
-      <ColorPickerDiv
-        active={true}
-        className="kai-color-picker"
-        id="kai-color-picker"
-      >
+      <div className="cp" id="cp">
         <Picker width={250} height={140} />
 
-        <ColorPickerContainer className="colorpicker-container">
-          <ColorSettings className="color-setting">
-            <WrapPresentColors className="wrap-presents-color">
+        <div className="cp_container">
+          <div className="cp_settings">
+            <div className="cp_presents-color">
               <PresentColorLast />
               <PresentColorOut />
-            </WrapPresentColors>
+            </div>
 
-            <WrapRegulateColor className="wrap-regulate-color">
+            <div className="cp_regulate-color ">
               <RegulateColor />
               <RegulateOpacity />
-            </WrapRegulateColor>
-          </ColorSettings>
+            </div>
+          </div>
 
-          <div className="wrap-models-color">
-            <WrapListModelsInput>
-              <ListModelsInput>
+          <div className="cp_models">
+            <div className="cp_models-copy">
+              <ul className="cp_list-models">
                 <RgbInput />
                 <HslInput />
                 <HexInput />
-              </ListModelsInput>
+              </ul>
               <CopyColor />
-            </WrapListModelsInput>
-            <ListTypeColor className="list-type-color">
+            </div>
+            <ul className="cp_list-type-color">
               <BtnChangeType name="hex" text="Hex" />
               <BtnChangeType name="rgb" text="Rgb" />
               <BtnChangeType name="hsl" text="Hsl" />
-            </ListTypeColor>
+            </ul>
           </div>
           <Colors />
 
           <MainBtns />
-        </ColorPickerContainer>
-      </ColorPickerDiv>
+        </div>
+      </div>
     );
   }
 }
@@ -123,9 +124,10 @@ const mapStateToProps = ({ enable }) => ({ enable });
 
 const mapDispatchToProps = {
   addColor: Action.eventAddColor,
+  change_enable: Action.event_change_enable,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ColorPicker);
+)(cp);

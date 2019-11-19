@@ -5,6 +5,8 @@ import { Icolors, IDescription } from '../../interfaces';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 
+import './styles.css';
+
 import {
   StyleDescriptionColor,
   DescriptionSwatch,
@@ -260,7 +262,7 @@ class DescriptionColor extends Component<Props> {
     }
 
     return (
-      <StyleDescriptionColor>
+      <div className="cp_descr-color">
         <WrapDescrPart>
           <WrapDescrOpacity>
             <DescriptionSwatch color={color} />
@@ -286,7 +288,7 @@ class DescriptionColor extends Component<Props> {
           />
         </WrapDescrPart>
         {warningComponent}
-      </StyleDescriptionColor>
+      </div>
     );
   }
 }

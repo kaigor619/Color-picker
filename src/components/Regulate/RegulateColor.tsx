@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
-// import RegulateTheme, { StateProps, DispatchProps } from "./RegulateTheme";
-import { WrapLineRegulate, StyleRegulateColor, RegulateCircle } from './styles';
+
+import './styles.css';
 
 export interface StateProps {
   H: number;
@@ -19,8 +19,6 @@ class RegulateColor extends Component<Props> {
     super(props);
     this.cPos = this.cPos.bind(this);
     this.handleDown = this.handleDown.bind(this);
-    this.touchStart = this.touchStart.bind(this);
-    this.touchEnd = this.touchEnd.bind(this);
     this.touchMove = this.touchMove.bind(this);
   }
   regulateLine: any = React.createRef();
@@ -47,50 +45,49 @@ class RegulateColor extends Component<Props> {
     this.setState({});
 
     // Events
-    // elem.onclick = this.cPos;
     elem.onmousedown = e => {
-      this.cPos(e);
-      document.onmousemove = this.cPos;
+      this.cPos(e, true);
+      document.onmousemove = e => this.cPos(e, true);
 
       document.onmouseup = () => {
         document.onmousemove = null;
       };
     };
 
-    elem.addEventListener('touchstart', this.touchStart, false);
-    elem.addEventListener('touchend', this.touchEnd, false);
+    // window.onresize = e => {
+    //   // if (window.onresize && typeof window.onresize == 'function') window.onresize();
+    //   //   line.left = elem.getBoundingClientRect().left;
+    //   //   this.setState({});
+
+    // };
+
+    elem.addEventListener('touchstart', this.touchMove, false);
+    elem.addEventListener('touchend', this.touchMove, false);
     elem.addEventListener('touchmove', this.touchMove, false);
   }
 
-  touchStart(e: any) {
-    this.touchMove(e);
-  }
-  touchEnd(e: any) {
-    this.touchMove(e);
-  }
-
   touchMove(e: any) {
-    e.preventDefault();
+    e.stopPropagation();
     var touches = e.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
         clientX: touches[i].pageX,
         clientY: touches[i].pageY,
       };
-      this.cPos(newEvent);
+      this.cPos(newEvent, false);
     }
   }
 
   handleDown(e: any) {
-    document.onmousemove = this.cPos;
+    document.onmousemove = e => this.cPos(e, true);
 
     document.onmouseup = () => {
       document.onmousemove = null;
     };
   }
 
-  cPos(c: any) {
-    c.preventDefault();
+  cPos(c: any, bool: boolean) {
+    if (bool) c.preventDefault();
     const { line } = this;
     let left, a;
     left = Number(c.clientX - line.left).toFixed(2);
@@ -127,19 +124,20 @@ class RegulateColor extends Component<Props> {
   }
 
   render() {
+    const style = this.getStyle();
     return (
-      <WrapLineRegulate>
-        <StyleRegulateColor ref={this.regulateLine}></StyleRegulateColor>
-        <RegulateCircle
+      <div className="cp_w-reg">
+        <div className="cp_reg-line color" ref={this.regulateLine}></div>
+        <div
           onMouseDown={this.handleDown}
-          onClick={this.cPos}
-          onTouchStart={this.touchStart}
+          onTouchStart={this.touchMove}
           onTouchMove={this.touchMove}
-          onTouchEnd={this.touchEnd}
-          style={this.getStyle()}
+          onTouchEnd={this.touchMove}
+          style={style}
           draggable={false}
-        ></RegulateCircle>
-      </WrapLineRegulate>
+          className="cp_reg-circle"
+        ></div>
+      </div>
     );
   }
 }

@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
-import {
-  WrapLineRegulate,
-  StyleRegulateOpacity,
-  RegulateCircle,
-  LinearOpacity,
-} from './styles';
 
 export interface StateProps {
   opacity: number;
@@ -23,8 +17,6 @@ class RegulateOpacity extends Component<Props> {
     super(props);
     this.cPos = this.cPos.bind(this);
     this.handleDown = this.handleDown.bind(this);
-    this.touchStart = this.touchStart.bind(this);
-    this.touchEnd = this.touchEnd.bind(this);
     this.touchMove = this.touchMove.bind(this);
   }
   regulateLine: any = React.createRef();
@@ -47,49 +39,50 @@ class RegulateOpacity extends Component<Props> {
     this.hookDidMount();
 
     // Events
-    elem.onclick = this.cPos;
     elem.onmousedown = () => {
-      document.onmousemove = this.cPos;
+      document.onmousemove = e => this.cPos(e, true);
 
       document.onmouseup = () => {
         document.onmousemove = null;
       };
     };
 
-    elem.addEventListener('touchstart', this.touchStart, false);
-    elem.addEventListener('touchend', this.touchEnd, false);
+    // const resize = window.onresize;
+    // window.onresize = e => {
+    //   // if (window.onresize && typeof window.onresize == 'function') {
+    //   //   line.left = elem.getBoundingClientRect().left;
+    //   //   this.setState({});
+    //   // }
+    //   console.log(window.onresize);
+    // };
+
+    elem.addEventListener('touchstart', this.touchMove, false);
+    elem.addEventListener('touchend', this.touchMove, false);
     elem.addEventListener('touchmove', this.touchMove, false);
   }
 
-  touchStart(e: any) {
-    this.touchMove(e);
-  }
-  touchEnd(e: any) {
-    this.touchMove(e);
-  }
-
   touchMove(e: any) {
-    e.preventDefault();
+    e.stopPropagation();
     var touches = e.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const newEvent = {
         clientX: touches[i].pageX,
         clientY: touches[i].pageY,
       };
-      this.cPos(newEvent);
+      this.cPos(newEvent, false);
     }
   }
 
   handleDown(e: any) {
-    document.onmousemove = this.cPos;
+    document.onmousemove = () => this.cPos(e, true);
 
     document.onmouseup = () => {
       document.onmousemove = null;
     };
   }
 
-  cPos(c: any) {
-    c.preventDefault();
+  cPos(c: any, bool: boolean) {
+    if (bool) c.preventDefault();
     const { line } = this;
     let left, a;
     left = c.clientX - line.left;
@@ -125,20 +118,21 @@ class RegulateOpacity extends Component<Props> {
   }
   render() {
     return (
-      <WrapLineRegulate>
-        <StyleRegulateOpacity ref={this.regulateLine}>
-          <LinearOpacity></LinearOpacity>
-        </StyleRegulateOpacity>
-        <RegulateCircle
+      <div className="cp_w-reg">
+        <div className="cp_reg-line opacity" ref={this.regulateLine}>
+          <div className="cp_reg-op-cover"></div>
+        </div>
+
+        <div
           onMouseDown={this.handleDown}
-          onClick={this.cPos}
-          onTouchStart={this.touchStart}
+          onTouchStart={this.touchMove}
           onTouchMove={this.touchMove}
-          onTouchEnd={this.touchEnd}
+          onTouchEnd={this.touchMove}
           style={this.getStyle()}
           draggable={false}
-        ></RegulateCircle>
-      </WrapLineRegulate>
+          className="cp_reg-circle"
+        ></div>
+      </div>
     );
   }
 }

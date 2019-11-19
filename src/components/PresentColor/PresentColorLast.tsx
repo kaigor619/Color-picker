@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import PresentColorTheme from './PresentColor';
-import * as Redux from 'redux';
 import { connect } from 'react-redux';
 import { ThemeStore } from '../../interfaces';
 import * as Action from '../../actions';
-import Model from '../../options/modelsColor';
-import { PresentCell, PresentColorDiv } from './styles';
+import './styles.css';
 
 interface StateProps {
   prevColor: string;
@@ -39,13 +36,13 @@ class PresentColorLast extends Component<Props> {
     const { name } = this;
     const style = this.getPresentStyle();
     return (
-      <PresentCell className="color_cell">
-        <PresentColorDiv
-          className={'present_color ' + name}
+      <div className="cp_present-cell">
+        <div
+          className="cp_present-color"
           onClick={this.handleClick}
           style={style}
-        ></PresentColorDiv>
-      </PresentCell>
+        ></div>
+      </div>
     );
   }
 }

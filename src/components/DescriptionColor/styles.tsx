@@ -31,7 +31,7 @@ export const WrapDescrPart = styled.div`
 
 export const WrapDescrOpacity = styled.div`
   background: url('../svg/opacity.svg') repeat;
-  background-size: 50% 50%;
+  background-size: 100% 100%;
   position: relative;
   width: 17px;
   height: 17px;

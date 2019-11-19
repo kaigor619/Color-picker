@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export const PresentCell = styled.div`
   margin: 0 auto;
   height: 25px;
   cursor: pointer;
   position: relative;
-  background: url("../svg/opacity.svg") repeat;
+  background: url('../svg/opacity.svg') repeat;
 `;
 
 export const PresentColorDiv = styled.div`

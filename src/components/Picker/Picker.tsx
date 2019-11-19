@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
 
-import { BlockPicker, BlockCircle } from './styles';
-
+import './styles.css';
 // Интерфейсы
 interface StateProps {
   H: number;
@@ -60,8 +59,9 @@ class Picker extends Component<Props> {
     this.touchMove = this.touchMove.bind(this);
   }
 
-  cPos(c: any) {
-    c.preventDefault();
+  cPos(c: any, bool: boolean) {
+    if (bool) c.preventDefault();
+
     const { width, height, pxX, pxY, left: positX, top: positY } = this.block;
 
     let left = +(c.clientX - positX).toFixed(2);
@@ -90,7 +90,7 @@ class Picker extends Component<Props> {
         clientX: touches[i].pageX,
         clientY: touches[i].pageY,
       };
-      this.cPos(newEvent);
+      this.cPos(newEvent, false);
     }
   }
 
@@ -101,13 +101,22 @@ class Picker extends Component<Props> {
     this.block.top = top;
 
     block.onmousedown = e => {
-      this.cPos(e);
-      document.onmousemove = this.cPos;
+      this.cPos(e, true);
+      document.onmousemove = e => {
+        this.cPos(e, true);
+      };
 
       document.onmouseup = () => {
         document.onmousemove = null;
       };
     };
+
+    // window.onresize = e => {
+    //   if (window.onresize && typeof window.onresize == 'function') {
+    //     line.left = elem.getBoundingClientRect().left;
+    //     this.setState({});
+    //   }
+    // };
 
     block.addEventListener('touchstart', this.touchMove, false);
     block.addEventListener('touchend', this.touchMove, false);
@@ -169,17 +178,19 @@ class Picker extends Component<Props> {
 
   render() {
     return (
-      <BlockPicker
+      <div
         ref={this.blockRef}
-        className="block-picker"
+        className="cp_block-picker"
+        id="cp_block-picker"
         style={this.getStyleBlock()}
       >
-        <BlockCircle
-          className="picker-circle"
+        <div
+          className="cp_block-circle"
+          id="cp_block-circle"
           style={this.getStyleCircle()}
           draggable={false}
-        ></BlockCircle>
-      </BlockPicker>
+        ></div>
+      </div>
     );
   }
 }

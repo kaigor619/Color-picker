@@ -15,7 +15,7 @@ export const InitialState: ThemeStore = {
     hsl: [0, 0, 100],
     rgb: [255, 255, 255],
   },
-  enable: false,
+  enable: true,
   main: false,
   sync: {
     syncColor: [showWork, showWork],
