@@ -12,6 +12,7 @@ import { Ifunctions, IColorsOptions } from '../../interfaces';
 import * as Action from '../../actions';
 import Checking from '../../options/checking';
 import hotkeys from 'kai-hotkeys';
+import { CSSTransition } from 'react-transition-group';
 
 import './styles.css';
 
@@ -81,40 +82,42 @@ class cp extends Component<Props> {
   render() {
     if (!this.props.enable) return null;
     return (
-      <div className="cp" id="cp">
-        <Picker width={250} height={140} />
+      <div>
+        <div className="cp" id="cp">
+          <Picker width={250} height={140} />
 
-        <div className="cp_container">
-          <div className="cp_settings">
-            <div className="cp_presents-color">
-              <PresentColorLast />
-              <PresentColorOut />
+          <div className="cp_container">
+            <div className="cp_settings">
+              <div className="cp_presents-color">
+                <PresentColorLast />
+                <PresentColorOut />
+              </div>
+
+              <div className="cp_regulate-color ">
+                <RegulateColor />
+                <RegulateOpacity />
+              </div>
             </div>
 
-            <div className="cp_regulate-color ">
-              <RegulateColor />
-              <RegulateOpacity />
-            </div>
-          </div>
-
-          <div className="cp_models">
-            <div className="cp_models-copy">
-              <ul className="cp_list-models">
-                <RgbInput />
-                <HslInput />
-                <HexInput />
+            <div className="cp_models">
+              <div className="cp_models-copy">
+                <ul className="cp_list-models">
+                  <RgbInput />
+                  <HslInput />
+                  <HexInput />
+                </ul>
+                <CopyColor />
+              </div>
+              <ul className="cp_list-type-color">
+                <BtnChangeType name="hex" text="Hex" />
+                <BtnChangeType name="rgb" text="Rgb" />
+                <BtnChangeType name="hsl" text="Hsl" />
               </ul>
-              <CopyColor />
             </div>
-            <ul className="cp_list-type-color">
-              <BtnChangeType name="hex" text="Hex" />
-              <BtnChangeType name="rgb" text="Rgb" />
-              <BtnChangeType name="hsl" text="Hsl" />
-            </ul>
-          </div>
-          <Colors />
+            <Colors />
 
-          <MainBtns />
+            <MainBtns />
+          </div>
         </div>
       </div>
     );

@@ -7,16 +7,6 @@ import * as Action from '../../actions';
 
 import './styles.css';
 
-import {
-  StyleDescriptionColor,
-  DescriptionSwatch,
-  WrapDescrPart,
-  WrapDescrOpacity,
-  InputDescr,
-  ImageEdit,
-  ImageRemove,
-} from './styles';
-
 interface StateProps {
   model: any;
   type: string;
@@ -245,10 +235,11 @@ class DescriptionColor extends Component<Props> {
     if (!enable) return null;
     const { warningOptions } = this;
 
-    let warningComponent;
+    let options_warning = { on: false };
     for (let key in warningOptions) {
       if (description[key]) {
-        warningComponent = <ThemeWarning {...warningOptions[key]} />;
+        options_warning.on = true;
+        options_warning['options'] = warningOptions[key];
       }
     }
 
@@ -260,34 +251,40 @@ class DescriptionColor extends Component<Props> {
         this.inputColor.current.focus();
       }
     }
+    const style = { backgroundColor: color };
 
+    return null;
     return (
       <div className="cp_descr-color">
-        <WrapDescrPart>
-          <WrapDescrOpacity>
-            <DescriptionSwatch color={color} />
-          </WrapDescrOpacity>
-          <InputDescr
-            ref={this.inputColor}
-            className="label_descr_color"
-            value={name}
-            disabled={true}
-            onChange={this.handleChange.bind(this)}
-          />
-        </WrapDescrPart>
-        <WrapDescrPart>
-          <ImageEdit
-            src="./svg/pencil.svg"
-            alt="Edit color"
-            onClick={this.handleClickEdit.bind(this)}
-          />
-          <ImageRemove
-            src="./svg/delete.svg"
-            alt="Delete color"
-            onClick={this.handleClickDelete.bind(this)}
-          />
-        </WrapDescrPart>
-        {warningComponent}
+        <div className="cp_descr-container">
+          <div className="cp_descr-part">
+            <div className="cp_descr-opacity">
+              <div className="cp_descr-swatch" style={style} />
+            </div>
+            <input
+              ref={this.inputColor}
+              className="cp_descr-input"
+              value={name}
+              disabled={true}
+              onChange={this.handleChange.bind(this)}
+            />
+          </div>
+          <div className="cp_descr-part">
+            <img
+              className="cp_descr-icon cp_descr-edit"
+              src="./svg/pencil.svg"
+              alt="Edit color"
+              onClick={this.handleClickEdit.bind(this)}
+            />
+            <img
+              className="cp_descr-icon cp_descr-remove"
+              src="./svg/delete.svg"
+              alt="Delete color"
+              onClick={this.handleClickDelete.bind(this)}
+            />
+          </div>
+          <ThemeWarning {...options_warning} />
+        </div>
       </div>
     );
   }

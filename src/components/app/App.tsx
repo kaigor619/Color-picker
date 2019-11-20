@@ -1,8 +1,6 @@
-import React, { Component, createRef } from "react";
-import { Ifunctions, IColorsOptions } from "../../interfaces";
-import ColorPicker from "../ColorPicker";
-
-
+import React, { Component, createRef } from 'react';
+import { Ifunctions, IColorsOptions } from '../../interfaces';
+import ColorPicker from '../ColorPicker';
 
 class App extends Component<any, any> {
   constructor(props) {
@@ -33,8 +31,8 @@ class App extends Component<any, any> {
   swatch: any = createRef();
   input: any = createRef();
   state = {
-    color: "hsla(154, 64%, 44%, 0.22)",
-    on: false
+    color: 'hsla(154, 64%, 44%, 0.22)',
+    on: false,
   };
 
   render() {
@@ -44,7 +42,7 @@ class App extends Component<any, any> {
       syncColors: [this.syncColor],
       callSave: [this.saveColor],
       callCancel: [this.cancelColor],
-      on
+      on,
     };
 
     return (
@@ -68,6 +66,7 @@ class App extends Component<any, any> {
             value={color}
           />
         </div>
+
         <ColorPicker options={ColorOptions} />
       </div>
     );

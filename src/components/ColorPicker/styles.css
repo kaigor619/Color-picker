@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   padding-top: 15px;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
 }
 
 .cp_presents-color {
@@ -44,3 +44,33 @@
   justify-content: center;
   margin-top: 20px;
 }
+
+/* Animation */
+.example-enter,
+.example-appear {
+  opacity: 0.7;
+}
+
+.example-enter-active,
+.example-appear-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.example-exit {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+/* fires as element leaves the DOM*/
+.example-exit-active {
+  opacity: 0.7;
+}
+
+/* .example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+} */
