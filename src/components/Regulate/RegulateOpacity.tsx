@@ -39,22 +39,14 @@ class RegulateOpacity extends Component<Props> {
     this.hookDidMount();
 
     // Events
-    elem.onmousedown = () => {
+    elem.onmousedown = e => {
+      this.cPos(e, true);
       document.onmousemove = e => this.cPos(e, true);
 
       document.onmouseup = () => {
         document.onmousemove = null;
       };
     };
-
-    // const resize = window.onresize;
-    // window.onresize = e => {
-    //   // if (window.onresize && typeof window.onresize == 'function') {
-    //   //   line.left = elem.getBoundingClientRect().left;
-    //   //   this.setState({});
-    //   // }
-    //   console.log(window.onresize);
-    // };
 
     elem.addEventListener('touchstart', this.touchMove, false);
     elem.addEventListener('touchend', this.touchMove, false);
@@ -74,7 +66,7 @@ class RegulateOpacity extends Component<Props> {
   }
 
   handleDown(e: any) {
-    document.onmousemove = () => this.cPos(e, true);
+    document.onmousemove = e => this.cPos(e, true);
 
     document.onmouseup = () => {
       document.onmousemove = null;

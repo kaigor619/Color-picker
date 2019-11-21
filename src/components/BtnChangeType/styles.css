@@ -1,0 +1,18 @@
+.cp_btn-type {
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  text-align: center;
+  color: #fff;
+  font-family: 'PTSansRegular';
+  font-size: 14px;
+  padding: 3px 7px 3px 7px;
+  cursor: pointer;
+  background-color: inherit;
+  margin-right: 10px;
+  background-color: #3d4861ab;
+}
+.cp_btn-type.active {
+  background-color: #3278b7;
+  transition: 0.4s;
+}

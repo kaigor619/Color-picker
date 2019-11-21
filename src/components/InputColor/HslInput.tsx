@@ -1,16 +1,15 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { WrapColorInputs } from "./styles";
-import { InitialState } from "../../reducers";
-import InputCell from "./InputCell";
-
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { InitialState } from '../../reducers';
+import InputCell from './InputCell';
+import './styles.css';
 interface StateProps {
   type: string;
 }
 type Props = StateProps;
 
 class HslInput extends Component<Props> {
-  type = "hsl";
+  type = 'hsl';
 
   render() {
     const { type } = this.props;
@@ -30,10 +29,10 @@ class HslInput extends Component<Props> {
     );
     return (
       <li>
-        <WrapColorInputs>
+        <div className="cp_model-w">
           {inputs}
           {inputOpacity}
-        </WrapColorInputs>
+        </div>
       </li>
     );
   }

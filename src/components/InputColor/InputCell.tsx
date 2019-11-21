@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { InputColor } from './styles';
+import './styles.css';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
-import { nextTick } from 'q';
 
 interface StateProps {
   model: number[] | string[];
@@ -101,10 +100,10 @@ class InputCell extends Component<Props> {
       maxLength: maxLength,
       value: String(label),
       onChange: this.inputChange,
-      hex: hexBool,
+      className: hexBool ? 'cp_model-input hex' : 'cp_model-input',
     };
 
-    let component = <InputColor {...options} />;
+    let component = <input {...options} />;
     return component;
   }
 }

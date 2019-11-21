@@ -54,13 +54,6 @@ class RegulateColor extends Component<Props> {
       };
     };
 
-    // window.onresize = e => {
-    //   // if (window.onresize && typeof window.onresize == 'function') window.onresize();
-    //   //   line.left = elem.getBoundingClientRect().left;
-    //   //   this.setState({});
-
-    // };
-
     elem.addEventListener('touchstart', this.touchMove, false);
     elem.addEventListener('touchend', this.touchMove, false);
     elem.addEventListener('touchmove', this.touchMove, false);

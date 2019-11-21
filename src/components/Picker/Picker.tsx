@@ -3,8 +3,8 @@ import * as Action from '../../actions';
 import { connect } from 'react-redux';
 import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
-
 import './styles.css';
+
 // Интерфейсы
 interface StateProps {
   H: number;
@@ -21,18 +21,11 @@ interface OwnProps {
 }
 
 interface IStyleBlock {
-  width: string;
-  height: string;
+  width?: string;
+  height?: string;
   background: string;
 }
 
-interface IStyleCircle {
-  width: string;
-  height: string;
-  backgroundColor: string;
-  left: string;
-  top: string;
-}
 type Props = StateProps & OwnProps & DispatchProps;
 
 // Компонент
@@ -69,10 +62,9 @@ class Picker extends Component<Props> {
 
     // Проверка left
     left = left < 0 ? 0 : left;
-
     left = left > width ? width : left;
-    // Проверка top
 
+    // Проверка top
     top = top > height ? height : top;
     top = top < 0 ? 0 : top;
 
@@ -85,15 +77,15 @@ class Picker extends Component<Props> {
   touchMove(e: any) {
     e.preventDefault();
     var touches = e.changedTouches;
+    console.log(touches);
     for (let i = 0; i < touches.length; i++) {
-      const newEvent = {
+      let newEvent = {
         clientX: touches[i].pageX,
         clientY: touches[i].pageY,
       };
       this.cPos(newEvent, false);
     }
   }
-
   componentDidMount() {
     let block = this.blockRef.current;
     let { left, top } = block.getBoundingClientRect();
@@ -111,65 +103,46 @@ class Picker extends Component<Props> {
       };
     };
 
-    // window.onresize = e => {
-    //   if (window.onresize && typeof window.onresize == 'function') {
-    //     line.left = elem.getBoundingClientRect().left;
-    //     this.setState({});
-    //   }
-    // };
-
     block.addEventListener('touchstart', this.touchMove, false);
     block.addEventListener('touchend', this.touchMove, false);
     block.addEventListener('touchmove', this.touchMove, false);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let bool = false;
-    if (nextProps.rgbMain !== this.props.rgbMain) bool = true;
-
+    let bool = nextProps.rgbMain !== this.props.rgbMain ? true : false;
     return bool;
   }
 
   getStyleBlock(): IStyleBlock {
-    const { width, height } = this.block;
+    let { width, height } = this.block;
     let { H } = this.props;
     let rgb = 'rgb(' + Convert.hsv_rgb(H, 100, 100) + ')';
     let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
     ${rgb} , rgb(255, 255, 255))`;
 
-    const style = {
-      width: width + 'px',
-      height: height + 'px',
-      background,
-    };
+    const style = { width: width + 'px', height: height + 'px', background };
+
     return style;
   }
 
   getStyleCircle() {
     const { width, height } = this.circle;
-    const { width: W, height: H } = this.block;
-    const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
-    let left, top;
-
-    const { pxX, pxY } = this.block;
+    const { width: W, height: H, pxX, pxY } = this.block;
     const { S, V } = this.props;
-    left = pxX * S;
-    top = pxY * Math.abs(V - 100);
+    const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
+    let left: number | string = pxX * S;
+    let top: number | string = pxY * Math.abs(V - 100);
 
     // Проверка left
-    left = left < 0 ? 0 : left;
-
-    left = left > W ? W : left;
+    left = left < 0 ? 0 + 'px' : left > W ? W : left + 'px';
     // Проверка top
-
-    top = top > H ? H : top;
-    top = top < 0 ? 0 : top;
+    top = top > H ? H + 'px' : top < 0 ? 0 : top + 'px';
 
     const style = {
       width: width + 'px',
       height: height + 'px',
-      left: left + 'px',
-      top: top + 'px',
+      left,
+      top,
       backgroundColor,
     };
 

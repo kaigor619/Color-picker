@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { WrapColorInputs } from './styles';
-import { InitialState } from '../../reducers';
 import InputCell from './InputCell';
+import './styles.css';
 
 interface StateProps {
   type: string;
@@ -18,9 +17,9 @@ class HslInput extends Component<Props> {
     if (this.type !== type) return null;
     return (
       <li>
-        <WrapColorInputs>
+        <div className="cp_model-w">
           <InputCell key={1} index={1} hexBool={true} maxLength={9} />
-        </WrapColorInputs>
+        </div>
       </li>
     );
   }

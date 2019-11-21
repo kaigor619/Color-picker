@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { WrapColorInputs } from "./styles";
-import { InitialState } from "../../reducers";
-import InputCell from "./InputCell";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { InitialState } from '../../reducers';
+import InputCell from './InputCell';
+import './styles.css';
 
 interface StateProps {
   type: string;
@@ -10,7 +10,7 @@ interface StateProps {
 type Props = StateProps;
 
 class RgbInput extends Component<Props> {
-  type = "rgb";
+  type = 'rgb';
 
   render() {
     const { type } = this.props;
@@ -30,10 +30,10 @@ class RgbInput extends Component<Props> {
     );
     return (
       <li>
-        <WrapColorInputs>
+        <div className="cp_model-w">
           {inputs}
           {inputOpacity}
-        </WrapColorInputs>
+        </div>
       </li>
     );
   }
