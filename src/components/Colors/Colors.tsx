@@ -32,6 +32,11 @@ class Colors extends Component<Props> {
       );
     });
 
+    let DescriptionComponent;
+    if (this.props.description.enable) {
+      DescriptionComponent = <DescriptionColor />;
+    }
+
     return (
       <React.Fragment>
         <div className="cp_custom-colors">
@@ -44,7 +49,7 @@ class Colors extends Component<Props> {
             <img src="./svg/plus-symbol.svg" alt="" />
           </div>
         </div>
-        <DescriptionColor />
+        {DescriptionComponent}
       </React.Fragment>
     );
   }

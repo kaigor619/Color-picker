@@ -235,7 +235,7 @@ class DescriptionColor extends Component<Props> {
     if (!enable) return null;
     const { warningOptions } = this;
 
-    let options_warning = { on: false };
+    let options_warning = { on: false, options: warningOptions.save };
     for (let key in warningOptions) {
       if (description[key]) {
         options_warning.on = true;
@@ -253,7 +253,6 @@ class DescriptionColor extends Component<Props> {
     }
     const style = { backgroundColor: color };
 
-    return null;
     return (
       <div className="cp_descr-color">
         <div className="cp_descr-container">

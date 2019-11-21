@@ -117,28 +117,48 @@
   margin-right: 7px;
 }
 
-.example-enter,
-.example-appear {
+/* Enter , appear */
+.warning-enter,
+.warning-appear {
   opacity: 0.7;
 }
-
-.example-enter-active,
-.example-appear-active {
-  opacity: 1;
-  transition: opacity 300ms;
+.warning-enter:before,
+.warning-appear:before {
+  transform: scale(0);
+  opacity: 0;
 }
 
-.example-exit {
-  opacity: 1;
-  transition: opacity 300ms;
-}
-/* fires as element leaves the DOM*/
-.example-exit-active {
-  opacity: 0.7;
-}
-
-/* .theme_warning.active:before {
+.warning-enter-active:before,
+.warning-appear-active:before {
   transform: scale(1);
   opacity: 1;
-  transition: 10s;
-} */
+  transition: 0.3s;
+}
+
+.warning-enter-done:before,
+.warning-appear-done:before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.warning-enter-active,
+.warning-appear-active {
+  opacity: 1;
+}
+
+.warning-exit {
+  opacity: 1;
+}
+.warning-exit:before {
+  transform: scale(1);
+  opacity: 1;
+}
+.warning-exit-active {
+  opacity: 0;
+  transition: 0.3s;
+}
+.warning-exit-active:before {
+  transform: scale(0);
+  opacity: 0;
+  transition: 0.3s;
+}
