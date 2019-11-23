@@ -8,11 +8,10 @@ import { connect } from 'react-redux';
 import Colors from '../Colors';
 import CopyColor from '../CopyColor';
 import MainBtns from '../MainBtns';
-import { Ifunctions, IColorsOptions } from '../../interfaces';
+import { IColorsOptions } from '../../interfaces';
 import * as Action from '../../actions';
 import Checking from '../../options/checking';
 import hotkeys from 'kai-hotkeys';
-import { CSSTransition } from 'react-transition-group';
 
 import './styles.css';
 
@@ -41,7 +40,6 @@ class cp extends Component<Props> {
     );
   }
   shouldComponentUpdate(nextProps, nextState) {
-    let boolProps = false;
     let bool = false;
     const { options, enable } = nextProps;
     let { color: c, on: o } = this.props.options;

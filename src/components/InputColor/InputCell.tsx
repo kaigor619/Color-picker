@@ -30,7 +30,7 @@ class InputCell extends Component<Props> {
   state = {
     label: '',
   };
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { opacityBool, hexBool, opacity, model, index } = this.props;
     let value;
     if (opacityBool) {

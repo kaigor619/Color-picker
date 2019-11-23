@@ -1,45 +1,30 @@
-import React, { Component } from "react";
-import { PresentCell, PresentColorDiv } from "./styles";
+import React, { Component } from 'react';
 
-export interface StateProps {
-  rgbMain: number[];
-  prevColor: { rgbMain: number[]; opacity: number };
-  opacity: number;
-}
+type Props = {};
 
-interface DispatchProps {
-  add_color: (mas: any) => void;
-}
-
-type Props = StateProps & DispatchProps;
-
-class PresentColorTheme extends Component<Props> {
-  constructor(props: any) {
+class PresentColorTheme<TProps = Props> extends Component<TProps> {
+  constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
-  name: string = "";
-
   handleClick() {}
-  getPresentStyle() {
+  getPresentStyle(): { backgroundColor: string } {
     return {
-      backgroundColor: "red",
-      opacity: 1
+      backgroundColor: 'red',
     };
   }
 
   render() {
-    const { name } = this;
     const style = this.getPresentStyle();
     return (
-      <PresentCell className="color_cell">
-        <PresentColorDiv
-          className={"present_color " + name}
+      <div className="cp_present-cell">
+        <div
+          className="cp_present-color"
           onClick={this.handleClick}
           style={style}
-        ></PresentColorDiv>
-      </PresentCell>
+        ></div>
+      </div>
     );
   }
 }

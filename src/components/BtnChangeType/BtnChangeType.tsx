@@ -15,8 +15,7 @@ const BtnChangeType = function({
   type,
   changeType,
 }: IBtnChangeProps) {
-  let active = false;
-  if (type == name) active = true;
+  let active = type == name ? true : false;
 
   let classNames = active ? 'cp_btn-type active' : 'cp_btn-type';
 

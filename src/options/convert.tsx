@@ -9,7 +9,7 @@ const Convert = {
       G: number = 0,
       B: number = 0;
 
-    H = H == 360 ? 0 : H;
+    H = H === 360 ? 0 : H;
     S /= 100;
     V /= 100;
 

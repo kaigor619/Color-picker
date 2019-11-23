@@ -73,7 +73,6 @@ class DescriptionColor extends Component<Props> {
       opacity: op,
       description: descr,
       colors: clrs,
-      type,
     } = nextProps;
 
     let bool = false;
@@ -89,8 +88,6 @@ class DescriptionColor extends Component<Props> {
 
     if (model !== md || opacity !== op) {
       if (descr.edit || descr.save) {
-        // let cl = Model[type].getString(model, opacity);
-        // this.setState({ color: cl });
         bool = true;
       } else if (
         !descr.edit &&
@@ -117,25 +114,21 @@ class DescriptionColor extends Component<Props> {
     return bool;
   }
 
-  handleClickEdit(e) {
+  getDescriptionWithout(...args) {
     const { description } = this.props;
-    this.props.change_description({
-      ...description,
-      edit: true,
-      remove: false,
-      save: false,
-    });
-    this.inputColor.current.removeAttribute('disabled');
-    this.inputColor.current.focus();
-  }
-  handleClickDelete(e) {
-    const { description } = this.props;
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: true,
-      save: false,
-    });
+    let arr_keys = ['edit', 'remove', 'save', 'enable'];
+    let descr = Object.assign({}, description);
+    if (args.length >= 1) {
+      arr_keys.forEach(item => {
+        let bool = args.some(str => str == item);
+        descr[item] = bool ? true : false;
+      });
+    } else {
+      arr_keys.forEach(item => {
+        descr[item] = false;
+      });
+    }
+    return descr;
   }
 
   handleChange(e) {
@@ -145,10 +138,21 @@ class DescriptionColor extends Component<Props> {
       this.setState({ name });
     }
   }
+
+  handleClickEdit(e) {
+    this.props.change_description(this.getDescriptionWithout('edit', 'enable'));
+    this.inputColor.current.removeAttribute('disabled');
+    this.inputColor.current.focus();
+  }
+  handleClickDelete(e) {
+    this.props.change_description(
+      this.getDescriptionWithout('remove', 'enable'),
+    );
+  }
+
   onSaveColor() {
     let { name } = this.state;
-    const { description, type, model, opacity } = this.props;
-    const { index } = description;
+    const { type, model, opacity } = this.props;
 
     let color = Model[type].getString(model, opacity);
 
@@ -156,24 +160,10 @@ class DescriptionColor extends Component<Props> {
     colors.push({ name, color });
     this.props.change_colors(colors);
 
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: false,
-      save: false,
-      enable: true,
-    });
+    this.props.change_description(this.getDescriptionWithout('enable'));
   }
   onCancelColor() {
-    const { description } = this.props;
-
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: false,
-      save: false,
-      enable: false,
-    });
+    this.props.change_description(this.getDescriptionWithout());
   }
   onSaveEditColor() {
     const { description, model, type, opacity } = this.props;
@@ -185,23 +175,10 @@ class DescriptionColor extends Component<Props> {
     colors[index] = { name, color };
     this.props.change_colors(colors);
 
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: false,
-      save: false,
-      enable: true,
-    });
+    this.props.change_description(this.getDescriptionWithout('enable'));
   }
   onCancelEditColor() {
-    const { description } = this.props;
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: false,
-      save: false,
-      enable: true,
-    });
+    this.props.change_description(this.getDescriptionWithout('enable'));
   }
   onYesDeleteColor() {
     const { description } = this.props;
@@ -213,25 +190,16 @@ class DescriptionColor extends Component<Props> {
 
     this.props.change_description({
       index: 0,
-      edit: false,
-      remove: false,
-      save: false,
-      enable: false,
+      ...this.getDescriptionWithout(),
     });
   }
   onNoDeleteColor() {
-    const { description } = this.props;
-    this.props.change_description({
-      ...description,
-      edit: false,
-      remove: false,
-      save: false,
-    });
+    this.props.change_description(this.getDescriptionWithout('enable'));
   }
 
   render() {
     const { description, type, model, opacity } = this.props;
-    const { enable, index, save, edit } = description;
+    const { enable, save, edit } = description;
     if (!enable) return null;
     const { warningOptions } = this;
 
@@ -239,7 +207,7 @@ class DescriptionColor extends Component<Props> {
     for (let key in warningOptions) {
       if (description[key]) {
         options_warning.on = true;
-        options_warning['options'] = warningOptions[key];
+        options_warning.options = warningOptions[key];
       }
     }
 

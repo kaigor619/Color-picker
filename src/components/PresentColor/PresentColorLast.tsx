@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import PresentColorTheme from './PresentColor';
 import { ThemeStore } from '../../interfaces';
 import * as Action from '../../actions';
 import './styles.css';
@@ -14,36 +15,16 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-class PresentColorLast extends Component<Props> {
-  constructor(props: any) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
+class PresentColorLast extends PresentColorTheme<Props> {
   handleClick() {
     this.props.add_color();
   }
-  name = 'last_color';
 
   getPresentStyle() {
-    // let { rgbMain, opacity } = this.props.prevColor;
     const backgroundColor = this.props.prevColor;
     return {
       backgroundColor,
     };
-  }
-  render() {
-    const { name } = this;
-    const style = this.getPresentStyle();
-    return (
-      <div className="cp_present-cell">
-        <div
-          className="cp_present-color"
-          onClick={this.handleClick}
-          style={style}
-        ></div>
-      </div>
-    );
   }
 }
 

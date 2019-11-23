@@ -29,14 +29,13 @@ export class CopyColor extends Component<Props> {
       }, 2000);
     }
   }
-  shouldComponentUpdate() {
-    return true;
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.copied !== this.state.copied;
   }
 
   render() {
     const { copied } = this.state;
-    let classNames = 'cp_copy-color';
-    if (copied) classNames += ' active';
+    let classNames = copied ? 'cp_copy-color active' : 'cp_copy-color';
 
     return (
       <React.Fragment>
