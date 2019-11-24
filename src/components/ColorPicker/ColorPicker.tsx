@@ -45,9 +45,9 @@ class cp extends Component<Props> {
     let { color: c, on: o } = this.props.options;
     let { color, on, syncColors, callCancel, callSave } = options;
 
-    if (options == undefined) return false;
+    if (options === undefined) return false;
     if (color !== c || on !== o) {
-      if (!on || on == undefined) return false;
+      if (!on || on === undefined) return false;
 
       let a, b, c;
 

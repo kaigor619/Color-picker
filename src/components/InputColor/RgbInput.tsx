@@ -24,7 +24,7 @@ class RgbInput extends Component<Props> {
       <InputCell
         key={rgb.length}
         index={rgb.length}
-        maxLength={9}
+        maxLength={4}
         opacityBool={true}
       />
     );

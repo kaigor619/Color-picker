@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import RegulateTheme from './RegulateTheme';
@@ -36,7 +36,7 @@ class RegulateColor extends RegulateTheme<Props> {
   }
 
   render() {
-    const style = this.getStyle();
+    this.stylingCircle();
     return (
       <div className="cp_w-reg">
         <div className="cp_reg-line color" ref={this.regulateLine}></div>
@@ -45,7 +45,7 @@ class RegulateColor extends RegulateTheme<Props> {
           onTouchStart={this.touchMove}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchMove}
-          style={style}
+          style={this.styleCircle}
           draggable={false}
           className="cp_reg-circle"
         ></div>

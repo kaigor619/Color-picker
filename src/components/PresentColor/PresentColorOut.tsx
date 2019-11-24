@@ -1,4 +1,3 @@
-import React from 'react';
 import PresentColorTheme from './PresentColor';
 import { connect } from 'react-redux';
 import { ThemeStore } from '../../interfaces';
@@ -13,10 +12,10 @@ interface StateProps {
 type Props = StateProps;
 
 class PresentColorOut extends PresentColorTheme<Props> {
-  getPresentStyle() {
+  stylingPresent() {
     let { opacity, rgbMain } = this.props;
     const backgroundColor = Model.rgb.getString(rgbMain, opacity);
-    return {
+    this.stylePresent = {
       backgroundColor,
     };
   }

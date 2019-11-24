@@ -11,7 +11,7 @@ let Model = {
     },
     getString: function(rgb_arr: number[], opacity: number): string {
       let str = '';
-      if (opacity == 1) str = 'rgb(' + rgb_arr.join(',') + ')';
+      if (opacity === 1) str = 'rgb(' + rgb_arr.join(',') + ')';
       else str = 'rgba(' + rgb_arr.join(',') + ', ' + opacity + ')';
 
       return str;
@@ -27,7 +27,7 @@ let Model = {
 
       str_arr.forEach((item, i) => {
         val[i] = +parseInt(item);
-        if (i == 3) val[i] = +Number(item).toFixed(2);
+        if (i === 3) val[i] = +Number(item).toFixed(2);
       });
 
       if (str.indexOf('rgba') >= 0 && val[3]) {
@@ -49,7 +49,7 @@ let Model = {
     symbolInString: 'hsl',
     getString: function(hsl_arr: number[], opacity: number): string {
       let str = '';
-      if (opacity == 1)
+      if (opacity === 1)
         str = `hsl(${hsl_arr[0]}, ${hsl_arr[1]}%, ${hsl_arr[2]}%)`;
       // else str = "hsla(" + hsl_arr.[0] + ", " + opacity + ")";
       else
@@ -69,7 +69,7 @@ let Model = {
 
       str_arr.forEach((item, i) => {
         val[i] = +parseInt(item);
-        if (i == 3) val[i] = +Number(item).toFixed(2);
+        if (i === 3) val[i] = +Number(item).toFixed(2);
       });
 
       if (str.indexOf('hsla') >= 0 && val[3]) {
@@ -90,7 +90,7 @@ let Model = {
       let hex = value;
       let opacity = 1;
       let a = 'ff';
-      if (hex.length == 9) {
+      if (hex.length === 9) {
         a = hex.substring(7, 9);
         if ('undefined' === typeof a) {
           a = 'ff';
@@ -115,16 +115,16 @@ let Model = {
       let g_str = g.toString(16);
       let b_str = b.toString(16);
 
-      if (r_str.length == 1) r_str = '0' + r_str;
-      if (g_str.length == 1) g_str = '0' + g_str;
-      if (b_str.length == 1) b_str = '0' + b_str;
+      if (r_str.length === 1) r_str = '0' + r_str;
+      if (g_str.length === 1) g_str = '0' + g_str;
+      if (b_str.length === 1) b_str = '0' + b_str;
 
       return '#' + r_str + g_str + b_str + a_str;
     },
     getOpacity: (opacity: number) => {
       let a_str = Math.round(opacity * 255).toString(16);
-      if (a_str.length == 1) a_str = '0' + a_str;
-      if (a_str == 'ff') a_str = '';
+      if (a_str.length === 1) a_str = '0' + a_str;
+      if (a_str === 'ff') a_str = '';
 
       return a_str;
     },

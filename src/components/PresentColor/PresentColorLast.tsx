@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import PresentColorTheme from './PresentColor';
 import { ThemeStore } from '../../interfaces';
@@ -20,9 +19,9 @@ class PresentColorLast extends PresentColorTheme<Props> {
     this.props.add_color();
   }
 
-  getPresentStyle() {
+  stylingPresent() {
     const backgroundColor = this.props.prevColor;
-    return {
+    this.stylePresent = {
       backgroundColor,
     };
   }

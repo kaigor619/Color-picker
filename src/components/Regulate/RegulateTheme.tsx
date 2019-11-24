@@ -17,7 +17,7 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     x: 0,
   };
   hookDidMount() {}
-
+  styleCircle = {};
   componentDidMount() {
     let elem = this.regulateLine.current;
     let { line } = this;
@@ -79,7 +79,7 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     return 0;
   }
 
-  getStyle(): { left: string } {
+  stylingCircle() {
     const { line } = this;
 
     let left = this.getLeft();
@@ -87,10 +87,9 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     left = left < 0 ? 0 : left;
     left = left > line.w ? line.w : left;
 
-    const style = {
+    this.styleCircle = {
       left: left + 'px',
     };
-    return style;
   }
 }
 

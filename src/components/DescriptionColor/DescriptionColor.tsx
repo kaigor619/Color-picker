@@ -93,7 +93,7 @@ class DescriptionColor extends Component<Props> {
         !descr.edit &&
         !descr.save &&
         !descr.remove &&
-        descr.index == description.index
+        descr.index === description.index
       ) {
         this.props.change_description({
           ...descr,
@@ -120,7 +120,7 @@ class DescriptionColor extends Component<Props> {
     let descr = Object.assign({}, description);
     if (args.length >= 1) {
       arr_keys.forEach(item => {
-        let bool = args.some(str => str == item);
+        let bool = args.some(str => str === item);
         descr[item] = bool ? true : false;
       });
     } else {
@@ -215,6 +215,7 @@ class DescriptionColor extends Component<Props> {
     if (save || edit) {
       color = Model[type].getString(model, opacity);
       if (save) {
+        // console.log();
         this.inputColor.current.removeAttribute('disabled');
         this.inputColor.current.focus();
       }

@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { Ifunctions, IColorsOptions } from '../../interfaces';
+import { IColorsOptions } from '../../interfaces';
 import ColorPicker from '../ColorPicker';
 
 class App extends Component<any, any> {

@@ -23,22 +23,16 @@ interface IInputCell {
 type Props = StateProps & DispatchProps & IInputCell;
 
 class InputCell extends Component<Props> {
-  constructor(props: Props) {
-    super(props);
-    this.inputChange = this.inputChange.bind(this);
-  }
   state = {
     label: '',
   };
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const { opacityBool, hexBool, opacity, model, index } = this.props;
-    let value;
-    if (opacityBool) {
-      value = opacity;
-    } else if (hexBool) value = model;
-    else if (!hexBool) value = String(model[index]);
-
-    this.setState({ label: value });
+    let label;
+    if (opacityBool) label = opacity;
+    else if (hexBool) label = model;
+    else if (!hexBool) label = String(model[index]);
+    this.setState({ label });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -46,18 +40,12 @@ class InputCell extends Component<Props> {
     let bool = false;
     let label = '';
     if (opacityBool) {
-      if (nextProps.opacity !== opacity) {
-        label = String(nextProps.opacity);
-      }
+      if (nextProps.opacity !== opacity) label = String(nextProps.opacity);
     } else if (!hexBool) {
-      // debugger;
-      if (nextProps.model[index] !== model[index]) {
+      if (nextProps.model[index] !== model[index])
         label = String(nextProps.model[index]);
-      }
     } else if (hexBool) {
-      if (nextProps.model !== model) {
-        label = String(nextProps.model);
-      }
+      if (nextProps.model !== model) label = String(nextProps.model);
     }
     if (nextState.label !== this.state.label) {
       label = String(nextState.label);
@@ -72,39 +60,31 @@ class InputCell extends Component<Props> {
   }
 
   inputChange(e) {
-    const { hexBool, index, model, opacityBool } = this.props;
-    let value,
-      label = '';
+    const { hexBool, index, opacityBool } = this.props;
 
-    let text: string = e.target.value;
+    let label = e.target.value;
     if (!hexBool) {
-      text = text.replace(/[^\d.-]/g, '');
+      label = label.replace(/[^\d.-]/g, '');
     }
-    label = text;
-    if (text !== this.state.label) {
-      if (opacityBool) {
-        this.props.changeOpacity(+text);
-      } else {
-        this.props.changeModel(text, index);
-      }
+    if (label !== this.state.label) {
+      if (opacityBool) this.props.changeOpacity(+label);
+      else this.props.changeModel(label, index);
+
       this.setState({ label });
     }
   }
+  options = {
+    type: 'text',
+    maxLength: this.props.maxLength,
+    value: String(this.state.label),
+    onChange: this.inputChange.bind(this),
+    className: this.props.hexBool ? 'cp_model-input hex' : 'cp_model-input',
+  };
 
   render() {
-    let { label } = this.state;
-    let { maxLength, model, index, opacityBool, hexBool } = this.props;
+    this.options.value = this.state.label;
 
-    let options = {
-      type: 'text',
-      maxLength: maxLength,
-      value: String(label),
-      onChange: this.inputChange,
-      className: hexBool ? 'cp_model-input hex' : 'cp_model-input',
-    };
-
-    let component = <input {...options} />;
-    return component;
+    return <input {...this.options} />;
   }
 }
 

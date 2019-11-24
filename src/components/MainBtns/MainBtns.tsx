@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import './styles.css';
 
-interface StateProps {}
 interface DispatchProps {
   clickOk: () => void;
   clickCancel: () => void;
 }
-type Props = StateProps & DispatchProps;
+type Props = DispatchProps;
 
 export class MainBtns extends Component<Props> {
   render() {

@@ -46,6 +46,9 @@ class Picker extends Component<Props> {
 
   blockRef: any = React.createRef();
 
+  styleCircle = {};
+  styleBlock = {};
+
   constructor(props: Props) {
     super(props);
     this.cPos = this.cPos.bind(this);
@@ -113,16 +116,18 @@ class Picker extends Component<Props> {
     return bool;
   }
 
-  getStyleBlock(): IStyleBlock {
+  getStyleBlock() {
     let { width, height } = this.block;
     let { H } = this.props;
     let rgb = 'rgb(' + Convert.hsv_rgb(H, 100, 100) + ')';
     let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
     ${rgb} , rgb(255, 255, 255))`;
 
-    const style = { width: width + 'px', height: height + 'px', background };
-
-    return style;
+    this.styleBlock = {
+      width: width + 'px',
+      height: height + 'px',
+      background,
+    };
   }
 
   getStyleCircle() {
@@ -138,29 +143,28 @@ class Picker extends Component<Props> {
     // Проверка top
     top = top > H ? H + 'px' : top < 0 ? 0 : top + 'px';
 
-    const style = {
+    this.styleCircle = {
       width: width + 'px',
       height: height + 'px',
       left,
       top,
       backgroundColor,
     };
-
-    return style;
   }
-
   render() {
+    this.getStyleCircle();
+    this.getStyleBlock();
     return (
       <div
         ref={this.blockRef}
         className="cp_block-picker"
         id="cp_block-picker"
-        style={this.getStyleBlock()}
+        style={this.styleBlock}
       >
         <div
           className="cp_block-circle"
           id="cp_block-circle"
-          style={this.getStyleCircle()}
+          style={this.styleCircle}
           draggable={false}
         ></div>
       </div>

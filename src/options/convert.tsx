@@ -74,15 +74,15 @@ const Convert = {
     let b_str = b.toString(16);
     let a_str = Math.round(a * 255).toString(16);
 
-    if (r_str.length == 1) r_str = '0' + r_str;
-    if (g_str.length == 1) g_str = '0' + g_str;
-    if (b_str.length == 1) b_str = '0' + b_str;
-    if (a_str.length == 1) a_str = '0' + a_str;
+    if (r_str.length === 1) r_str = '0' + r_str;
+    if (g_str.length === 1) g_str = '0' + g_str;
+    if (b_str.length === 1) b_str = '0' + b_str;
+    if (a_str.length === 1) a_str = '0' + a_str;
 
     let value = '#' + r_str + g_str + b_str + a_str;
 
-    if (value.length == 9) {
-      if (value.slice(-2) == 'ff') value = value.substring(0, 7);
+    if (value.length === 9) {
+      if (value.slice(-2) === 'ff') value = value.substring(0, 7);
     }
     return value;
   },
@@ -110,7 +110,7 @@ const Convert = {
     diff = v - Math.min(rabs, gabs, babs);
     diffc = (c: number) => (v - c) / 6 / diff + 1 / 2;
     percentRoundFn = (num: number) => Math.round(num * 100) / 100;
-    if (diff == 0) {
+    if (diff === 0) {
       h = s = 0;
     } else {
       s = diff / v;
@@ -209,7 +209,7 @@ const Convert = {
   },
   getHfromPosit: (left: number, width: number): number => {
     let h = Math.abs(Math.round(left / (width / 360)) - 360);
-    h = h == 360 ? 0 : h;
+    h = h === 360 ? 0 : h;
     return h;
   },
 
@@ -228,11 +228,11 @@ const Convert = {
       s = 0,
       l = 0;
 
-    if (delta == 0) h = 0;
+    if (delta === 0) h = 0;
     // Red is max
-    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax === r) h = ((g - b) / delta) % 6;
     // Green is max
-    else if (cmax == g) h = (b - r) / delta + 2;
+    else if (cmax === g) h = (b - r) / delta + 2;
     // Blue is max
     else h = (r - g) / delta + 4;
 
@@ -244,7 +244,7 @@ const Convert = {
     l = (cmax + cmin) / 2;
 
     // Calculate saturation
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
 
     // Multiply l and s by 100
     s = +parseInt((s * 100).toFixed(1));

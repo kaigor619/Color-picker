@@ -7,22 +7,23 @@ class PresentColorTheme<TProps = Props> extends Component<TProps> {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
+  stylePresent = {};
 
   handleClick() {}
-  getPresentStyle(): { backgroundColor: string } {
-    return {
+  stylingPresent() {
+    this.stylePresent = {
       backgroundColor: 'red',
     };
   }
 
   render() {
-    const style = this.getPresentStyle();
+    this.stylingPresent();
     return (
       <div className="cp_present-cell">
         <div
           className="cp_present-color"
           onClick={this.handleClick}
-          style={style}
+          style={this.stylePresent}
         ></div>
       </div>
     );
