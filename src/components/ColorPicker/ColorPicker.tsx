@@ -8,59 +8,51 @@ import { connect } from 'react-redux';
 import Colors from '../Colors';
 import CopyColor from '../CopyColor';
 import MainBtns from '../MainBtns';
-import { IColorsOptions } from '../../interfaces';
+import { IColorsOptions, IOptions } from '../../interfaces';
 import * as Action from '../../actions';
 import Checking from '../../options/checking';
 import hotkeys from 'kai-hotkeys';
 
+// Style
 import './styles.css';
 
+// Interfaces
 interface StateProps {
   enable: boolean;
 }
 interface DispatchProps {
   addColor: (options: IColorsOptions) => void;
   change_enable: (enable: boolean) => void;
+  changeResize: () => void;
+  changeOptions: (options: IOptions) => void;
 }
 interface OwnProps {
   options: IColorsOptions;
+  style_options: IOptions;
 }
 type Props = StateProps & DispatchProps & OwnProps;
 
-class cp extends Component<Props> {
-  componentDidMount() {
-    hotkeys.add(
-      'ctrl+alt+c',
-      (event, handler) => {
-        const { enable, change_enable } = this.props;
-        if (enable) change_enable(false);
-        else change_enable(true);
-      },
-      { pressingOnce: true },
-    );
+// ColorPicker
+class ColorPicker extends Component<Props> {
+  constructor(props) {
+    super(props);
+    window.addEventListener('resize', () => {
+      this.props.changeResize();
+    });
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    let bool = false;
-    const { options, enable } = nextProps;
-    let { color: c, on: o } = this.props.options;
-    let { color, on, syncColors, callCancel, callSave } = options;
+  componentWillMount() {
+    const { style_options, options } = this.props;
+    let { syncColors, callCancel, callSave, color, on } = options;
 
-    if (options === undefined) return false;
-    if (color !== c || on !== o) {
-      if (!on || on === undefined) return false;
-
+    if (style_options) {
+      this.props.changeOptions(style_options);
+    }
+    if (options && on) {
       let a, b, c;
+      a = Checking.check_arrFunctions(syncColors) ? syncColors : a;
+      b = Checking.check_arrFunctions(callCancel) ? callCancel : b;
+      c = Checking.check_arrFunctions(callSave) ? callSave : c;
 
-      if (Checking.check_arrFunctions(syncColors)) {
-        a = syncColors;
-      }
-      if (Checking.check_arrFunctions(callCancel)) {
-        b = callCancel;
-      }
-      if (Checking.check_arrFunctions(callSave)) {
-        c = callSave;
-      }
-      color = String(color);
       let object: IColorsOptions = {
         color,
         syncColors: a,
@@ -71,18 +63,69 @@ class cp extends Component<Props> {
 
       this.props.addColor(object);
     }
+  }
+
+  componentDidMount() {
+    // kai-hotkeys
+    hotkeys.add(
+      'ctrl+alt+c',
+      (event, handler) => {
+        const { enable, change_enable } = this.props;
+        change_enable(!enable);
+      },
+      { pressingOnce: true },
+    );
+  }
+
+  componentDidCatch() {
+    console.log('Color picker does not work');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log('should', this.props.enable, nextProps.enable);
+
+    let bool = false;
+    const { style_options } = this.props;
+    const { options, enable } = nextProps;
+    let { color, on, syncColors, callCancel, callSave } = options;
+    let { color: c, on: o } = this.props.options;
+
     if (this.props.enable !== enable) {
-      bool = true;
+      return true;
+    }
+    if (options !== undefined) {
+      if (color || on) {
+        if (!on || on === undefined) return false;
+
+        let a, b, c;
+        a = Checking.check_arrFunctions(syncColors) ? syncColors : a;
+        b = Checking.check_arrFunctions(callCancel) ? callCancel : b;
+        c = Checking.check_arrFunctions(callSave) ? callSave : c;
+        let object: IColorsOptions = {
+          color,
+          syncColors: a,
+          callCancel: b,
+          callSave: c,
+          on,
+        };
+
+        this.props.addColor(object);
+        bool = true;
+      }
+    }
+    if (style_options !== nextProps.style_options) {
+      this.props.changeOptions(nextProps.style_options);
     }
 
     return bool;
   }
+
   render() {
     if (!this.props.enable) return null;
     return (
       <div>
         <div className="cp" id="cp">
-          <Picker width={250} height={140} />
+          <Picker />
 
           <div className="cp_container">
             <div className="cp_settings">
@@ -126,9 +169,11 @@ const mapStateToProps = ({ enable }) => ({ enable });
 const mapDispatchToProps = {
   addColor: Action.eventAddColor,
   change_enable: Action.event_change_enable,
+  changeResize: Action.event_change_resize,
+  changeOptions: Action.event_change_options,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(cp);
+)(ColorPicker);

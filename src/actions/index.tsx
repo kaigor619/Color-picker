@@ -1,4 +1,4 @@
-import { IDescription, Ifunctions } from '../interfaces';
+import { IDescription, Ifunctions, IOptions } from '../interfaces';
 import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
@@ -387,4 +387,18 @@ export const event_change_enable = (enable: boolean) => dispatch => {
   let a = change_enable(enable);
   let obj = connect_obj(a);
   dispatch(change_store(obj));
+};
+
+export const event_change_resize = () => dispatch => {
+  let action = {
+    type: 'CHANGE_RESIZE',
+  };
+  dispatch(action);
+};
+export const event_change_options = (options: IOptions) => dispatch => {
+  let action = {
+    type: 'CHANGE_OPTIONS',
+    payload: options,
+  };
+  dispatch(action);
 };

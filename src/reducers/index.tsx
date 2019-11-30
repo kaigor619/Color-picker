@@ -15,7 +15,17 @@ export const InitialState: ThemeStore = {
     hsl: [0, 0, 100],
     rgb: [255, 255, 255],
   },
-  enable: true,
+  options: {
+    picker: {
+      width: 250,
+      height: 140,
+    },
+    circle: {
+      width: 12,
+      height: 12,
+    },
+  },
+  enable: false,
   main: false,
   sync: {
     syncColor: [showWork, showWork],
@@ -29,6 +39,7 @@ export const InitialState: ThemeStore = {
     remove: false,
     index: 0,
   },
+  resize: false,
   colors: [
     { name: 'Color 1', color: '#F44336' },
     { name: 'Color 2', color: '#E91E63' },
@@ -105,9 +116,26 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       };
 
     case 'CHANGE_STORE': {
+      console.log({
+        ...state,
+        ...action.payload,
+      });
       return {
         ...state,
         ...action.payload,
+      };
+    }
+    case 'CHANGE_RESIZE': {
+      return {
+        ...state,
+        resize: !state.resize,
+      };
+    }
+    case 'CHANGE_OPTIONS': {
+      const style_options = action.payload;
+      return {
+        ...state,
+        options: action.payload,
       };
     }
 

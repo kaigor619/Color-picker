@@ -41,6 +41,11 @@ export interface IColorsOptions {
   on: boolean;
 }
 
+export interface IOptions {
+  picker: { width: number; height: number };
+  circle: { width: number; height: number };
+}
+
 export interface ThemeStore {
   S: number;
   V: number;
@@ -55,4 +60,6 @@ export interface ThemeStore {
   main: boolean;
   enable: boolean;
   sync: ISync;
+  resize: boolean;
+  options: IOptions;
 }

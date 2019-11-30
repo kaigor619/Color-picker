@@ -2,9 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import RegulateTheme from './RegulateTheme';
+import { IOptions } from '../../interfaces';
 
 export interface StateProps {
   opacity: number;
+  width: number;
+  resize: boolean;
 }
 
 export interface DispatchProps {
@@ -14,15 +17,30 @@ export interface DispatchProps {
 type Props = StateProps & DispatchProps;
 
 class RegulateOpacity extends RegulateTheme<Props> {
+  diff = 100;
+  shouldComponentUpdate(nextProps, nextState) {
+    let bool = false;
+    if (nextProps.opacity !== this.props.opacity) bool = true;
+
+    if (this.props.resize !== nextProps.resize) {
+      this.updateCoords();
+      bool = true;
+    }
+    if (this.props.width !== nextProps.width) {
+      setTimeout(() => {
+        this.updateElem();
+      }, 1);
+      bool = true;
+    }
+
+    return bool;
+  }
   hookCPos(a: number) {
     const { line } = this;
     let opacity: number = +(Math.floor(a / line.x) * 0.01).toFixed(2);
     this.props.add_opacity(opacity);
   }
-  hookDidMount() {
-    const { line } = this;
-    line.x = line.w / 100;
-  }
+
   getLeft() {
     const {
       line,
@@ -54,9 +72,12 @@ class RegulateOpacity extends RegulateTheme<Props> {
   }
 }
 
-const mapStateToProps = ({ opacity }: any) => {
+const mapStateToProps = ({ opacity, resize, options }: any) => {
   return {
     opacity,
+    resize,
+
+    width: options.picker.width,
   };
 };
 

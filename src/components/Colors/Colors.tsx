@@ -18,12 +18,24 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps;
 
 class Colors extends Component<Props> {
+  shouldComponentUpdate(nextProps) {
+    let bool = false;
+    const { description: d, colors: cls } = this.props;
+    if (nextProps.colors !== cls || nextProps.description.enable !== d.enable) {
+      bool = true;
+    }
+    return bool;
+  }
+  count = -1;
+  swatches;
+
   render() {
     const { colors } = this.props;
-    let swatches = colors.map(({ name, color }, index) => {
+    this.swatches = colors.map(({ name, color }, index) => {
+      this.count++;
       return (
         <Swatch
-          key={name}
+          key={this.count}
           color={color}
           index={index}
           name={name}
@@ -40,7 +52,7 @@ class Colors extends Component<Props> {
     return (
       <React.Fragment>
         <div className="cp_custom-colors">
-          {swatches}
+          {this.swatches}
           <div
             onClick={() => this.props.swatchAdd()}
             className="cp_add-color"

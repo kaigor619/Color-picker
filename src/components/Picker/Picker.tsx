@@ -3,6 +3,7 @@ import * as Action from '../../actions';
 import { connect } from 'react-redux';
 import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
+import { IOptions } from '../../interfaces';
 import './styles.css';
 
 // Интерфейсы
@@ -11,14 +12,17 @@ interface StateProps {
   S: number;
   V: number;
   rgbMain: number[];
+  resize: boolean;
+  style_options: IOptions;
 }
 interface DispatchProps {
   add_color: (mas: any) => void;
 }
-interface OwnProps {
-  width: number;
-  height: number;
+interface PickerOptions {
+  picker: { width: number; height: number };
+  circle: { width: number; height: number };
 }
+interface OwnProps {}
 
 interface IStyleBlock {
   width?: string;
@@ -30,16 +34,26 @@ type Props = StateProps & OwnProps & DispatchProps;
 
 // Компонент
 class Picker extends Component<Props> {
+  constructor(props: Props) {
+    super(props);
+    this.cPos = this.cPos.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.cPos = this.cPos.bind(this);
+  }
+
+  state = {
+    on: false,
+  };
   circle = {
     width: 12,
     height: 12,
   };
 
-  block = {
-    width: this.props.width,
-    height: this.props.height,
-    pxX: this.props.width / 100,
-    pxY: this.props.height / 100,
+  picker = {
+    width: 250,
+    height: 140,
+    pxX: 250 / 100,
+    pxY: 140 / 100,
     left: 0,
     top: 0,
   };
@@ -49,16 +63,86 @@ class Picker extends Component<Props> {
   styleCircle = {};
   styleBlock = {};
 
-  constructor(props: Props) {
-    super(props);
-    this.cPos = this.cPos.bind(this);
-    this.touchMove = this.touchMove.bind(this);
+  componentWillMount() {
+    this.updateElems();
+  }
+
+  componentDidMount() {
+    let block = this.blockRef.current;
+    this.updateCoords();
+    const { on } = this.state;
+    this.setState({ on: !on });
+    block.onmousedown = this.mouseDown.bind(this);
+
+    block.ontouchstart = this.touchMove;
+    block.ontouchend = this.touchMove;
+    block.ontouchmove = this.touchMove;
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    const { resize, rgbMain, style_options } = this.props;
+    const { style_options: so } = nextProps;
+    const { width, height } = so.picker;
+    const { width: wc, height: hc } = so.circle;
+
+    let bool = nextProps.rgbMain !== rgbMain ? true : false;
+    if (nextProps.resize !== resize) {
+      this.updateCoords();
+      bool = true;
+    }
+    if (so !== style_options) {
+      // Block
+      this.picker.width = width ? width : this.picker.width;
+      this.picker.height = height ? height : this.picker.height;
+      this.picker.pxX = this.picker.width / 100;
+      this.picker.pxY = this.picker.height / 100;
+      this.updateCoords();
+
+      // Circle
+      this.circle.width = wc ? wc : this.circle.width;
+      this.circle.height = hc ? hc : this.circle.height;
+      bool = true;
+    }
+    if (nextState.on !== this.state.on) {
+      bool = true;
+    }
+    return bool;
+  }
+
+  mouseDown(e) {
+    this.cPos(e, true);
+    document.onmousemove = e => {
+      this.cPos(e, true);
+    };
+
+    document.onmouseup = () => {
+      document.onmousemove = null;
+    };
+  }
+
+  updateElems() {
+    let { picker, circle } = this;
+    const { style_options } = this.props;
+    // Block
+    picker.width = style_options.picker.width;
+    picker.height = style_options.picker.height;
+    picker.pxX = picker.width / 100;
+    picker.pxY = picker.height / 100;
+
+    // Circle
+    circle.width = style_options.circle.width;
+    circle.height = style_options.circle.width;
+  }
+  updateCoords() {
+    let block = this.blockRef.current;
+    let { left, top } = block.getBoundingClientRect();
+    this.picker.left = left;
+    this.picker.top = top;
   }
 
   cPos(c: any, bool: boolean) {
     if (bool) c.preventDefault();
 
-    const { width, height, pxX, pxY, left: positX, top: positY } = this.block;
+    const { width, height, pxX, pxY, left: positX, top: positY } = this.picker;
 
     let left = +(c.clientX - positX).toFixed(2);
     let top = +(c.clientY - positY).toFixed(2);
@@ -80,7 +164,6 @@ class Picker extends Component<Props> {
   touchMove(e: any) {
     e.preventDefault();
     var touches = e.changedTouches;
-    console.log(touches);
     for (let i = 0; i < touches.length; i++) {
       let newEvent = {
         clientX: touches[i].pageX,
@@ -89,35 +172,9 @@ class Picker extends Component<Props> {
       this.cPos(newEvent, false);
     }
   }
-  componentDidMount() {
-    let block = this.blockRef.current;
-    let { left, top } = block.getBoundingClientRect();
-    this.block.left = left;
-    this.block.top = top;
-
-    block.onmousedown = e => {
-      this.cPos(e, true);
-      document.onmousemove = e => {
-        this.cPos(e, true);
-      };
-
-      document.onmouseup = () => {
-        document.onmousemove = null;
-      };
-    };
-
-    block.addEventListener('touchstart', this.touchMove, false);
-    block.addEventListener('touchend', this.touchMove, false);
-    block.addEventListener('touchmove', this.touchMove, false);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    let bool = nextProps.rgbMain !== this.props.rgbMain ? true : false;
-    return bool;
-  }
 
   getStyleBlock() {
-    let { width, height } = this.block;
+    let { width, height } = this.picker;
     let { H } = this.props;
     let rgb = 'rgb(' + Convert.hsv_rgb(H, 100, 100) + ')';
     let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, 
@@ -132,7 +189,7 @@ class Picker extends Component<Props> {
 
   getStyleCircle() {
     const { width, height } = this.circle;
-    const { width: W, height: H, pxX, pxY } = this.block;
+    const { width: W, height: H, pxX, pxY } = this.picker;
     const { S, V } = this.props;
     const backgroundColor = Model.rgb.getStr(this.props.rgbMain);
     let left: number | string = pxX * S;
@@ -172,12 +229,21 @@ class Picker extends Component<Props> {
   }
 }
 
-const mapStateToProps = ({ H, S, V, rgbMain }: any): StateProps => {
+const mapStateToProps = ({
+  H,
+  S,
+  V,
+  rgbMain,
+  resize,
+  options,
+}: any): StateProps => {
   return {
     H,
     rgbMain,
     S,
     V,
+    resize,
+    style_options: options,
   };
 };
 const mapDispatchToProps: DispatchProps = {

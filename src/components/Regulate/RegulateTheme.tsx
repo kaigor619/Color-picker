@@ -16,17 +16,30 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     left: 0,
     x: 0,
   };
-  hookDidMount() {}
+  diff = 0;
   styleCircle = {};
-  componentDidMount() {
+
+  updateCoords() {
+    let block = this.regulateLine.current;
+    let { left } = block.getBoundingClientRect();
+    this.line.left = left;
+  }
+  updateElem() {
     let elem = this.regulateLine.current;
     let { line } = this;
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
+    line.x = line.w / this.diff;
+  }
+  hookDidMount() {}
+  componentDidMount() {
+    let elem = this.regulateLine.current;
+    this.updateElem();
 
-    this.setState({});
-    this.hookDidMount();
+    // this.setState({});
+    this.forceUpdate();
+    // this.hookDidMount();
 
     // Events
     elem.onmousedown = e => {

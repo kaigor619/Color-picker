@@ -2,10 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import RegulateTheme from './RegulateTheme';
+import { IOptions } from '../../interfaces';
 import './styles.css';
 
 export interface StateProps {
   H: number;
+  width: number;
+  resize: boolean;
 }
 
 export interface DispatchProps {
@@ -15,14 +18,28 @@ export interface DispatchProps {
 type Props = StateProps & DispatchProps;
 
 class RegulateColor extends RegulateTheme<Props> {
+  diff = 360;
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.H !== this.props.H || this.line.w !== 0) return true;
-    else return false;
+    let bool = false;
+    if (nextProps.H !== this.props.H || this.line.w !== 0) bool = true;
+
+    if (this.props.resize !== nextProps.resize) {
+      this.updateCoords();
+      bool = true;
+    }
+    if (this.props.width !== nextProps.width) {
+      setTimeout(() => {
+        this.updateElem();
+      }, 1);
+      bool = true;
+    }
+
+    return bool;
   }
 
   hookCPos(a: number) {
     const { line } = this;
-    let h = Math.abs(Math.round(a / (line.w / 360)) - 360);
+    let h = Math.abs(Math.round(a / line.x) - 360);
     this.props.add_color([h, null, null]);
   }
 
@@ -54,9 +71,11 @@ class RegulateColor extends RegulateTheme<Props> {
   }
 }
 
-const mapStateToProps = ({ H }) => {
+const mapStateToProps = ({ H, options, resize }) => {
   return {
     H,
+    width: options.picker.width,
+    resize,
   };
 };
 const mapDispatchToProps = {
