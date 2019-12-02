@@ -1,6 +1,15 @@
 import { ThemeAction, ThemeStore } from '../interfaces';
 
-function showWork(str: string) {}
+export const default_style_options = {
+  picker: {
+    width: 250,
+    height: 140,
+  },
+  circle: {
+    width: 12,
+    height: 12,
+  },
+};
 
 export const InitialState: ThemeStore = {
   H: 0,
@@ -28,9 +37,9 @@ export const InitialState: ThemeStore = {
   enable: false,
   main: false,
   sync: {
-    syncColor: [showWork, showWork],
-    callSave: [showWork, showWork],
-    callCancel: [showWork, showWork],
+    syncColor: [],
+    callSave: [],
+    callCancel: [],
   },
   description: {
     enable: false,
@@ -116,10 +125,6 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       };
 
     case 'CHANGE_STORE': {
-      console.log({
-        ...state,
-        ...action.payload,
-      });
       return {
         ...state,
         ...action.payload,
@@ -133,9 +138,17 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
     }
     case 'CHANGE_OPTIONS': {
       const style_options = action.payload;
+      let obj = {};
+      for (let key in default_style_options) {
+        obj[key] = {
+          ...default_style_options[key],
+          ...style_options[key],
+        };
+      }
+
       return {
         ...state,
-        options: action.payload,
+        options: obj,
       };
     }
 

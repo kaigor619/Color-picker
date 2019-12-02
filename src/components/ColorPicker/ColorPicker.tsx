@@ -22,13 +22,14 @@ interface StateProps {
 }
 interface DispatchProps {
   addColor: (options: IColorsOptions) => void;
-  change_enable: (enable: boolean) => void;
+  changeEnable: (enable: boolean) => void;
   changeResize: () => void;
   changeOptions: (options: IOptions) => void;
 }
 interface OwnProps {
   options: IColorsOptions;
-  style_options: IOptions;
+  style_options?: IOptions;
+  on: boolean;
 }
 type Props = StateProps & DispatchProps & OwnProps;
 
@@ -41,27 +42,28 @@ class ColorPicker extends Component<Props> {
     });
   }
   componentWillMount() {
-    const { style_options, options } = this.props;
-    let { syncColors, callCancel, callSave, color, on } = options;
+    const { style_options, options, on } = this.props;
+    let { syncColors, callCancel, callSave, color } = options;
 
     if (style_options) {
       this.props.changeOptions(style_options);
     }
     if (options && on) {
-      let a, b, c;
+      let a, b, c, d;
       a = Checking.check_arrFunctions(syncColors) ? syncColors : a;
       b = Checking.check_arrFunctions(callCancel) ? callCancel : b;
       c = Checking.check_arrFunctions(callSave) ? callSave : c;
+      d = color && typeof color == 'string' ? color : d;
 
       let object: IColorsOptions = {
-        color,
+        color: d,
         syncColors: a,
         callCancel: b,
         callSave: c,
-        on,
       };
 
-      this.props.addColor(object);
+      if (!a && !b && !c && !d) this.props.changeEnable(true);
+      else this.props.addColor(object);
     }
   }
 
@@ -70,8 +72,8 @@ class ColorPicker extends Component<Props> {
     hotkeys.add(
       'ctrl+alt+c',
       (event, handler) => {
-        const { enable, change_enable } = this.props;
-        change_enable(!enable);
+        const { enable, changeEnable } = this.props;
+        changeEnable(!enable);
       },
       { pressingOnce: true },
     );
@@ -82,39 +84,38 @@ class ColorPicker extends Component<Props> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log('should', this.props.enable, nextProps.enable);
-
+    // debugger;
     let bool = false;
     const { style_options } = this.props;
-    const { options, enable } = nextProps;
-    let { color, on, syncColors, callCancel, callSave } = options;
-    let { color: c, on: o } = this.props.options;
+    const { options, enable, on } = nextProps;
+    let { color, syncColors, callCancel, callSave } = options;
 
+    if (style_options !== nextProps.style_options) {
+      this.props.changeOptions(nextProps.style_options);
+    }
     if (this.props.enable !== enable) {
       return true;
     }
-    if (options !== undefined) {
-      if (color || on) {
-        if (!on || on === undefined) return false;
+    if (!on) return false;
 
-        let a, b, c;
+    if (options !== undefined) {
+      if (color) {
+        let a, b, c, d;
         a = Checking.check_arrFunctions(syncColors) ? syncColors : a;
         b = Checking.check_arrFunctions(callCancel) ? callCancel : b;
         c = Checking.check_arrFunctions(callSave) ? callSave : c;
+        d = color && typeof color == 'string' ? color : d;
+
         let object: IColorsOptions = {
-          color,
+          color: d,
           syncColors: a,
           callCancel: b,
           callSave: c,
-          on,
         };
 
-        this.props.addColor(object);
-        bool = true;
+        if (!a && !b && !c && !d) this.props.changeEnable(true);
+        else this.props.addColor(object);
       }
-    }
-    if (style_options !== nextProps.style_options) {
-      this.props.changeOptions(nextProps.style_options);
     }
 
     return bool;
@@ -168,7 +169,7 @@ const mapStateToProps = ({ enable }) => ({ enable });
 
 const mapDispatchToProps = {
   addColor: Action.eventAddColor,
-  change_enable: Action.event_change_enable,
+  changeEnable: Action.event_change_enable,
   changeResize: Action.event_change_resize,
   changeOptions: Action.event_change_options,
 };

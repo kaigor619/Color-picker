@@ -17,7 +17,7 @@ export class CopyColor extends Component<Props> {
   state = {
     copied: false,
   };
-  handleClick(e) {
+  handleClick() {
     let { model, type, opacity } = this.props;
 
     let value = Model[type].getString(model, opacity);
@@ -44,7 +44,7 @@ export class CopyColor extends Component<Props> {
         <div
           className={classNames}
           name="Copied"
-          onClick={this.handleClick.bind(this)}
+          onClick={() => this.handleClick()}
         >
           <img
             src="svg/copy.svg"

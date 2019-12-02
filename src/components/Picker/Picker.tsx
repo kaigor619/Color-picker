@@ -3,7 +3,7 @@ import * as Action from '../../actions';
 import { connect } from 'react-redux';
 import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
-import { IOptions } from '../../interfaces';
+import { IStrictOptions } from '../../interfaces';
 import './styles.css';
 
 // Интерфейсы
@@ -13,7 +13,7 @@ interface StateProps {
   V: number;
   rgbMain: number[];
   resize: boolean;
-  style_options: IOptions;
+  style_options: IStrictOptions;
 }
 interface DispatchProps {
   add_color: (mas: any) => void;
@@ -122,15 +122,17 @@ class Picker extends Component<Props> {
   updateElems() {
     let { picker, circle } = this;
     const { style_options } = this.props;
-    // Block
-    picker.width = style_options.picker.width;
-    picker.height = style_options.picker.height;
-    picker.pxX = picker.width / 100;
-    picker.pxY = picker.height / 100;
+    if (style_options) {
+      // Block
+      picker.width = style_options.picker.width;
+      picker.height = style_options.picker.height;
+      picker.pxX = picker.width / 100;
+      picker.pxY = picker.height / 100;
 
-    // Circle
-    circle.width = style_options.circle.width;
-    circle.height = style_options.circle.width;
+      // Circle
+      circle.width = style_options.circle.width;
+      circle.height = style_options.circle.width;
+    }
   }
   updateCoords() {
     let block = this.blockRef.current;

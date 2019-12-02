@@ -34,14 +34,17 @@ export interface ISync {
 }
 
 export interface IColorsOptions {
-  color: string;
-  syncColors: Ifunctions[] | [];
-  callSave: Ifunctions[] | [];
-  callCancel: Ifunctions[] | [];
-  on: boolean;
+  color?: string;
+  syncColors?: Ifunctions[] | [];
+  callSave?: Ifunctions[] | [];
+  callCancel?: Ifunctions[] | [];
 }
 
 export interface IOptions {
+  picker?: { width: number; height: number };
+  circle?: { width: number; height: number };
+}
+export interface IStrictOptions {
   picker: { width: number; height: number };
   circle: { width: number; height: number };
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import RegulateTheme from './RegulateTheme';
-import { IOptions } from '../../interfaces';
 import './styles.css';
 
 export interface StateProps {
@@ -19,6 +18,13 @@ type Props = StateProps & DispatchProps;
 
 class RegulateColor extends RegulateTheme<Props> {
   diff = 360;
+
+  componentDidUpdate(prevProps) {
+    if (this.props.width !== prevProps.width) {
+      this.updateElem();
+      this.forceUpdate();
+    }
+  }
   shouldComponentUpdate(nextProps, nextState) {
     let bool = false;
     if (nextProps.H !== this.props.H || this.line.w !== 0) bool = true;
@@ -28,9 +34,6 @@ class RegulateColor extends RegulateTheme<Props> {
       bool = true;
     }
     if (this.props.width !== nextProps.width) {
-      setTimeout(() => {
-        this.updateElem();
-      }, 1);
       bool = true;
     }
 
@@ -48,7 +51,7 @@ class RegulateColor extends RegulateTheme<Props> {
       line,
       props: { H },
     } = this;
-    let left = Math.abs((H - 360) * (line.w / 360));
+    let left = Math.abs((H - 360) * line.x);
     return left;
   }
 

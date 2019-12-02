@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import RegulateTheme from './RegulateTheme';
-import { IOptions } from '../../interfaces';
 
 export interface StateProps {
   opacity: number;
@@ -18,6 +17,12 @@ type Props = StateProps & DispatchProps;
 
 class RegulateOpacity extends RegulateTheme<Props> {
   diff = 100;
+  componentDidUpdate(prevProps) {
+    if (this.props.width !== prevProps.width) {
+      this.updateElem();
+      this.forceUpdate();
+    }
+  }
   shouldComponentUpdate(nextProps, nextState) {
     let bool = false;
     if (nextProps.opacity !== this.props.opacity) bool = true;
@@ -27,9 +32,6 @@ class RegulateOpacity extends RegulateTheme<Props> {
       bool = true;
     }
     if (this.props.width !== nextProps.width) {
-      setTimeout(() => {
-        this.updateElem();
-      }, 1);
       bool = true;
     }
 

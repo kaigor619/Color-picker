@@ -30,8 +30,9 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
     line.left = elem.getBoundingClientRect().left;
-    line.x = line.w / this.diff;
+    line.x = elem.offsetWidth / this.diff;
   }
+
   hookDidMount() {}
   componentDidMount() {
     let elem = this.regulateLine.current;
