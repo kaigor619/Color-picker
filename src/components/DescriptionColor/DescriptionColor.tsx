@@ -35,22 +35,22 @@ class DescriptionColor extends Component<Props> {
       left: 'Yes',
       right: 'No',
       text: 'Save color ?',
-      funcYes: this.onSaveColor.bind(this),
-      funcNo: this.onCancelColor.bind(this),
+      funcYes: () => this.onSaveColor(),
+      funcNo: () => this.onCancelColor(),
     },
     edit: {
       left: 'Yes',
       right: 'No',
       text: 'Save color ?',
-      funcYes: this.onSaveEditColor.bind(this),
-      funcNo: this.onCancelEditColor.bind(this),
+      funcYes: () => this.onSaveEditColor(),
+      funcNo: () => this.onCancelEditColor(),
     },
     remove: {
       left: 'Yes',
       right: 'No',
       text: 'Delete this swatch?',
-      funcYes: this.onYesDeleteColor.bind(this),
-      funcNo: this.onNoDeleteColor.bind(this),
+      funcYes: () => this.onYesDeleteColor(),
+      funcNo: () => this.onNoDeleteColor(),
     },
   };
   didmount = false;
@@ -149,12 +149,12 @@ class DescriptionColor extends Component<Props> {
     }
   }
 
-  handleClickEdit(e) {
+  handleClickEdit() {
     this.props.change_description(this.getDescriptionWithout('edit', 'enable'));
     this.inputColor.current.removeAttribute('disabled');
     this.inputColor.current.focus();
   }
-  handleClickDelete(e) {
+  handleClickDelete() {
     this.props.change_description(
       this.getDescriptionWithout('remove', 'enable'),
     );
@@ -176,6 +176,7 @@ class DescriptionColor extends Component<Props> {
       index,
     });
   }
+
   onCancelColor() {
     this.props.change_description(this.getDescriptionWithout());
   }
@@ -245,7 +246,7 @@ class DescriptionColor extends Component<Props> {
               className="cp_descr-input"
               value={name}
               disabled={true}
-              onChange={this.handleChange.bind(this)}
+              onChange={e => this.handleChange(e)}
             />
           </div>
           <div className="cp_descr-part">
@@ -253,13 +254,13 @@ class DescriptionColor extends Component<Props> {
               className="cp_descr-icon cp_descr-edit"
               src="./svg/pencil.svg"
               alt="Edit color"
-              onClick={this.handleClickEdit.bind(this)}
+              onClick={() => this.handleClickEdit()}
             />
             <img
               className="cp_descr-icon cp_descr-remove"
               src="./svg/delete.svg"
               alt="Delete color"
-              onClick={this.handleClickDelete.bind(this)}
+              onClick={() => this.handleClickDelete()}
             />
           </div>
           <CSSTransition

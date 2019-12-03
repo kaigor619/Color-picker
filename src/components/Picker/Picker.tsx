@@ -72,7 +72,7 @@ class Picker extends Component<Props> {
     this.updateCoords();
     const { on } = this.state;
     this.setState({ on: !on });
-    block.onmousedown = this.mouseDown.bind(this);
+    block.onmousedown = e => this.mouseDown(e);
 
     block.ontouchstart = this.touchMove;
     block.ontouchend = this.touchMove;

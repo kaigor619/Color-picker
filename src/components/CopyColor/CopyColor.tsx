@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import copy from 'copy-text-to-clipboard';
 import Model from '../../options/modelsColor';
-
 import './styles.css';
 
+// Interfaces
 interface StateProps {
   model: string | number[];
   type: string;
@@ -58,15 +58,14 @@ export class CopyColor extends Component<Props> {
   }
 }
 
+// Redux Options
 const mapStateToProps = ({ models, type, opacity }) => ({
   model: models[type],
   type,
   opacity,
 });
 
-const mapDispatchToProps = {};
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  {},
 )(CopyColor);

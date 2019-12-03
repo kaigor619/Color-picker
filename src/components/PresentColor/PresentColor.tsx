@@ -3,10 +3,6 @@ import React, { Component } from 'react';
 type Props = {};
 
 class PresentColorTheme<TProps = Props> extends Component<TProps> {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
   stylePresent = {};
 
   handleClick() {}
@@ -22,7 +18,7 @@ class PresentColorTheme<TProps = Props> extends Component<TProps> {
       <div className="cp_present-cell">
         <div
           className="cp_present-color"
-          onClick={this.handleClick}
+          onClick={() => this.handleClick()}
           style={this.stylePresent}
         ></div>
       </div>

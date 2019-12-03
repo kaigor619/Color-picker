@@ -5,6 +5,8 @@ import * as Action from '../../actions';
 import { Icolors, IDescription } from '../../interfaces';
 import DescriptionColor from '../DescriptionColor';
 import './styles.css';
+
+// Interfaces
 interface StateProps {
   colors: Icolors[];
   description: IDescription;
@@ -66,6 +68,8 @@ class Colors extends Component<Props> {
     );
   }
 }
+
+// Redux Options
 const mapStateToProps = ({ colors, description }): StateProps => {
   return {
     colors,

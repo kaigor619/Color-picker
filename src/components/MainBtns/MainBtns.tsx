@@ -15,13 +15,13 @@ export class MainBtns extends Component<Props> {
       <div className="cp_main-btns">
         <button
           className="cp_main-btns-button ok"
-          onClick={this.props.clickOk.bind(this)}
+          onClick={() => this.props.clickOk()}
         >
           Ok
         </button>
         <button
           className="cp_main-btns-button cancel"
-          onClick={this.props.clickCancel.bind(this)}
+          onClick={() => this.props.clickCancel()}
         >
           Cancel
         </button>

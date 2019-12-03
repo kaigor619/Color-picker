@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
+import classNames from 'classnames';
 import './styles.css';
+
+// Interfaces
 interface IBtnChangeProps {
   name: string;
   text: string;
@@ -15,13 +18,11 @@ const BtnChangeType = function({
   type,
   changeType,
 }: IBtnChangeProps) {
-  let active = type === name ? true : false;
-
-  let classNames = active ? 'cp_btn-type active' : 'cp_btn-type';
+  let elemClass = classNames('cp_btn-type', { active: type === name });
 
   return (
     <li>
-      <button className={classNames} onClick={() => changeType(name)}>
+      <button className={elemClass} onClick={() => changeType(name)}>
         {text}
       </button>
     </li>
@@ -29,9 +30,7 @@ const BtnChangeType = function({
 };
 
 const mapStateToProps = ({ type }) => {
-  return {
-    type,
-  };
+  return { type };
 };
 
 const mapDispatchToProps = {

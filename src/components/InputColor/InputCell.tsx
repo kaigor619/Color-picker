@@ -77,7 +77,7 @@ class InputCell extends Component<Props> {
     type: 'text',
     maxLength: this.props.maxLength,
     value: String(this.state.label),
-    onChange: this.inputChange.bind(this),
+    onChange: e => this.inputChange(e),
     className: this.props.hexBool ? 'cp_model-input hex' : 'cp_model-input',
   };
 

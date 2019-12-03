@@ -42,7 +42,6 @@ class App extends Component {
     return (
       <div>
         <DemoInput getPickerOptions={this.getPickerOptions} />
-
         <ColorPicker
           on={on}
           options={ColorOptions}
