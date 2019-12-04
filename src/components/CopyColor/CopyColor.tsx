@@ -8,7 +8,7 @@ import './styles.css';
 function CopyColor({ store }) {
   let [copied, setCopied] = useState(false);
 
-  function handleClick() {
+  function handleClick(e) {
     const { models, type, opacity } = store.getState();
     let color = Model[type].getString(models[type], opacity);
 
@@ -26,7 +26,7 @@ function CopyColor({ store }) {
     <React.Fragment>
       {/* 
       // @ts-ignore */}
-      <div className={elemClass} name="Copied" onClick={() => handleClick()}>
+      <div className={elemClass} name="Copied" onClick={handleClick}>
         <img
           src="svg/copy.svg"
           className="copy-color"
