@@ -17,7 +17,18 @@ export interface Idescr {
   edit: boolean;
 }
 
+
 export type Ifunctions = (str: string, prevColor: string) => void;
+
+// For props Colorpicker
+export interface IColorsOptions {
+  color?: string;
+  syncColors?: Ifunctions[] | [];
+  callSave?: Ifunctions[] | [];
+  callCancel?: Ifunctions[] | [];
+}
+
+// For Redux
 
 export interface IDescription {
   enable: boolean;
@@ -27,42 +38,44 @@ export interface IDescription {
   index: number;
 }
 
-export interface ISync {
+export interface IUser_options_functions {
+  main: boolean;
   syncColor: Ifunctions[];
   callSave: Ifunctions[];
   callCancel: Ifunctions[];
 }
 
-export interface IColorsOptions {
-  color?: string;
-  syncColors?: Ifunctions[] | [];
-  callSave?: Ifunctions[] | [];
-  callCancel?: Ifunctions[] | [];
-}
-
-export interface IOptions {
+export interface IUser_options_style {
   picker?: { width: number; height: number };
   circle?: { width: number; height: number };
 }
-export interface IStrictOptions {
+export interface IStrictUser_options_style{
   picker: { width: number; height: number };
   circle: { width: number; height: number };
 }
 
-export interface ThemeStore {
+export interface IUser_options {
+  style: IStrictUser_options_style;
+  functions: IUser_options_functions;
+}
+
+
+export interface ICp_settings {
   S: number;
   V: number;
   H: number;
   opacity: number;
   rgbMain: number[];
   prevColor: string;
-  description: IDescription;
   type: string;
+}
+
+export interface ThemeStore {
+  cp_settings: ICp_settings;
+  description: IDescription;
   models: Models;
+  user_options: IUser_options;
   colors: Icolors[];
-  main: boolean;
   enable: boolean;
-  sync: ISync;
   resize: boolean;
-  options: IOptions;
 }

@@ -1,8 +1,15 @@
-import { IDescription, Ifunctions, IOptions } from '../interfaces';
+import {
+  IDescription,
+  Ifunctions,
+  IUser_options_functions,
+} from '../interfaces';
 import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
 
+let virtualStore = {};
+
+// Соединение обьектов в один
 export function connect_obj(...mas) {
   let obj = {};
   mas.forEach(element => {
@@ -33,8 +40,10 @@ export const change_type = (type: string) => {
 
 // Изменение model
 export const change_model = (value: number[] | string, store) => {
-  const { type, models, main, sync, opacity } = store;
-  let { syncColors } = sync;
+  const { type, opacity } = store.cp_settings;
+  const { models } = store;
+  const { syncColors, main } = store.user_options.functions;
+
   if (main) {
     let color = Model[type].getString(value, opacity);
     syncColors.forEach(element => {
@@ -79,6 +88,28 @@ export const change_callCancel = (callCancel: Ifunctions[]) => {
   return { callCancel };
 };
 
+export const change_cp_settings = (obj, store) => {
+  return { cp_settings: { ...store.cp_settings, ...obj } };
+};
+export const change_user_options = (obj, store) => {
+  return { user_options: { ...store.user_options, ...obj } };
+};
+export const change_user_options_style = (obj, store) => {
+  return {
+    user_options: {
+      ...store.user_options,
+      style: { ...store.user_options.style, ...obj },
+    },
+  };
+};
+export const change_user_options_functions = (obj, store) => {
+  return {
+    user_options: {
+      ...store.user_options,
+      functions: { ...store.user_options.functions, ...obj },
+    },
+  };
+};
 // Изменение Store
 const change_store = obj => {
   return {
@@ -93,13 +124,8 @@ export const cx_HSV = (hsv: any, store) => {
   let [H, S, V] = hsv;
 
   if (H !== null) objStore['H'] = H;
-  else H = store['H'];
-
   if (S !== null) objStore['S'] = S;
-  else S = store['S'];
-
   if (V !== null) objStore['V'] = V;
-  else V = store['V'];
 
   return objStore;
 };
@@ -108,19 +134,24 @@ export const cx_HSV = (hsv: any, store) => {
 export const cx_type_model = (type: string, store) => {
   let a = change_type(type);
   let b = sync_model_from_rgbMain({ ...store, type });
-  return connect_obj(a, b);
+  let c = change_cp_settings(a, store);
+  return connect_obj(c, b);
 };
 
 // Изменение opacity и hex
 export const cx_opacity_hex = (opacity: number, store) => {
+  const {
+    models,
+    cp_settings: { type },
+  } = store;
+  const {
+    main,
+    functions: { syncColors },
+  } = store.user_options;
   let a = change_opacity(opacity);
-
-  const { models, main, sync, type } = store;
-  let b = { models };
-  let { syncColors } = sync;
-  if (type === 'hex') {
-    b = sync_model_from_rgbMain({ ...store, ...a });
-  }
+  let b =
+    type === 'hex' ? sync_model_from_rgbMain({ ...store, ...a }) : { models };
+  let cp_settings = change_cp_settings(a, store);
 
   if (main) {
     let color = Model[type].getString(b.models[type], a.opacity);
@@ -128,20 +159,12 @@ export const cx_opacity_hex = (opacity: number, store) => {
       element(color);
     });
   }
-  return connect_obj(a, b);
-};
-
-// Синхронизация HSV => rgbMain
-export const sync_rgbMain = store => {
-  const { H, S, V } = store;
-  let rgb = Convert.hsv_rgb(H, S, V);
-  let obj = change_rgbMain(rgb);
-  return obj;
+  return connect_obj(cp_settings, b);
 };
 
 // Синхнонизация rgbMain => model
 export const sync_model_from_rgbMain = store => {
-  const { rgbMain, type, opacity } = store;
+  const { rgbMain, type, opacity } = store.cp_settings;
   let modelValue = Model[type]['rgb_' + type](rgbMain, opacity);
   let a = change_model(modelValue, store);
 
@@ -150,33 +173,36 @@ export const sync_model_from_rgbMain = store => {
 
 // Изменение HSV и rgbMain и model
 export const cx_HSV_rgbMain_model = (hsv: any, store) => {
-  // let { type, opacity, models } = store;
-  let { type, opacity, models } = store;
-  let objStore = {};
+  let { cp_settings } = store;
+  let { type, opacity } = store.cp_settings;
+  let { models } = store;
+  let objStore = Object.assign({}, cp_settings);
   let [H, S, V] = hsv;
 
-  if (H !== null) objStore['H'] = H;
-  else H = store['H'];
+  let h, s, v, rgbMain;
 
-  if (S !== null) objStore['S'] = S;
-  else S = store['S'];
+  if (H !== null) h = H;
+  else H = cp_settings['H'];
 
-  if (V !== null) objStore['V'] = V;
-  else V = store['V'];
+  if (S !== null) s = S;
+  else S = cp_settings['S'];
 
-  objStore['rgbMain'] = Convert.hsv_rgb(H, S, V);
+  if (V !== null) v = V;
+  else V = cp_settings['V'];
+
+  rgbMain = Convert.hsv_rgb(H, S, V);
 
   let b = sync_model_from_rgbMain({
     ...store,
     type,
     opacity,
-    rgbMain: objStore['rgbMain'],
+    rgbMain,
     models,
   });
 
-  objStore['models'] = b.models;
+  let cp_setts = change_cp_settings({ H, S, V, rgbMain }, store);
 
-  return objStore;
+  return connect_obj(cp_setts, b);
 };
 
 export const addColor = (value: string, main: boolean, store) => {
@@ -188,9 +214,10 @@ export const addColor = (value: string, main: boolean, store) => {
   let b = change_rgbMain(rgb);
   let e = change_opacity(opacity);
   let c = change_type(type);
-  let d = change_model(val, { ...store, type });
   let k = change_prevColor(value, main);
-  return connect_obj(a, b, c, d, e, k);
+  let d = change_model(val, { ...store, type });
+  let cp_settings = connect_obj(a, b, e, c, k);
+  return connect_obj(cp_settings, d);
 };
 
 export const cx_HSV_rgbMain_model_from_model = (
@@ -198,7 +225,8 @@ export const cx_HSV_rgbMain_model_from_model = (
   index: number,
   store,
 ) => {
-  const { type, models } = store;
+  const { models } = store;
+  const { type } = store.cp_settings;
   let model = models[type];
   let val;
 
@@ -214,19 +242,17 @@ export const cx_HSV_rgbMain_model_from_model = (
   let a = cx_HSV(hsv, store);
   let b = change_rgbMain(rgb);
 
-  let c;
-  if (type === 'hex') {
-    c = change_model(val, store);
-  } else {
-    c = change_model([...val], store);
-  }
+  let cp_settings = connect_obj(a, b);
 
-  return connect_obj(a, b, c);
+  let c = change_model(val, store);
+
+  return connect_obj(cp_settings, c);
 };
 
 export const eventHSV = hsv => (dispatch, getStore) => {
   const store = getStore();
   let obj = cx_HSV_rgbMain_model(hsv, store);
+  // console.log(obj);
   dispatch(change_store(obj));
 };
 
@@ -298,7 +324,7 @@ export const eventChangeInputOpacity = val => (dispatch, getStore) => {
 
 export const eventClickPrevColor = () => (dispatch, getStore) => {
   let store = getStore();
-  let obj = addColor(store.prevColor, true, store);
+  let obj = addColor(store.cp_settings.prevColor, true, store);
 
   dispatch(change_store(obj));
 };
@@ -326,11 +352,15 @@ export const eventAddColor = options => (dispatch, getStore) => {
     e = change_callCancel(callCancel);
   }
 
+  let user_options = change_user_options_functions(
+    connect_obj(b, c, d, e),
+    store,
+  );
+
   let k;
   if (!enable) k = change_enable(true);
 
-  let sync = connect_obj(c, d, e);
-  let obj = connect_obj(a, b, k, { sync });
+  let obj = connect_obj(a, k, user_options);
 
   dispatch(change_store(obj));
 };
@@ -351,7 +381,12 @@ export const eventClickOk = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let cp_settings = change_user_options_functions(
+    connect_obj(b, c, d, e),
+    getStore(),
+  );
+
+  let obj = connect_obj(a, { cp_settings });
 
   dispatch(change_store(obj));
 
@@ -381,9 +416,12 @@ export const eventClickCancel = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let cp_settings = change_user_options_functions(
+    connect_obj(b, c, d, e),
+    getStore(),
+  );
 
-  dispatch(change_store(obj));
+  let obj = connect_obj(a, { cp_settings });
   if (main) {
     Promise.resolve().then(() => {
       callCancel.forEach(func => {
@@ -405,10 +443,10 @@ export const event_change_resize = () => dispatch => {
   };
   dispatch(action);
 };
-export const event_change_options = (options: IOptions) => dispatch => {
+export const event_change_options = (options: any) => dispatch => {
   let action = {
-    type: 'CHANGE_OPTIONS',
+    type: 'CHANGE_USER_OPTIONS_STYLE',
     payload: options,
   };
-  dispatch(action);
+  // dispatch(action);
 };

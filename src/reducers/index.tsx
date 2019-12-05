@@ -1,6 +1,6 @@
 import { ThemeAction, ThemeStore } from '../interfaces';
 
-export const default_style_options = {
+export const default_options_style = {
   picker: {
     width: 250,
     height: 140,
@@ -10,44 +10,42 @@ export const default_style_options = {
     height: 12,
   },
 };
+export const default_options_functions = {
+  main: false,
+  syncColor: [],
+  callSave: [],
+  callCancel: [],
+};
+export const default_description = {
+  enable: false,
+  save: false,
+  edit: false,
+  remove: false,
+  index: 0,
+};
 
 export const InitialState: ThemeStore = {
-  H: 0,
-  S: 0,
-  V: 100,
-  opacity: 1,
-  rgbMain: [255, 255, 255],
-  type: 'rgb',
-  prevColor: 'hsl(109, 70%, 39%)',
+  cp_settings: {
+    H: 0,
+    S: 0,
+    V: 100,
+    opacity: 1,
+    rgbMain: [255, 255, 255],
+    type: 'rgb',
+    prevColor: 'hsl(109, 70%, 39%)',
+  },
   models: {
     hex: '#fefefe',
     hsl: [0, 0, 100],
     rgb: [255, 255, 255],
   },
-  options: {
-    picker: {
-      width: 250,
-      height: 140,
-    },
-    circle: {
-      width: 12,
-      height: 12,
-    },
+  user_options: {
+    style: default_options_style,
+    functions: default_options_functions,
   },
+  description: default_description,
+
   enable: false,
-  main: false,
-  sync: {
-    syncColor: [],
-    callSave: [],
-    callCancel: [],
-  },
-  description: {
-    enable: false,
-    save: false,
-    edit: false,
-    remove: false,
-    index: 0,
-  },
   resize: false,
   colors: [
     { name: 'Color 1', color: '#F44336' },
@@ -72,58 +70,67 @@ export const InitialState: ThemeStore = {
 
 const reducer = (state: any = InitialState, action: ThemeAction) => {
   switch (action.type) {
-    case 'CHANGE_RGB':
-      return { ...state, rgbMain: action.payload };
+    case 'CHANGE_CP_SETTINGS':
+      return {
+        ...state,
+        cp_settings: { ...state.cp_settings, ...action.payload },
+      };
 
-    case 'CHANGE_OPACITY': {
-      return { ...state, opacity: action.payload };
-    }
-    case 'CHANGE_TYPE': {
-      return { ...state, type: action.payload };
+    case 'CHANGE_MODELS':
+      return { ...state, models: { ...action.payload } };
+
+    case 'CHANGE_USER_OPTIONS':
+      return {
+        ...state,
+        user_options: { ...state.user_options, ...action.payload },
+      };
+
+    case 'CHANGE_USER_OPTIONS_STYLE': {
+      const style_options = action.payload;
+      let style = {};
+      for (let key in default_options_style) {
+        style[key] = {
+          ...default_options_style[key],
+          ...style_options[key],
+        };
+      }
+
+      return {
+        ...state,
+        user_options: {
+          ...state.user_options,
+          style,
+        },
+      };
     }
 
-    case 'CHANGE_HEX': {
-      return { ...state, models: { ...state.models, hex: action.payload } };
+    case 'CHANGE_USER_OPTIONS_FUNCTIONS': {
+      return {
+        ...state,
+        user_options: {
+          ...state.user_options,
+          functions: { ...default_options_functions, ...action.payload },
+        },
+      };
     }
 
     case 'CHANGE_MODEL': {
       let type = state.type;
       return { ...state, models: { ...state.models, [type]: action.payload } };
     }
-    case 'CHANGE_USER_COLORS': {
+    case 'CHANGE_COLORS': {
       return {
         ...state,
         colors: action.payload,
       };
     }
-    case 'CHANGE_PREV_COLOR': {
-      return {
-        ...state,
-        prevColor: action.payload,
-      };
-    }
+
     case 'CHANGE_DESCRIPTION': {
       return {
         ...state,
-        description: action.payload,
+        description: { ...default_description, ...action.payload },
       };
     }
-    case 'CHANGE_H':
-      return {
-        ...state,
-        H: action.payload == null ? state.H : action.payload,
-      };
-    case 'CHANGE_S':
-      return {
-        ...state,
-        S: action.payload == null ? state.S : action.payload,
-      };
-    case 'CHANGE_V':
-      return {
-        ...state,
-        V: action.payload == null ? state.V : action.payload,
-      };
-
     case 'CHANGE_STORE': {
       return {
         ...state,
@@ -136,22 +143,21 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
         resize: !state.resize,
       };
     }
-    case 'CHANGE_OPTIONS': {
-      const style_options = action.payload;
-      let obj = {};
-      for (let key in default_style_options) {
-        obj[key] = {
-          ...default_style_options[key],
-          ...style_options[key],
-        };
-      }
-
+    case 'CHANGE_ENABLE': {
       return {
         ...state,
-        options: obj,
+        enable: action.payload,
       };
     }
-
+    case 'CHANGE_USER_OPTIONS_MAIN': {
+      return {
+        ...state,
+        user_options: {
+          ...state.user_options,
+          functions: { ...state.user_options.functions, main: action.payload },
+        },
+      };
+    }
     default:
       return state;
   }
