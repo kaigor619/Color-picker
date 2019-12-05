@@ -21,7 +21,7 @@ class PresentColorOut extends PresentColorTheme<Props> {
   }
 }
 
-const mapStateToProps = ({ cp_settings: { rgbMain, opacity } }: ThemeStore) => {
+const mapStateToProps = ({ rgbMain, opacity }: ThemeStore) => {
   return {
     rgbMain,
     opacity,

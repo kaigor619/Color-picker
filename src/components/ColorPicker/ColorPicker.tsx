@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import Picker from '../Picker';
 import { PresentColorLast, PresentColorOut } from '../PresentColor';
 import { RegulateColor, RegulateOpacity } from '../Regulate';
 import BtnChangeType from '../BtnChangeType';
 import { RgbInput, HslInput, HexInput } from '../InputColor';
+import { connect } from 'react-redux';
 import Colors from '../Colors';
 import CopyColor from '../CopyColor';
 import MainBtns from '../MainBtns';
-import { IColorsOptions, IUser_options_style } from '../../interfaces';
+import { IColorsOptions, IOptions } from '../../interfaces';
 import * as Action from '../../actions';
 import Checking from '../../options/checking';
 import hotkeys from 'kai-hotkeys';
@@ -24,11 +24,11 @@ interface DispatchProps {
   addColor: (options: IColorsOptions) => void;
   changeEnable: (enable: boolean) => void;
   changeResize: () => void;
-  changeOptions: (options: any) => void;
+  changeOptions: (options: IOptions) => void;
 }
 interface OwnProps {
   options: IColorsOptions;
-  style_options?: IUser_options_style;
+  style_options?: IOptions;
   on: boolean;
 }
 type Props = StateProps & DispatchProps & OwnProps;
@@ -135,13 +135,13 @@ class ColorPicker extends Component<Props> {
                 <PresentColorOut />
               </div>
 
-              {/* <div className="cp_regulate-color ">
+              <div className="cp_regulate-color ">
                 <RegulateColor />
                 <RegulateOpacity />
-              </div> */}
+              </div>
             </div>
 
-            {/* <div className="cp_models">
+            <div className="cp_models">
               <div className="cp_models-copy">
                 <ul className="cp_list-models">
                   <RgbInput />
@@ -158,7 +158,7 @@ class ColorPicker extends Component<Props> {
             </div>
             <Colors />
 
-            <MainBtns /> */}
+            <MainBtns />
           </div>
         </div>
       </div>

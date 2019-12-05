@@ -27,7 +27,7 @@ class PresentColorLast extends PresentColorTheme<Props> {
   }
 }
 
-const mapStateToProps = ({ cp_settings: { prevColor } }): StateProps => {
+const mapStateToProps = ({ prevColor }: ThemeStore): StateProps => {
   return {
     prevColor,
   };

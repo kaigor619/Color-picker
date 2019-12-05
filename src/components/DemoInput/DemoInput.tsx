@@ -7,7 +7,7 @@ type Props = OwnProps;
 export default class DemoInput extends Component<Props> {
   state = {
     color: 'hsla(154, 64%, 44%, 0.22)',
-    on: true,
+    on: false,
     picker_settings: {
       picker: {
         width: 300,

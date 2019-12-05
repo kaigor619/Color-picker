@@ -10,7 +10,7 @@ class App extends Component {
   }
   state = {
     color: '#c71cb6',
-    on: true,
+    on: false,
     colorOptions: {
       syncColors: [],
       callSave: [],

@@ -1,9 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import * as Action from '../../actions';
+import { connect } from 'react-redux';
 import Convert from '../../options/convert';
 import Model from '../../options/modelsColor';
-import { IStrictUser_options_style } from '../../interfaces';
-import { connect, ReactReduxContext } from 'react-redux';
+import { IStrictOptions } from '../../interfaces';
 import './styles.css';
 
 // Интерфейсы
@@ -13,13 +13,24 @@ interface StateProps {
   V: number;
   rgbMain: number[];
   resize: boolean;
-  style_options: IStrictUser_options_style;
+  style_options: IStrictOptions;
 }
 interface DispatchProps {
   add_color: (mas: any) => void;
 }
+interface PickerOptions {
+  picker: { width: number; height: number };
+  circle: { width: number; height: number };
+}
+interface OwnProps {}
 
-type Props = StateProps & DispatchProps;
+interface IStyleBlock {
+  width?: string;
+  height?: string;
+  background: string;
+}
+
+type Props = StateProps & OwnProps & DispatchProps;
 
 // Компонент
 class Picker extends Component<Props> {
@@ -221,9 +232,12 @@ class Picker extends Component<Props> {
 }
 
 const mapStateToProps = ({
-  cp_settings: { H, S, V, rgbMain },
+  H,
+  S,
+  V,
+  rgbMain,
   resize,
-  user_options: { style },
+  options,
 }: any): StateProps => {
   return {
     H,
@@ -231,14 +245,14 @@ const mapStateToProps = ({
     S,
     V,
     resize,
-    style_options: style,
+    style_options: options,
   };
 };
 const mapDispatchToProps: DispatchProps = {
   add_color: Action.eventHSV,
 };
 
-export default connect(
+export default connect<StateProps, DispatchProps, OwnProps>(
   mapStateToProps,
   mapDispatchToProps,
 )(Picker);
