@@ -74,7 +74,7 @@ class ColorPicker extends Component<Props> {
     if (!a && !b && !c && !d) this.props.changeEnable(true);
     else this.props.addColor(object);
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.update();
   }
 
