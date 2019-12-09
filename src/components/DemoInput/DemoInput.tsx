@@ -24,6 +24,18 @@ export default class DemoInput extends Component<Props> {
       callCancel: [this.cancelColor.bind(this)],
     },
   };
+  colors = [
+    { name: 'dwdw', color: '#F44336', id: 'q' },
+    { name: 'fefef', color: '#E91E63', id: 'w' },
+    { name: 'fefe', color: 'rgb(156, 39, 176)', id: 'e' },
+    { name: 'Color 4', color: 'hsl(262, 52%, 47%)', id: 'r' },
+    { name: 'Color 5', color: '#3F51B5', id: 't' },
+    { name: 'Color 6', color: '#2196F3', id: 'y' },
+    { name: 'Color 7', color: '#03A9F4', id: 'u' },
+    { name: 'Color 8', color: '#009688', id: 'i' },
+    { name: 'Color 9', color: '#4CAF50', id: 'o' },
+    { name: 'Color 10', color: '#8BC34A', id: 'p' },
+  ];
 
   syncColor(color) {
     this.setState({ color });
@@ -39,8 +51,8 @@ export default class DemoInput extends Component<Props> {
     this.setState({ color: e.target.value });
   }
   handleClick() {
-    const { color, colorOptions, picker_settings } = this.state;
-    this.props.getPickerOptions(color, colorOptions, picker_settings);
+    const { color, colorOptions } = this.state;
+    this.props.getPickerOptions(color, colorOptions, null, this.colors);
   }
   handleClickScale() {
     let { width } = this.state.picker_settings.picker;

@@ -7,7 +7,6 @@ import './styles.css';
 export interface StateProps {
   H: number;
   width: number;
-  resize: boolean;
 }
 
 export interface DispatchProps {
@@ -24,20 +23,6 @@ class RegulateColor extends RegulateTheme<Props> {
       this.updateElem();
       this.forceUpdate();
     }
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    let bool = false;
-    if (nextProps.H !== this.props.H || this.line.w !== 0) bool = true;
-
-    if (this.props.resize !== nextProps.resize) {
-      this.updateCoords();
-      bool = true;
-    }
-    if (this.props.width !== nextProps.width) {
-      bool = true;
-    }
-
-    return bool;
   }
 
   hookCPos(a: number) {
@@ -59,10 +44,17 @@ class RegulateColor extends RegulateTheme<Props> {
     this.stylingCircle();
     return (
       <div className="cp_w-reg">
-        <div className="cp_reg-line color" ref={this.regulateLine}></div>
         <div
-          onMouseDown={this.handleDown}
-          onTouchStart={this.touchMove}
+          className="cp_reg-line color"
+          ref={this.regulateLine}
+          onMouseDown={this.mouseDown}
+          onTouchStart={this.touchStart}
+          onTouchMove={this.touchMove}
+          onTouchEnd={this.touchMove}
+        ></div>
+        <div
+          onMouseDown={this.mouseDown}
+          onTouchStart={this.touchStart}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchMove}
           style={this.styleCircle}
@@ -74,11 +66,10 @@ class RegulateColor extends RegulateTheme<Props> {
   }
 }
 
-const mapStateToProps = ({ H, options, resize }) => {
+const mapStateToProps = ({ H, options }) => {
   return {
     H,
     width: options.picker.width,
-    resize,
   };
 };
 const mapDispatchToProps = {

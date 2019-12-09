@@ -9,7 +9,7 @@ export interface Models {
   rgb: number[];
 }
 
-export type Icolors = { name: string; color: string };
+export type Icolors = { name: string; color: string; id: string };
 
 export interface Idescr {
   enable: boolean;
@@ -35,6 +35,12 @@ export interface ISync {
 
 export interface IColorsOptions {
   color?: string;
+  syncColors: Ifunctions[] | [];
+  callSave?: Ifunctions[] | [];
+  callCancel?: Ifunctions[] | [];
+}
+
+export interface IColorsOnInput {
   syncColors?: Ifunctions[] | [];
   callSave?: Ifunctions[] | [];
   callCancel?: Ifunctions[] | [];

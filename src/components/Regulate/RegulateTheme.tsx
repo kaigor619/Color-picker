@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 type Props = {};
 
-class RegulateTheme<TProps = Props> extends Component<TProps> {
+class RegulateTheme<TProps = Props> extends PureComponent<TProps> {
   constructor(props) {
     super(props);
     this.cPos = this.cPos.bind(this);
-    this.handleDown = this.handleDown.bind(this);
     this.touchMove = this.touchMove.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
   }
   regulateLine: any = React.createRef();
 
@@ -20,8 +22,8 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
   styleCircle = {};
 
   updateCoords() {
-    let block = this.regulateLine.current;
-    let { left } = block.getBoundingClientRect();
+    let elem = this.regulateLine.current;
+    let { left } = elem.getBoundingClientRect();
     this.line.left = left;
   }
   updateElem() {
@@ -29,32 +31,29 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
     let { line } = this;
     line.w = elem.offsetWidth;
     line.h = elem.offsetHeight;
-    line.left = elem.getBoundingClientRect().left;
     line.x = elem.offsetWidth / this.diff;
+    this.updateCoords();
+  }
+  handleMouseMove(e) {
+    this.cPos(e, true);
   }
 
-  hookDidMount() {}
-  componentDidMount() {
-    let elem = this.regulateLine.current;
-    this.updateElem();
+  mouseDown(e) {
+    this.updateCoords();
+    this.cPos(e, true);
+    document.addEventListener('mousemove', this.handleMouseMove);
 
-    // this.setState({});
-    this.forceUpdate();
-    // this.hookDidMount();
-
-    // Events
-    elem.onmousedown = e => {
-      this.cPos(e, true);
-      document.onmousemove = e => this.cPos(e, true);
-
-      document.onmouseup = () => {
-        document.onmousemove = null;
-      };
+    document.onmouseup = () => {
+      document.removeEventListener('mousemove', this.handleMouseMove);
     };
-
-    elem.addEventListener('touchstart', this.touchMove, false);
-    elem.addEventListener('touchend', this.touchMove, false);
-    elem.addEventListener('touchmove', this.touchMove, false);
+  }
+  touchStart(e) {
+    this.updateCoords();
+    this.touchMove(e);
+  }
+  componentDidMount() {
+    this.updateElem();
+    this.forceUpdate();
   }
 
   touchMove(e: any) {
@@ -67,14 +66,6 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
       };
       this.cPos(newEvent, false);
     }
-  }
-
-  handleDown(e: any) {
-    document.onmousemove = e => this.cPos(e, true);
-
-    document.onmouseup = () => {
-      document.onmousemove = null;
-    };
   }
 
   cPos(c: any, bool: boolean) {
@@ -98,8 +89,8 @@ class RegulateTheme<TProps = Props> extends Component<TProps> {
 
     let left = this.getLeft();
 
-    left = left < 0 ? 0 : left;
-    left = left > line.w ? line.w : left;
+    left = left < 0 ? 0 : left > line.w ? line.w : left;
+    // left = left > line.w ? line.w : left;
 
     this.styleCircle = {
       left: left + 'px',

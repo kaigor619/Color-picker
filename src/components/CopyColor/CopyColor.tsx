@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react';
-import { connect, ReactReduxContext } from 'react-redux';
+import React, { useState } from 'react';
+import { ReactReduxContext } from 'react-redux';
 import copy from 'copy-text-to-clipboard';
 import Model from '../../options/modelsColor';
 import classNames from 'classnames';

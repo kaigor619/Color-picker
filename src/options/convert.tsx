@@ -5,9 +5,9 @@ const Convert = {
       q,
       t,
       lH,
-      R: number = 0,
-      G: number = 0,
-      B: number = 0;
+      R = 0,
+      G = 0,
+      B = 0;
 
     H = H === 360 ? 0 : H;
     S /= 100;
@@ -20,76 +20,27 @@ const Convert = {
     q = V * (1 - S * f);
     t = V * (1 - (1 - f) * S);
 
-    switch (lH) {
-      case 0:
-        R = V;
-        G = t;
-        B = p;
-        break;
-      case 1:
-        R = q;
-        G = V;
-        B = p;
-        break;
-      case 2:
-        R = p;
-        G = V;
-        B = t;
-        break;
-      case 3:
-        R = p;
-        G = q;
-        B = V;
-        break;
-      case 4:
-        R = t;
-        G = p;
-        B = V;
-        break;
-      case 5:
-        R = V;
-        G = p;
-        B = q;
-        break;
+    let switcher_hsv = {
+      '0': [V, t, p],
+      '1': [q, V, p],
+      '2': [p, V, t],
+      '3': [p, q, V],
+      '4': [t, p, V],
+      '5': [V, p, q],
+    };
+    for (let key in switcher_hsv) {
+      if (+key === lH) {
+        [R, G, B] = switcher_hsv[key];
+      }
     }
 
-    return [Math.floor(R * 255), Math.floor(G * 255), Math.floor(B * 255)];
+    let [r, g, b] = [R, G, B].map(elem => Math.floor(elem * 255));
+
+    return [r, g, b];
   },
 
-  rgb_hex: function(mas: number[], opacity: number) {
-    return (
-      '#' +
-      mas[0].toString(16) +
-      '' +
-      mas[1].toString(16) +
-      '' +
-      mas[2].toString(16)
-    );
-  },
-
-  RGBAToHexA: function(rgba: number[]) {
-    let [r, g, b, a] = rgba;
-    let r_str = r.toString(16);
-    let g_str = g.toString(16);
-    let b_str = b.toString(16);
-    let a_str = Math.round(a * 255).toString(16);
-
-    if (r_str.length === 1) r_str = '0' + r_str;
-    if (g_str.length === 1) g_str = '0' + g_str;
-    if (b_str.length === 1) b_str = '0' + b_str;
-    if (a_str.length === 1) a_str = '0' + a_str;
-
-    let value = '#' + r_str + g_str + b_str + a_str;
-
-    if (value.length === 9) {
-      if (value.slice(-2) === 'ff') value = value.substring(0, 7);
-    }
-    return value;
-  },
   rgb_hsv: function(mas: number[]) {
-    let r = mas[0],
-      g = mas[1],
-      b = mas[2];
+    let [r, g, b] = mas;
 
     let rabs,
       gabs,
@@ -97,12 +48,13 @@ const Convert = {
       rr,
       gg,
       bb,
-      h: number = 0,
+      h = 0,
       s,
-      v: number,
-      diff: number,
+      v,
+      diff,
       diffc,
       percentRoundFn;
+
     rabs = r / 255;
     gabs = g / 255;
     babs = b / 255;
@@ -160,51 +112,43 @@ const Convert = {
     let l = ((2 - s) * b) / 2;
 
     let n = l && l < 1 ? (s * b) / (l < 0.5 ? l * 2 : 2 - l * 2) : s;
-    return [Math.floor(h * 100), Math.floor(n * 100), Math.floor(l * 100)];
+
+    let [q, w, e] = [h, n, l].map(elem => Math.floor(elem * 100));
+    return [q, w, e];
   },
   hex_rgb: function(hex: string): number[] {
     let r, g, b, a;
     hex = hex.replace('#', '');
-    if (3 === hex.length) {
-      r = hex.charAt(0);
-      g = hex.charAt(1);
-      b = hex.charAt(2);
-    } else if (4 === hex.length) {
-      r = hex.charAt(0);
-      g = hex.charAt(1);
-      b = hex.charAt(2);
-      a = hex.charAt(3);
-    } else if (6 === hex.length) {
-      r = hex.substring(0, 2);
-      g = hex.substring(2, 4);
-      b = hex.substring(4, 6);
-    } else if (8 === hex.length) {
-      r = hex.substring(0, 2);
-      g = hex.substring(2, 4);
-      b = hex.substring(4, 6);
-      a = hex.substring(6, 8);
-    } else {
-      return [];
+    let switcher_charAt = {
+      '3': [0, 1, 2],
+      '4': [0, 1, 2, 3],
+    };
+    let switcher_substring = {
+      '6': [0, 2, 4],
+      '8': [0, 2, 4, 6],
+    };
+    let avaibility = false;
+    for (let key in switcher_charAt) {
+      if (+key === hex.length) {
+        [r, g, b, a] = switcher_charAt[key].map(elem => hex.charAt(elem));
+        avaibility = true;
+      }
     }
-    if ('undefined' === typeof a) {
-      a = 'ff';
+    for (let key in switcher_substring) {
+      if (+key === hex.length) {
+        [r, g, b, a] = switcher_substring[key].map(elem =>
+          hex.substring(elem, elem + 2),
+        );
+        avaibility = true;
+      }
     }
-    if (1 === r.length) {
-      r += r;
-    }
-    if (1 === g.length) {
-      g += g;
-    }
-    if (1 === b.length) {
-      b += b;
-    }
-    if (1 === a.length) {
-      a += a;
-    }
-    r = +parseInt(r, 16);
-    g = +parseInt(g, 16);
-    b = +parseInt(b, 16);
-    a = +parseInt(a, 16) / 255;
+    if (!avaibility) return [0, 0, 0];
+
+    a = !a ? 'ff' : a;
+    [r, g, b, a] = [r, g, b, a].map(
+      elem => +parseInt(1 === elem.length ? elem + elem : elem, 16),
+    );
+    a /= 255;
     return [r, g, b];
   },
   getHfromPosit: (left: number, width: number): number => {
@@ -264,35 +208,24 @@ const Convert = {
       g = 0,
       b = 0;
 
-    if (0 <= h && h < 60) {
-      r = c;
-      g = x;
-      b = 0;
-    } else if (60 <= h && h < 120) {
-      r = x;
-      g = c;
-      b = 0;
-    } else if (120 <= h && h < 180) {
-      r = 0;
-      g = c;
-      b = x;
-    } else if (180 <= h && h < 240) {
-      r = 0;
-      g = x;
-      b = c;
-    } else if (240 <= h && h < 300) {
-      r = x;
-      g = 0;
-      b = c;
-    } else if (300 <= h && h < 360) {
-      r = c;
-      g = 0;
-      b = x;
+    let a1, a2;
+    let switcher = {
+      '0': [c, x, 0],
+      '60': [x, c, 0],
+      '120': [0, c, x],
+      '180': [0, x, c],
+      '240': [x, 0, c],
+      '300': [c, 0, x],
+    };
+    for (let key in switcher) {
+      a1 = +key;
+      a2 = a1 + 60;
+      if (a1 <= h && h < a2) {
+        [r, g, b] = switcher[key].map(elem => elem);
+      }
     }
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    b = Math.round((b + m) * 255);
 
+    [r, g, b] = [r, g, b].map(elem => Math.round((elem + m) * 255));
     return [r, g, b];
   },
 };

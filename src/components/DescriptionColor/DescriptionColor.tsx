@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ThemeWarning from './ThemeWarning';
 import Model from '../../options/modelsColor';
 import { Icolors, IDescription } from '../../interfaces';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
 import { CSSTransition } from 'react-transition-group';
+import store from '../../store/store';
 
 import './styles.css';
 
 interface StateProps {
-  model: any;
-  type: string;
-  opacity: number;
   description: IDescription;
-  colors: Icolors[];
 }
 
 interface DispatchProps {
@@ -23,13 +20,27 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-class DescriptionColor extends Component<Props> {
+class DescriptionColor extends PureComponent<Props> {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClickEdit = this.handleClickEdit.bind(this);
+    this.handleClickDelete = this.handleClickDelete.bind(this);
+  }
   state = {
     name: '',
     color: '',
   };
+
+  // Ref
   inputColor: any = React.createRef();
 
+  // RgbMain
+  rgbMain = this.getCurrentRgbMain();
+  opacity = this.getCurrentOpacity();
+  index = this.getCurrentIndex();
+
+  // Warning
   warningOptions = {
     save: {
       left: 'Yes',
@@ -55,18 +66,27 @@ class DescriptionColor extends Component<Props> {
   };
   didmount = false;
 
+  // Redux Listener
+  unsubscribeStore;
+
+  componentWillUnmount() {
+    this.unsubscribeStore();
+  }
   componentDidMount() {
+    this.unsubscribeStore = store.subscribe(this.updateStateFromStore);
     this.update();
     this.didmount = true;
   }
 
   update() {
-    const { description, colors } = this.props;
+    const { description } = this.props;
+    const { colors } = this.getCurrentStore();
     const { save, index } = description;
-
+    let input = this.inputColor.current;
+    this.index = index;
     if (save) {
-      this.inputColor.current.removeAttribute('disabled');
-      this.inputColor.current.focus();
+      input.removeAttribute('disabled');
+      input.focus();
       this.setState({ name: `Color ${colors.length + 1}` });
     } else {
       let { name, color } = colors[index];
@@ -76,52 +96,55 @@ class DescriptionColor extends Component<Props> {
       });
     }
   }
+  getCurrentStore() {
+    let { models, type, opacity, colors } = store.getState();
+    return {
+      models,
+      type,
+      opacity,
+      colors,
+    };
+  }
+  getCurrentRgbMain() {
+    return store.getState().rgbMain;
+  }
+  getCurrentOpacity() {
+    return store.getState().opacity;
+  }
+  getCurrentIndex() {
+    return store.getState().description.index;
+  }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    // Props
-    let { model, opacity, description } = this.props;
-    let {
-      model: md,
-      opacity: op,
-      description: descr,
-      colors: clrs,
-    } = nextProps;
+  // Redux Listener
+  updateStateFromStore = () => {
+    const currentRgbMain = this.getCurrentRgbMain();
+    const currentOpacity = this.getCurrentOpacity();
+    const currentIndex = this.getCurrentIndex();
+    const { save, edit, remove, index } = this.props.description;
+    if (this.rgbMain !== currentRgbMain || this.opacity !== currentOpacity) {
+      this.rgbMain = currentRgbMain;
+      this.opacity = currentOpacity;
+      // console.log(currentIndex, this.index);
 
-    let bool = false;
-
-    if (description !== descr) {
-      if (descr.save) {
-        this.inputColor.current.removeAttribute('disabled');
-        this.inputColor.current.focus();
-        this.setState({ name: `Colors ${clrs.length + 1}` });
-      } else {
-        let { name, color } = clrs[descr.index];
-        this.setState({
-          name,
-          color,
-        });
+      if (edit || save) {
+        let { models, type, opacity } = this.getCurrentStore();
+        let color = Model[type].getString(models[type], opacity);
+        this.setState({ color });
       }
-      bool = true;
-    }
-
-    if (model !== md || opacity !== op) {
-      if (descr.edit || descr.save) bool = true;
-      else if (
-        !descr.edit &&
-        !descr.save &&
-        !descr.remove &&
-        descr.index === description.index
-      )
+      // Добавить в условие this.index!==index
+      else if (currentIndex === this.index && !save && !edit && !remove) {
+        this.index = index;
         this.props.change_description(this.getDescriptionWithout());
-    }
-
-    for (let key in this.state) {
-      if (this.state[key] !== nextState[key]) {
-        bool = true;
       }
     }
+  };
 
-    return bool;
+  componentDidUpdate(prevProps) {
+    const { description: d } = prevProps;
+    const { description } = this.props;
+    if (description !== d) {
+      this.update();
+    }
   }
 
   getDescriptionWithout(...args) {
@@ -162,14 +185,16 @@ class DescriptionColor extends Component<Props> {
 
   onSaveColor() {
     let { name } = this.state;
-    const { type, model, opacity } = this.props;
+    const { type, models, opacity, colors } = this.getCurrentStore();
 
-    let color = Model[type].getString(model, opacity);
+    let color = Model[type].getString(models[type], opacity);
 
-    let colors = this.props.colors.slice();
-    colors.push({ name, color });
-    let index = colors.length - 1;
-    this.props.change_colors(colors);
+    let time = new Date().getTime();
+    let cls = colors.slice();
+    let id = name + ' ' + time;
+    cls.push({ name, color, id });
+    let index = cls.length - 1;
+    this.props.change_colors(cls);
 
     this.props.change_description({
       ...this.getDescriptionWithout('enable'),
@@ -181,14 +206,16 @@ class DescriptionColor extends Component<Props> {
     this.props.change_description(this.getDescriptionWithout());
   }
   onSaveEditColor() {
-    const { description, model, type, opacity } = this.props;
+    // const { description, model, type, opacity } = this.props;
+    const { type, models, opacity, colors } = this.getCurrentStore();
+    const { description } = this.props;
     const { index } = description;
     let { name } = this.state;
-    let color = Model[type].getString(model, opacity);
+    let color = Model[type].getString(models[type], opacity);
 
-    let colors = this.props.colors.slice();
-    colors[index] = { name, color };
-    this.props.change_colors(colors);
+    let cls = colors.slice();
+    cls[index] = { ...cls[index], name, color };
+    this.props.change_colors(cls);
 
     this.props.change_description(this.getDescriptionWithout('enable'));
   }
@@ -198,10 +225,11 @@ class DescriptionColor extends Component<Props> {
   onYesDeleteColor() {
     const { description } = this.props;
     const { index } = description;
+    const { colors } = this.getCurrentStore();
 
-    let colors = this.props.colors.slice();
-    colors.splice(index, 1);
-    this.props.change_colors(colors);
+    let cls = colors.slice();
+    cls.splice(index, 1);
+    this.props.change_colors(cls);
 
     this.props.change_description({
       ...this.getDescriptionWithout(),
@@ -218,20 +246,18 @@ class DescriptionColor extends Component<Props> {
   };
 
   render() {
-    const { description, type, model, opacity } = this.props;
-    const { save, edit } = description;
+    const { description } = this.props;
     const { warningOptions } = this;
     let { color, name } = this.state;
 
     let on = false;
     for (let key in warningOptions) {
       if (description[key]) {
-        on = !this.didmount ? false : true;
+        on = this.didmount;
         this.options_warning = warningOptions[key];
       }
     }
 
-    color = save || edit ? Model[type].getString(model, opacity) : color;
     this.style = { backgroundColor: color };
 
     return (
@@ -246,7 +272,7 @@ class DescriptionColor extends Component<Props> {
               className="cp_descr-input"
               value={name}
               disabled={true}
-              onChange={e => this.handleChange(e)}
+              onChange={this.handleChange}
             />
           </div>
           <div className="cp_descr-part">
@@ -254,13 +280,13 @@ class DescriptionColor extends Component<Props> {
               className="cp_descr-icon cp_descr-edit"
               src="./svg/pencil.svg"
               alt="Edit color"
-              onClick={() => this.handleClickEdit()}
+              onClick={this.handleClickEdit}
             />
             <img
               className="cp_descr-icon cp_descr-remove"
               src="./svg/delete.svg"
               alt="Delete color"
-              onClick={() => this.handleClickDelete()}
+              onClick={this.handleClickDelete}
             />
           </div>
           <CSSTransition
@@ -277,18 +303,8 @@ class DescriptionColor extends Component<Props> {
   }
 }
 
-const mapStateToProps = ({
-  colors,
-  models,
-  type,
-  opacity,
-  description,
-}): StateProps => {
+const mapStateToProps = ({ description }): StateProps => {
   return {
-    colors,
-    model: models[type],
-    type,
-    opacity,
     description,
   };
 };

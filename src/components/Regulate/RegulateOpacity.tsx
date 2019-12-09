@@ -23,20 +23,6 @@ class RegulateOpacity extends RegulateTheme<Props> {
       this.forceUpdate();
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    let bool = false;
-    if (nextProps.opacity !== this.props.opacity) bool = true;
-
-    if (this.props.resize !== nextProps.resize) {
-      this.updateCoords();
-      bool = true;
-    }
-    if (this.props.width !== nextProps.width) {
-      bool = true;
-    }
-
-    return bool;
-  }
   hookCPos(a: number) {
     const { line } = this;
     let opacity: number = +(Math.floor(a / line.x) * 0.01).toFixed(2);
@@ -56,12 +42,19 @@ class RegulateOpacity extends RegulateTheme<Props> {
     this.stylingCircle();
     return (
       <div className="cp_w-reg">
-        <div className="cp_reg-line opacity" ref={this.regulateLine}>
+        <div
+          className="cp_reg-line opacity"
+          ref={this.regulateLine}
+          onMouseDown={this.mouseDown}
+          onTouchStart={this.touchStart}
+          onTouchMove={this.touchMove}
+          onTouchEnd={this.touchMove}
+        >
           <div className="cp_reg-op-cover"></div>
         </div>
 
         <div
-          onMouseDown={this.handleDown}
+          onMouseDown={this.mouseDown}
           onTouchStart={this.touchMove}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchMove}

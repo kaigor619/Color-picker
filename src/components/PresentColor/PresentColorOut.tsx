@@ -14,9 +14,8 @@ type Props = StateProps;
 class PresentColorOut extends PresentColorTheme<Props> {
   stylingPresent() {
     let { opacity, rgbMain } = this.props;
-    const backgroundColor = Model.rgb.getString(rgbMain, opacity);
     this.stylePresent = {
-      backgroundColor,
+      backgroundColor: Model.rgb.getString(rgbMain, opacity),
     };
   }
 }

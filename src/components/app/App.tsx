@@ -1,5 +1,4 @@
-import React, { Component, createRef } from 'react';
-import { IColorsOptions } from '../../interfaces';
+import React, { Component } from 'react';
 import ColorPicker from '../ColorPicker';
 import DemoInput from '../DemoInput';
 
@@ -10,14 +9,16 @@ class App extends Component {
   }
   state = {
     color: '#c71cb6',
-    on: false,
+    on: true,
     colorOptions: {
       syncColors: [],
       callSave: [],
       callCancel: [],
     },
     style_options: {},
+    colors: [],
   };
+
   opposite_state = {
     color: null,
     style_options: {},
@@ -28,6 +29,7 @@ class App extends Component {
     if (settings[0]) obj_options['color'] = settings[0];
     if (settings[1]) obj_options['colorOptions'] = settings[1];
     if (settings[2]) obj_options['style_options'] = settings[2];
+    if (settings[3]) obj_options['colors'] = settings[3];
 
     this.setState({
       ...this.opposite_state,
@@ -37,16 +39,19 @@ class App extends Component {
   }
 
   render() {
-    const { color, on, colorOptions, style_options } = this.state;
-    let ColorOptions = { color, ...colorOptions };
+    const { color, on, colorOptions, style_options, colors } = this.state;
+    let obj = {
+      on,
+      color,
+      options: colorOptions,
+      style_options,
+      colors,
+    };
+    // let ColorOptions = { color, ...colorOptions };
     return (
       <div>
         <DemoInput getPickerOptions={this.getPickerOptions} />
-        <ColorPicker
-          on={on}
-          options={ColorOptions}
-          style_options={style_options}
-        />
+        <ColorPicker {...obj} />
       </div>
     );
   }

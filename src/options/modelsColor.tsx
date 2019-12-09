@@ -13,7 +13,6 @@ let Model = {
       let str = '';
       if (opacity === 1) str = 'rgb(' + rgb_arr.join(',') + ')';
       else str = 'rgba(' + rgb_arr.join(',') + ', ' + opacity + ')';
-
       return str;
     },
     getWorkView: (str: string): { val: number[]; opacity: number } => {
@@ -22,20 +21,19 @@ let Model = {
         .replace(/ /g, '')
         .split(',');
 
-      let val: number[] = [];
-      let opacity: number = 1;
+      let opacity = 1;
 
-      str_arr.forEach((item, i) => {
-        val[i] = +parseInt(item);
-        if (i === 3) val[i] = +Number(item).toFixed(2);
+      let val = str_arr.map((item, i) => {
+        let res = i === 3 ? +Number(item).toFixed(2) : +parseInt(item);
+        return res;
       });
 
       if (str.indexOf('rgba') >= 0 && val[3]) {
-        opacity = +val[3].toFixed(2);
+        opacity = val[3];
         val.splice(-1, 1);
       } else opacity = 1;
 
-      var rgba_obj = {
+      let rgba_obj = {
         val,
         opacity,
       };
@@ -51,7 +49,6 @@ let Model = {
       let str = '';
       if (opacity === 1)
         str = `hsl(${hsl_arr[0]}, ${hsl_arr[1]}%, ${hsl_arr[2]}%)`;
-      // else str = "hsla(" + hsl_arr.[0] + ", " + opacity + ")";
       else
         str = `hsla(${hsl_arr[0]}, ${hsl_arr[1]}%, ${hsl_arr[2]}%, ${opacity})`;
 
@@ -63,21 +60,20 @@ let Model = {
         .replace(/ /g, '')
         .split(',');
 
-      let val: number[] = [];
-      let opacity: number = 1;
+      let opacity = 1;
       // debugger;
 
-      str_arr.forEach((item, i) => {
-        val[i] = +parseInt(item);
-        if (i === 3) val[i] = +Number(item).toFixed(2);
+      let val = str_arr.map((item, i) => {
+        let res = i === 3 ? +Number(item).toFixed(2) : +parseInt(item);
+        return res;
       });
 
       if (str.indexOf('hsla') >= 0 && val[3]) {
-        opacity = +val[3].toFixed(2);
+        opacity = val[3];
         val.splice(-1, 1);
       } else opacity = 1;
 
-      var rgba_obj = {
+      let rgba_obj = {
         val,
         opacity,
       };
@@ -123,9 +119,7 @@ let Model = {
     },
     getOpacity: (opacity: number) => {
       let a_str = Math.round(opacity * 255).toString(16);
-      if (a_str.length === 1) a_str = '0' + a_str;
-      if (a_str === 'ff') a_str = '';
-
+      a_str = a_str.length === 1 ? '0' + a_str : a_str === 'ff' ? '' : a_str;
       return a_str;
     },
     hex_rgb: Convert.hex_rgb,
