@@ -40,6 +40,13 @@ class RegulateColor extends RegulateTheme<Props> {
     return left;
   }
 
+  events = {
+    onMouseDown: this.mouseDown,
+    onTouchStart: this.touchStart,
+    onTouchMove: this.touchMove,
+    onTouchEnd: this.touchMove,
+  };
+
   render() {
     this.stylingCircle();
     return (
@@ -47,16 +54,10 @@ class RegulateColor extends RegulateTheme<Props> {
         <div
           className="cp_reg-line color"
           ref={this.regulateLine}
-          onMouseDown={this.mouseDown}
-          onTouchStart={this.touchStart}
-          onTouchMove={this.touchMove}
-          onTouchEnd={this.touchMove}
+          {...this.events}
         ></div>
         <div
-          onMouseDown={this.mouseDown}
-          onTouchStart={this.touchStart}
-          onTouchMove={this.touchMove}
-          onTouchEnd={this.touchMove}
+          {...this.events}
           style={this.styleCircle}
           draggable={false}
           className="cp_reg-circle"

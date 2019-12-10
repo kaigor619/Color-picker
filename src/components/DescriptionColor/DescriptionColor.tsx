@@ -34,11 +34,12 @@ class DescriptionColor extends PureComponent<Props> {
 
   // Ref
   inputColor: any = React.createRef();
+  swatch: any = React.createRef();
 
   // RgbMain
-  rgbMain = this.getCurrentRgbMain();
-  opacity = this.getCurrentOpacity();
-  index = this.getCurrentIndex();
+  rgbMain = this.getCurrentStore().rgbMain;
+  opacity = this.getCurrentStore().opacity;
+  index = this.getCurrentStore().index;
 
   // Warning
   warningOptions = {
@@ -67,7 +68,7 @@ class DescriptionColor extends PureComponent<Props> {
   didmount = false;
 
   // Redux Listener
-  unsubscribeStore;
+  unsubscribeStore = () => {};
 
   componentWillUnmount() {
     this.unsubscribeStore();
@@ -78,61 +79,63 @@ class DescriptionColor extends PureComponent<Props> {
     this.didmount = true;
   }
 
+  static getDerivedStateFromProps(props, state): any {
+    let obj = {};
+    const { description } = props;
+    const { colors } = store.getState();
+    const { save, index } = description;
+    if (save) {
+      obj['name'] = `Color ${colors.length + 1}`;
+    } else {
+      obj['name'] = colors[index].name;
+      obj['color'] = colors[index].color;
+    }
+
+    return obj === {} ? null : obj;
+  }
+
   update() {
     const { description } = this.props;
-    const { colors } = this.getCurrentStore();
     const { save, index } = description;
-    let input = this.inputColor.current;
     this.index = index;
     if (save) {
-      input.removeAttribute('disabled');
-      input.focus();
-      this.setState({ name: `Color ${colors.length + 1}` });
-    } else {
-      let { name, color } = colors[index];
-      this.setState({
-        name,
-        color,
-      });
+      this.FocusInput();
     }
   }
   getCurrentStore() {
-    let { models, type, opacity, colors } = store.getState();
+    let {
+      models,
+      type,
+      opacity,
+      colors,
+      rgbMain,
+      description: { index },
+    } = store.getState();
     return {
       models,
       type,
       opacity,
       colors,
+      rgbMain,
+      index,
     };
-  }
-  getCurrentRgbMain() {
-    return store.getState().rgbMain;
-  }
-  getCurrentOpacity() {
-    return store.getState().opacity;
-  }
-  getCurrentIndex() {
-    return store.getState().description.index;
   }
 
   // Redux Listener
   updateStateFromStore = () => {
-    const currentRgbMain = this.getCurrentRgbMain();
-    const currentOpacity = this.getCurrentOpacity();
-    const currentIndex = this.getCurrentIndex();
+    const { rgbMain: r, opacity: o, index: i } = this.getCurrentStore();
     const { save, edit, remove, index } = this.props.description;
-    if (this.rgbMain !== currentRgbMain || this.opacity !== currentOpacity) {
-      this.rgbMain = currentRgbMain;
-      this.opacity = currentOpacity;
-      // console.log(currentIndex, this.index);
+    if (this.rgbMain !== r || this.opacity !== o) {
+      this.rgbMain = r;
+      this.opacity = o;
 
       if (edit || save) {
         let { models, type, opacity } = this.getCurrentStore();
         let color = Model[type].getString(models[type], opacity);
-        this.setState({ color });
+        this.swatch.current.style.backgroundColor = color;
       }
       // Добавить в условие this.index!==index
-      else if (currentIndex === this.index && !save && !edit && !remove) {
+      else if (i === this.index && !save && !edit && !remove) {
         this.index = index;
         this.props.change_description(this.getDescriptionWithout());
       }
@@ -164,6 +167,11 @@ class DescriptionColor extends PureComponent<Props> {
     return descr;
   }
 
+  FocusInput() {
+    this.inputColor.current.removeAttribute('disabled');
+    this.inputColor.current.focus();
+  }
+
   handleChange(e) {
     const { edit, save } = this.props.description;
     if (edit || save) {
@@ -174,8 +182,7 @@ class DescriptionColor extends PureComponent<Props> {
 
   handleClickEdit() {
     this.props.change_description(this.getDescriptionWithout('edit', 'enable'));
-    this.inputColor.current.removeAttribute('disabled');
-    this.inputColor.current.focus();
+    this.FocusInput();
   }
   handleClickDelete() {
     this.props.change_description(
@@ -265,7 +272,11 @@ class DescriptionColor extends PureComponent<Props> {
         <div className="cp_descr-container">
           <div className="cp_descr-part">
             <div className="cp_descr-opacity">
-              <div className="cp_descr-swatch" style={this.style} />
+              <div
+                className="cp_descr-swatch"
+                ref={this.swatch}
+                style={this.style}
+              />
             </div>
             <input
               ref={this.inputColor}

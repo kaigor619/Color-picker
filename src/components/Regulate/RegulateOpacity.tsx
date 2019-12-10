@@ -38,6 +38,12 @@ class RegulateOpacity extends RegulateTheme<Props> {
     let left = (opacity * line.x) / 0.01;
     return left;
   }
+  events = {
+    onMouseDown: this.mouseDown,
+    onTouchStart: this.touchStart,
+    onTouchMove: this.touchMove,
+    onTouchEnd: this.touchMove,
+  };
   render() {
     this.stylingCircle();
     return (
@@ -45,19 +51,13 @@ class RegulateOpacity extends RegulateTheme<Props> {
         <div
           className="cp_reg-line opacity"
           ref={this.regulateLine}
-          onMouseDown={this.mouseDown}
-          onTouchStart={this.touchStart}
-          onTouchMove={this.touchMove}
-          onTouchEnd={this.touchMove}
+          {...this.events}
         >
           <div className="cp_reg-op-cover"></div>
         </div>
 
         <div
-          onMouseDown={this.mouseDown}
-          onTouchStart={this.touchMove}
-          onTouchMove={this.touchMove}
-          onTouchEnd={this.touchMove}
+          {...this.events}
           style={this.styleCircle}
           draggable={false}
           className="cp_reg-circle"

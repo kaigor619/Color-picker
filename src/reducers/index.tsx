@@ -11,6 +11,20 @@ export const default_style_options = {
   },
 };
 
+export const default_description = {
+  enable: false,
+  save: false,
+  edit: false,
+  remove: false,
+  index: 0,
+};
+
+export const default_sync = {
+  syncColor: [],
+  callSave: [],
+  callCancel: [],
+};
+
 export const InitialState: ThemeStore = {
   H: 0,
   S: 0,
@@ -24,30 +38,11 @@ export const InitialState: ThemeStore = {
     rgb: [255, 255, 255],
     hsl: [0, 0, 100],
   },
-  options: {
-    picker: {
-      width: 250,
-      height: 140,
-    },
-    circle: {
-      width: 12,
-      height: 12,
-    },
-  },
+  options: default_style_options,
   enable: false,
   main: false,
-  sync: {
-    syncColor: [],
-    callSave: [],
-    callCancel: [],
-  },
-  description: {
-    enable: false,
-    save: false,
-    edit: false,
-    remove: false,
-    index: 0,
-  },
+  sync: default_sync,
+  description: default_description,
   resize: false,
   colors: [
     { name: 'Color 1', color: '#F44336', id: 'q' },

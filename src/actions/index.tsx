@@ -2,6 +2,7 @@ import { IDescription, Ifunctions, IOptions, Icolors } from '../interfaces';
 import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
+import { default_description } from '../reducers';
 
 export function connect_obj(...mas) {
   let obj = {};
@@ -190,7 +191,8 @@ export const addColor = (value: string, main: boolean, store) => {
   let c = change_type(type);
   let d = change_model(val, { ...store, type });
   let k = change_prevColor(value, main);
-  return connect_obj(a, b, c, d, e, k);
+  let x = change_description(default_description);
+  return connect_obj(a, b, c, d, e, k, x);
 };
 
 export const cx_HSV_rgbMain_model_from_model = (
@@ -395,7 +397,8 @@ export const eventClickCancel = () => (dispatch, getStore) => {
 
 export const event_change_enable = (enable: boolean) => dispatch => {
   let a = change_enable(enable);
-  let obj = connect_obj(a);
+  let b = change_description(default_description);
+  let obj = connect_obj(a, b);
   dispatch(change_store(obj));
 };
 

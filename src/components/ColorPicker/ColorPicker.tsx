@@ -122,32 +122,30 @@ class ColorPicker extends Component<Props> {
   render() {
     if (!this.props.enable) return null;
     return (
-      <React.StrictMode>
-        <div>
-          <div className="cp" id="cp">
-            <Picker />
+      <div>
+        <div className="cp" id="cp">
+          <Picker />
 
-            <div className="cp_container">
-              <div className="cp_settings">
-                <div className="cp_presents-color">
-                  <PresentColorLast />
-                  <PresentColorOut />
-                </div>
-
-                <div className="cp_regulate-color ">
-                  <RegulateColor />
-                  <RegulateOpacity />
-                </div>
+          <div className="cp_container">
+            <div className="cp_settings">
+              <div className="cp_presents-color">
+                <PresentColorLast />
+                <PresentColorOut />
               </div>
 
-              <Model />
-              <Colors />
-
-              <MainBtns />
+              <div className="cp_regulate-color ">
+                <RegulateColor />
+                <RegulateOpacity />
+              </div>
             </div>
+
+            <Model />
+            <Colors />
+
+            <MainBtns />
           </div>
         </div>
-      </React.StrictMode>
+      </div>
     );
   }
 }

@@ -16,7 +16,7 @@ class App extends Component {
       callCancel: [],
     },
     style_options: {},
-    colors: [],
+    // colors: [],
   };
 
   opposite_state = {
@@ -39,13 +39,12 @@ class App extends Component {
   }
 
   render() {
-    const { color, on, colorOptions, style_options, colors } = this.state;
+    const { color, on, colorOptions, style_options } = this.state;
     let obj = {
       on,
       color,
       options: colorOptions,
       style_options,
-      colors,
     };
     // let ColorOptions = { color, ...colorOptions };
     return (

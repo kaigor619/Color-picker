@@ -42,6 +42,7 @@ class Colors extends PureComponent<Props> {
   UNSAFE_componentWillMount() {
     this.updateElems(this.props.colors);
   }
+
   UNSAFE_componentWillUpdate(nextProps) {
     const { colors } = nextProps;
     if (this.props.colors !== nextProps.colors) {

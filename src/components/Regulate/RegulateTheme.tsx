@@ -90,7 +90,6 @@ class RegulateTheme<TProps = Props> extends PureComponent<TProps> {
     let left = this.getLeft();
 
     left = left < 0 ? 0 : left > line.w ? line.w : left;
-    // left = left > line.w ? line.w : left;
 
     this.styleCircle = {
       left: left + 'px',

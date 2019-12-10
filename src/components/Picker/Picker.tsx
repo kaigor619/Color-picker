@@ -48,7 +48,6 @@ class Picker extends PureComponent<Props> {
 
   componentDidMount() {
     this.updateCoords();
-    this.setState({ on: !this.state.on });
   }
   componentDidUpdate(prevProps) {
     let { style_options } = prevProps;
@@ -62,6 +61,7 @@ class Picker extends PureComponent<Props> {
       picker.pxY = ph / 100;
 
       this.updateCoords();
+      this.forceUpdate();
     }
   }
 

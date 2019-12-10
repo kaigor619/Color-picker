@@ -52,7 +52,7 @@ export default class DemoInput extends Component<Props> {
   }
   handleClick() {
     const { color, colorOptions } = this.state;
-    this.props.getPickerOptions(color, colorOptions, null, this.colors);
+    this.props.getPickerOptions(color, colorOptions, null);
   }
   handleClickScale() {
     let { width } = this.state.picker_settings.picker;
