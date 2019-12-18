@@ -117,14 +117,17 @@ export const cx_opacity_hex = (opacity: number, store) => {
   let a = change_opacity(opacity);
 
   const { models, main, sync, type } = store;
-  let b = { models };
+  let b;
   let { syncColors } = sync;
   if (type === 'hex') {
     b = sync_model_from_rgbMain({ ...store, ...a });
   }
 
   if (main) {
-    let color = Model[type].getString(b.models[type], a.opacity);
+    let color = Model[type].getString(
+      b ? b.models[type] : models[type],
+      a.opacity,
+    );
     syncColors.forEach(element => {
       element(color);
     });
@@ -244,14 +247,13 @@ export const eventBtnChangeType = type => (dispatch, getStore) => {
   dispatch(change_store(obj));
 };
 
-export const eventChangeColors = colors => (dispatch, getStore) => {
-  let obj = change_colors(colors);
-  dispatch(change_store(obj));
-};
-
 export const eventChangeDescription = description => (dispatch, getStore) => {
   let obj = change_description(description);
-  dispatch(change_store(obj));
+  let action = {
+    type: 'CHANGE_DESCRIPTION',
+    payload: obj.description,
+  };
+  dispatch(action);
 };
 
 export const eventClickSwatch = index => (dispatch, getStore) => {
@@ -265,6 +267,7 @@ export const eventClickSwatch = index => (dispatch, getStore) => {
   let store = getStore();
   let color = store.colors[index].color;
   let a = addColor(color, false, store);
+
   let b = change_description(description);
 
   let obj = connect_obj(a, b);
@@ -280,8 +283,11 @@ export const eventClickAddSwatch = () => (dispatch, getStore) => {
     enable: true,
     index: 0,
   };
-  let obj = change_description(description);
-  dispatch(change_store(obj));
+  let action = {
+    type: 'CHANGE_DESCRIPTION',
+    payload: description,
+  };
+  dispatch(action);
 };
 
 export const eventChangeInputModel = (val, index) => (dispatch, getStore) => {
@@ -353,7 +359,9 @@ export const eventClickOk = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let sync = connect_obj(c, d, e);
+
+  let obj = connect_obj(a, b, { sync });
 
   dispatch(change_store(obj));
 
@@ -383,9 +391,12 @@ export const eventClickCancel = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let sync = connect_obj(c, d, e);
+
+  let obj = connect_obj(a, b, { sync });
 
   dispatch(change_store(obj));
+  // Исправить
   if (main) {
     Promise.resolve().then(() => {
       callCancel.forEach(func => {

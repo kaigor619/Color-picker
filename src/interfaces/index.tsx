@@ -69,6 +69,5 @@ export interface ThemeStore {
   main: boolean;
   enable: boolean;
   sync: ISync;
-  resize: boolean;
   options: IOptions;
 }

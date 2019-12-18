@@ -43,12 +43,11 @@ export const InitialState: ThemeStore = {
   main: false,
   sync: default_sync,
   description: default_description,
-  resize: false,
   colors: [
     { name: 'Color 1', color: '#F44336', id: 'q' },
     { name: 'Color 2', color: '#E91E63', id: 'w' },
     { name: 'Color 3', color: 'rgb(156, 39, 176)', id: 'e' },
-    { name: 'Color 4', color: 'hsl(262, 52%, 47%)', id: 'r' },
+    { name: 'Color 4', color: 'hsl(117, 84%, 46%)', id: 'r' },
     { name: 'Color 5', color: '#3F51B5', id: 't' },
     { name: 'Color 6', color: '#2196F3', id: 'y' },
     { name: 'Color 7', color: '#03A9F4', id: 'u' },
@@ -75,10 +74,6 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
     }
     case 'CHANGE_TYPE': {
       return { ...state, type: action.payload };
-    }
-
-    case 'CHANGE_HEX': {
-      return { ...state, models: { ...state.models, hex: action.payload } };
     }
 
     case 'CHANGE_MODEL': {
@@ -123,12 +118,6 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       return {
         ...state,
         ...action.payload,
-      };
-    }
-    case 'CHANGE_RESIZE': {
-      return {
-        ...state,
-        resize: !state.resize,
       };
     }
     case 'CHANGE_OPTIONS': {

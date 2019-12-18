@@ -96,6 +96,7 @@ class ColorPicker extends Component<Props> {
 
   shouldComponentUpdate(nextProps, nextState) {
     let bool = false;
+    console.log('should');
     const { style_options, colors, enable } = this.props;
     const { options, enable: enb, on, colors: cls, color } = nextProps;
 
@@ -120,6 +121,7 @@ class ColorPicker extends Component<Props> {
   }
 
   render() {
+    console.log('renderCP');
     if (!this.props.enable) return null;
     return (
       <div>

@@ -39,6 +39,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('render');
     const { color, on, colorOptions, style_options } = this.state;
     let obj = {
       on,
@@ -50,6 +51,13 @@ class App extends Component {
     return (
       <div>
         <DemoInput getPickerOptions={this.getPickerOptions} />
+        <button
+          onClick={() => {
+            this.setState({ color: '#c71cb6' });
+          }}
+        >
+          click
+        </button>
         <ColorPicker {...obj} />
       </div>
     );

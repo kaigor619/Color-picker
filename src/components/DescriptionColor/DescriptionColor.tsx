@@ -322,7 +322,7 @@ const mapStateToProps = ({ description }): StateProps => {
 
 const mapDispatchToProps = {
   change_description: Action.eventChangeDescription,
-  change_colors: Action.eventChangeColors,
+  change_colors: Action.event_change_colors,
 };
 
 export default connect(

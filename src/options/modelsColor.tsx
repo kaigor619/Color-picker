@@ -1,5 +1,3 @@
-import Convert from './convert';
-
 let Model = {
   rgb: {
     rgb_rgb: (rgb: number[]) => {
@@ -11,8 +9,8 @@ let Model = {
     },
     getString: function(rgb_arr: number[], opacity: number): string {
       let str = '';
-      if (opacity === 1) str = 'rgb(' + rgb_arr.join(',') + ')';
-      else str = 'rgba(' + rgb_arr.join(',') + ', ' + opacity + ')';
+      if (opacity === 1) str = 'rgb(' + rgb_arr.join(', ') + ')';
+      else str = 'rgba(' + rgb_arr.join(', ') + ', ' + opacity + ')';
       return str;
     },
     getWorkView: (str: string): { val: number[]; opacity: number } => {
@@ -42,8 +40,77 @@ let Model = {
     },
   },
   hsl: {
-    rgb_hsl: Convert.rgb_hsl,
-    hsl_rgb: Convert.hsl_rgb,
+    rgb_hsl: function(rgb: number[], opacity: number) {
+      // Make r, g, and b fractions of 1
+      let [r, g, b] = rgb;
+      r /= 255;
+      g /= 255;
+      b /= 255;
+
+      // Find greatest and smallest channel values
+      let cmin = Math.min(r, g, b),
+        cmax = Math.max(r, g, b),
+        delta = cmax - cmin,
+        h = 0,
+        s = 0,
+        l = 0;
+
+      if (delta === 0) h = 0;
+      // Red is max
+      else if (cmax === r) h = ((g - b) / delta) % 6;
+      // Green is max
+      else if (cmax === g) h = (b - r) / delta + 2;
+      // Blue is max
+      else h = (r - g) / delta + 4;
+
+      h = Math.round(h * 60);
+
+      // Make negative hues positive behind 360°
+      if (h < 0) h += 360;
+
+      l = (cmax + cmin) / 2;
+
+      // Calculate saturation
+      s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+      // Multiply l and s by 100
+      s = +parseInt((s * 100).toFixed(1));
+      l = +parseInt((l * 100).toFixed(1));
+
+      return [h, s, l];
+    },
+    hsl_rgb: function(hsl: number[]) {
+      let [h, s, l] = hsl;
+      s /= 100;
+      l /= 100;
+
+      let c = (1 - Math.abs(2 * l - 1)) * s,
+        x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+        m = l - c / 2,
+        r = 0,
+        g = 0,
+        b = 0;
+
+      let a1, a2;
+      let switcher = {
+        '0': [c, x, 0],
+        '60': [x, c, 0],
+        '120': [0, c, x],
+        '180': [0, x, c],
+        '240': [x, 0, c],
+        '300': [c, 0, x],
+      };
+      for (let key in switcher) {
+        a1 = +key;
+        a2 = a1 + 60;
+        if (a1 <= h && h < a2) {
+          [r, g, b] = switcher[key].map(elem => elem);
+        }
+      }
+
+      [r, g, b] = [r, g, b].map(elem => Math.round((elem + m) * 255));
+      return [r, g, b];
+    },
     symbolInString: 'hsl',
     getString: function(hsl_arr: number[], opacity: number): string {
       let str = '';
@@ -61,7 +128,6 @@ let Model = {
         .split(',');
 
       let opacity = 1;
-      // debugger;
 
       let val = str_arr.map((item, i) => {
         let res = i === 3 ? +Number(item).toFixed(2) : +parseInt(item);
@@ -81,16 +147,11 @@ let Model = {
     },
   },
   hex: {
-    getWorkView: (value: string) => {
-      // let hex = value.replace('#', '');
-      let hex = value;
+    getWorkView: (hex: string) => {
       let opacity = 1;
-      let a = 'ff';
       if (hex.length === 9) {
-        a = hex.substring(7, 9);
-        if ('undefined' === typeof a) {
-          a = 'ff';
-        }
+        let a = hex.substring(7, 9);
+        a = a ? a : 'ff';
         opacity = +(+parseInt(a, 16) / 255).toFixed(2);
       }
 
@@ -104,25 +165,55 @@ let Model = {
       return hex;
     },
     rgb_hex: (rgb: number[], opacity: number) => {
-      let a_str = Model.hex.getOpacity(opacity);
+      let a = Model.hex.getOpacity(opacity);
 
-      let [r, g, b] = rgb;
-      let r_str = r.toString(16);
-      let g_str = g.toString(16);
-      let b_str = b.toString(16);
+      let [r, g, b] = rgb.map(elem => {
+        let res = elem.toString(16);
+        return res.length === 1 ? '0' + res : res;
+      });
 
-      if (r_str.length === 1) r_str = '0' + r_str;
-      if (g_str.length === 1) g_str = '0' + g_str;
-      if (b_str.length === 1) b_str = '0' + b_str;
-
-      return '#' + r_str + g_str + b_str + a_str;
+      return '#' + r + g + b + a;
     },
     getOpacity: (opacity: number) => {
       let a_str = Math.round(opacity * 255).toString(16);
       a_str = a_str.length === 1 ? '0' + a_str : a_str === 'ff' ? '' : a_str;
       return a_str;
     },
-    hex_rgb: Convert.hex_rgb,
+    hex_rgb: function(hex: string): number[] {
+      let r, g, b, a;
+      hex = hex.replace('#', '');
+      let switcher_charAt = {
+        '3': [0, 1, 2],
+        '4': [0, 1, 2, 3],
+      };
+      let switcher_substring = {
+        '6': [0, 2, 4],
+        '8': [0, 2, 4, 6],
+      };
+      let avaibility = false;
+      for (let key in switcher_charAt) {
+        if (+key === hex.length) {
+          [r, g, b, a] = switcher_charAt[key].map(elem => hex.charAt(elem));
+          avaibility = true;
+        }
+      }
+      for (let key in switcher_substring) {
+        if (+key === hex.length) {
+          [r, g, b, a] = switcher_substring[key].map(elem =>
+            hex.substring(elem, elem + 2),
+          );
+          avaibility = true;
+        }
+      }
+      if (!avaibility) return [0, 0, 0];
+
+      a = !a ? 'ff' : a;
+      [r, g, b, a] = [r, g, b, a].map(
+        elem => +parseInt(1 === elem.length ? elem + elem : elem, 16),
+      );
+      a /= 255;
+      return [r, g, b];
+    },
     symbolInString: '#',
   },
 };
