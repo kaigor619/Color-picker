@@ -10,9 +10,14 @@ describe('News container', () => {
     changeType: () => {},
   };
 
-  it('Если у компонента enable=true', () => {
+  it('Есть у компонента active class (type==name)', () => {
     const myComponent = shallow(<BtnChangeType {...props} />);
     expect(myComponent.find('button').hasClass('active')).toEqual(true);
+  });
+  it('Есть у компонента active class (type!==name)', () => {
+      props.name="hex";
+    const myComponent = shallow(<BtnChangeType {...props} />);
+    expect(myComponent.find('button').hasClass('active')).toEqual(false);
   });
   //   it('Если у компонента enable=false', () => {
   //     props.enable = false;
