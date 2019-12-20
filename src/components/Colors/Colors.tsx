@@ -19,7 +19,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-class Colors extends PureComponent<Props> {
+export class Colors extends PureComponent<Props> {
   constructor(props) {
     super(props);
     this.handleAddSwatch = this.handleAddSwatch.bind(this);

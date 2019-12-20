@@ -1,22 +1,30 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { BtnChangeType } from './BtnChangeType';
+import { shallow, mount } from 'enzyme';
+import { Colors } from './Colors';
 
-describe('News container', () => {
+describe('Colors', () => {
   const props = {
-    type: 'rgb',
-    name: 'rgb',
-    text: 'rgb',
-    changeType: () => {},
+    colors: [
+      { name: 'black', color: 'rgb(0,0,0)', id: 'qw' },
+      { name: 'white', color: 'rgb(255,255,255)', id: 'rt' },
+      { name: 'easy white', color: '#f3f3f3', id: 'ew' },
+    ],
+    descr_enable: false,
+    swatchClick: () => {},
+    swatchAdd: () => {},
   };
 
-  it('Есть у компонента active class (type==name)', () => {
-    const myComponent = shallow(<BtnChangeType {...props} />);
-    expect(myComponent.find('button').hasClass('active')).toEqual(true);
+  it('Отрисовуются ли все цвета', () => {
+    const myComponent = mount(<Colors {...props} />);
+    expect(myComponent.find('.cp_swatch-color')).toHaveLength(3);
   });
-  it('Есть у компонента active class (type!==name)', () => {
-    props.name = 'hex';
-    const myComponent = shallow(<BtnChangeType {...props} />);
-    expect(myComponent.find('button').hasClass('active')).toEqual(false);
+  it('Рендерится ли DescriptionColor', () => {
+    const myComponent = mount(<Colors {...props} />);
+    expect(myComponent.exists('.cp_descr-color')).toEqual(false);
+  });
+  it('Рендерится ли DescriptionColor', () => {
+    props.descr_enable = true;
+    const myComponent = mount(<Colors {...props} />);
+    expect(myComponent.exists('.cp_descr-color')).toEqual(true);
   });
 });

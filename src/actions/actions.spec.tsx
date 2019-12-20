@@ -291,7 +291,6 @@ describe('Тестирование Actions', () => {
 
     const store = mockStore(state);
     store.dispatch(Action.eventClickPrevColor());
-
     expect(store.getActions()).toEqual(expectedActions);
   });
   it('eventAddColor', () => {
