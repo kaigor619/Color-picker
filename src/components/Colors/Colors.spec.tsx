@@ -22,9 +22,4 @@ describe('Colors', () => {
     const myComponent = mount(<Colors {...props} />);
     expect(myComponent.exists('.cp_descr-color')).toEqual(false);
   });
-  it('Рендерится ли DescriptionColor', () => {
-    props.descr_enable = true;
-    const myComponent = mount(<Colors {...props} />);
-    expect(myComponent.exists('.cp_descr-color')).toEqual(true);
-  });
 });
