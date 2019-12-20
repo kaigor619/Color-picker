@@ -16,6 +16,7 @@ interface StateProps {
 interface DispatchProps {
   change_description: (obj: IDescription) => void;
   change_colors: (colors: Icolors[]) => void;
+  // getDerivedStateFromProps: (a, s) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -77,10 +78,17 @@ class DescriptionColor extends PureComponent<Props> {
     this.unsubscribeStore = store.subscribe(this.updateStateFromStore);
     this.update();
     this.didmount = true;
+    this.updateInput();
+  }
+  updateInput() {
+    let value = this.inputColor.current.value;
+    if (this.state.name !== value) {
+      this.inputColor.current.value = this.state.name;
+    }
   }
 
   static getDerivedStateFromProps(props, state): any {
-    let obj = {};
+    let obj: any = {};
     const { description } = props;
     const { colors } = store.getState();
     const { save, index } = description;
@@ -148,6 +156,7 @@ class DescriptionColor extends PureComponent<Props> {
     if (description !== d) {
       this.update();
     }
+    this.updateInput();
   }
 
   getDescriptionWithout(...args) {
@@ -191,7 +200,8 @@ class DescriptionColor extends PureComponent<Props> {
   }
 
   onSaveColor() {
-    let { name } = this.state;
+    let name = this.inputColor.current.value;
+
     const { type, models, opacity, colors } = this.getCurrentStore();
 
     let color = Model[type].getString(models[type], opacity);
@@ -217,11 +227,12 @@ class DescriptionColor extends PureComponent<Props> {
     const { type, models, opacity, colors } = this.getCurrentStore();
     const { description } = this.props;
     const { index } = description;
-    let { name } = this.state;
+    let name = this.inputColor.current.value;
     let color = Model[type].getString(models[type], opacity);
 
     let cls = colors.slice();
     cls[index] = { ...cls[index], name, color };
+
     this.props.change_colors(cls);
 
     this.props.change_description(this.getDescriptionWithout('enable'));
@@ -255,7 +266,7 @@ class DescriptionColor extends PureComponent<Props> {
   render() {
     const { description } = this.props;
     const { warningOptions } = this;
-    let { color, name } = this.state;
+    let { color } = this.state;
 
     let on = false;
     for (let key in warningOptions) {
@@ -281,9 +292,9 @@ class DescriptionColor extends PureComponent<Props> {
             <input
               ref={this.inputColor}
               className="cp_descr-input"
-              value={name}
+              // value={name}
               disabled={true}
-              onChange={this.handleChange}
+              // onChange={this.handleChange}
             />
           </div>
           <div className="cp_descr-part">

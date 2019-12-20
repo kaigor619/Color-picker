@@ -76,14 +76,6 @@ describe('Проверка reducer', () => {
       payload: {
         picker: {
           width: 250,
-        },
-      },
-    };
-    const state = {
-      ...InitialState,
-      options: {
-        picker: {
-          width: 250,
           height: 140,
         },
         circle: {
@@ -91,6 +83,10 @@ describe('Проверка reducer', () => {
           height: 12,
         },
       },
+    };
+    const state = {
+      ...InitialState,
+      options: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);

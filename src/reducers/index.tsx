@@ -121,18 +121,9 @@ const reducer = (state: any = InitialState, action: ThemeAction) => {
       };
     }
     case 'CHANGE_OPTIONS': {
-      const style_options = action.payload;
-      let obj = {};
-      for (let key in default_style_options) {
-        obj[key] = {
-          ...default_style_options[key],
-          ...style_options[key],
-        };
-      }
-
       return {
         ...state,
-        options: obj,
+        options: action.payload,
       };
     }
 

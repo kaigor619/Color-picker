@@ -413,11 +413,23 @@ export const event_change_enable = (enable: boolean) => dispatch => {
   dispatch(change_store(obj));
 };
 
-export const event_change_options = (options: IOptions) => dispatch => {
+export const event_change_options = (style_options: IOptions) => (
+  dispatch,
+  getStore,
+) => {
+  let { options } = getStore();
+  let nw_obj = {};
+  for (let key in options) {
+    nw_obj[key] = {
+      ...options[key],
+      ...style_options[key],
+    };
+  }
   let action = {
     type: 'CHANGE_OPTIONS',
-    payload: options,
+    payload: nw_obj,
   };
+
   dispatch(action);
 };
 

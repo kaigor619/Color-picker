@@ -138,7 +138,7 @@ describe('Тестирование Actions', () => {
     };
     let color = 'hsl(117, 84%, 46%)';
     let hsl = [117, 84, 46];
-    let hsv = [117, 91, 85];
+    let hsv = [117, 91, 84];
     let rgbMain = [29, 216, 19];
     let opacity = 1;
     let [H, S, V] = hsv;
@@ -257,7 +257,7 @@ describe('Тестирование Actions', () => {
     };
     let color = 'hsl(117, 84%, 46%)';
     let hsl = [117, 84, 46];
-    let hsv = [117, 91, 85];
+    let hsv = [117, 91, 84];
     let rgbMain = [29, 216, 19];
     let opacity = 1;
     let [H, S, V] = hsv;
@@ -307,7 +307,7 @@ describe('Тестирование Actions', () => {
       index: 0,
     };
     let hsl = [117, 84, 46];
-    let hsv = [117, 91, 85];
+    let hsv = [117, 91, 84];
     let rgbMain = [29, 216, 19];
     let opacity = 1;
     let [H, S, V] = hsv;

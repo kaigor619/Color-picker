@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import withDataCP from '../hoc/withDataCP';
 
 interface OwnProps {
   getPickerOptions: (...arg) => void;
+  setColor: (color, options) => void;
+  setColors: (colors) => void;
+  setStyleOptions: (style_options) => void;
+  switchOn: () => void;
+  switchOff: () => void;
+  colorsCP: any;
 }
 type Props = OwnProps;
-export default class DemoInput extends Component<Props> {
+class DemoInput extends Component<Props> {
   state = {
     color: 'hsla(154, 64%, 44%, 0.22)',
     on: false,
@@ -52,20 +59,15 @@ export default class DemoInput extends Component<Props> {
   }
   handleClick() {
     const { color, colorOptions } = this.state;
-    this.props.getPickerOptions(color, colorOptions, null);
+    this.props.setColors(this.colors);
+    this.props.setColor(color, colorOptions);
   }
   handleClickScale() {
-    let { width } = this.state.picker_settings.picker;
-    const { picker_settings } = this.state;
-    width += 20;
-    let res_obj = {
-      ...picker_settings,
-      picker: { ...picker_settings.picker, width },
-    };
-    this.props.getPickerOptions(null, null, res_obj);
-    this.setState({
-      picker_settings: res_obj,
-    });
+    let width = 500;
+    this.props.setStyleOptions({ picker: { width } });
+    this.props.colorsCP.add('rgb(0,0,0)', 'simple black');
+    this.props.colorsCP.remove('Color 5');
+    this.props.colorsCP.change('Color 6', '666');
   }
 
   render() {
@@ -95,3 +97,5 @@ export default class DemoInput extends Component<Props> {
     );
   }
 }
+
+export default withDataCP(DemoInput);
