@@ -17,7 +17,7 @@ interface StateProps {
 type Props = StateProps;
 
 // ColorPicker
-class ColorPicker extends Component<Props> {
+export class CP extends Component<Props> {
   componentDidCatch() {
     console.log('Color picker does not work');
   }
@@ -57,4 +57,4 @@ const mapStateToProps = ({ enable }) => ({ enable });
 export default connect(
   mapStateToProps,
   {},
-)(ColorPicker);
+)(CP);

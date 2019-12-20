@@ -1,19 +1,19 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-// import { NewsContainer } from './NewsContainer';
+import { CP } from './ColorPicker';
 
 describe('News container', () => {
   const props = {
-    // описываем props
-    news: {
-      data: [],
-      isLoading: false,
-      errorMsg: null,
-    },
-    // функция получения новостей onGetNews. Ее содержимое тестировать не нужно.
-    // Но нам потребуется протестировать, что функция была вызвана в componentDidMount
-    onGetNews: () => {},
+    enable: true,
   };
 
-  // здесь будут будущие it
+  it('Если у компонента enable=true', () => {
+    const myComponent = shallow(<CP {...props} />);
+    expect(myComponent.isEmptyRender()).toEqual(false);
+  });
+  it('Если у компонента enable=false', () => {
+    props.enable = false;
+    const myComponent = shallow(<CP {...props} />);
+    expect(myComponent.isEmptyRender()).toEqual(true);
+  });
 });
