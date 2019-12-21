@@ -5,7 +5,7 @@ import Model from '../../options/modelsColor';
 import classNames from 'classnames';
 import './styles.css';
 
-export function CopyColor({ store }) {
+function CopyColor({ store }) {
   let [copied, setCopied] = useState(false);
 
   function handleClick() {

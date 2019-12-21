@@ -16,12 +16,11 @@ interface StateProps {
 interface DispatchProps {
   change_description: (obj: IDescription) => void;
   change_colors: (colors: Icolors[]) => void;
-  // getDerivedStateFromProps: (a, s) => void;
 }
 
 type Props = StateProps & DispatchProps;
 
-class DescriptionColor extends PureComponent<Props> {
+export class DescriptionColor extends PureComponent<Props> {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
