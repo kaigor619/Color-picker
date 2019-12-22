@@ -222,7 +222,6 @@ export class DescriptionColor extends PureComponent<Props> {
     this.props.change_description(this.getDescriptionWithout());
   }
   onSaveEditColor() {
-    // const { description, model, type, opacity } = this.props;
     const { type, models, opacity, colors } = this.getCurrentStore();
     const { description } = this.props;
     const { index } = description;
@@ -291,9 +290,7 @@ export class DescriptionColor extends PureComponent<Props> {
             <input
               ref={this.inputColor}
               className="cp_descr-input"
-              // value={name}
               disabled={true}
-              // onChange={this.handleChange}
             />
           </div>
           <div className="cp_descr-part">

@@ -22,7 +22,7 @@ interface IInputCell {
 
 type Props = StateProps & DispatchProps & IInputCell;
 
-class InputCell extends Component<Props> {
+export class InputCell extends Component<Props> {
   state = {
     label: '',
   };
