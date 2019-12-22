@@ -47,9 +47,7 @@ export class Models extends PureComponent<Props> {
 
 const mapStateToProps = ({ type }) => ({ type });
 
-const mapDispatchToProps = {};
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  {},
 )(Models);

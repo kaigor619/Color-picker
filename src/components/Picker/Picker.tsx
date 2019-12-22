@@ -21,7 +21,7 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps;
 
 // Компонент
-class Picker extends PureComponent<Props> {
+export class Picker extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
     this.mouseDown = this.mouseDown.bind(this);
