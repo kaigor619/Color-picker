@@ -31,6 +31,12 @@ class DemoInput extends Component<Props> {
       callCancel: [this.cancelColor.bind(this)],
     },
   };
+
+  componentDidMount() {
+    const { color, colorOptions } = this.state;
+    this.props.setColors(this.colors);
+    this.props.setColor(color, colorOptions);
+  }
   colors = [
     { name: 'dwdw', color: '#F44336', id: 'q' },
     { name: 'fefef', color: '#E91E63', id: 'w' },
@@ -86,7 +92,7 @@ class DemoInput extends Component<Props> {
           </div>
           <input
             type="text"
-            onChange={e => this.handleChange(e)}
+            onChange={(e) => this.handleChange(e)}
             className="my_color_value"
             id="my_swatch_input"
             value={color}
