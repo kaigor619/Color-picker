@@ -7,7 +7,7 @@ function changeEnable(enable: boolean) {
   Action.event_change_enable(enable)(store.dispatch);
 }
 
-const withDataCP = WrappedComponent => {
+const WithDataCP = WrappedComponent => {
   class CP extends React.Component<any> {
     setColors(colors: Icolors[]) {
       Action.event_change_colors(colors)(store.dispatch);
@@ -93,4 +93,4 @@ const withDataCP = WrappedComponent => {
   return CP;
 };
 
-export default withDataCP;
+export default WithDataCP;

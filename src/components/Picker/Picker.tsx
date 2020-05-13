@@ -129,8 +129,7 @@ export class Picker extends PureComponent<Props> {
     let { width, height } = this.props.style_options.picker;
     let { H } = this.props;
     let rgb = 'rgb(' + Convert.hsv_rgb(H, 100, 100) + ')';
-    let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left,
-    ${rgb} , rgb(255, 255, 255))`;
+    let background = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, ${rgb} , rgb(255, 255, 255))`;
 
     this.styleBlock = {
       width: width + 'px',

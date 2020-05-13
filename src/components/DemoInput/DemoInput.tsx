@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import withDataCP from '../hoc/withDataCP';
+import WithDataCP from '../hoc/WithDataCP';
 
 interface OwnProps {
   getPickerOptions: (...arg) => void;
@@ -92,10 +92,9 @@ class DemoInput extends Component<Props> {
             value={color}
           />
         </div>
-        <button onClick={() => this.handleClickScale()}>width++ </button>
       </div>
     );
   }
 }
 
-export default withDataCP(DemoInput);
+export default WithDataCP(DemoInput);

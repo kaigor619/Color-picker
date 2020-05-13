@@ -1,3 +1,3 @@
-import withDataCP './withDataCP';
+import WithDataCP from './WithDataCP';
 
-export default withDataCP;
+export default WithDataCP;

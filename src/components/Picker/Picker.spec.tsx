@@ -2,6 +2,8 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { Picker } from './Picker';
 import { default_style_options } from '../../reducers';
+import Convert from '../../options/convert';
+import Model from '../../options/modelsColor';
 
 describe('InputCell', () => {
   let props: any = {
@@ -13,10 +15,30 @@ describe('InputCell', () => {
     add_color: mas => {},
   };
 
-  it('Проверка правильных стилей', () => {
+  it('Проверка правильных стилей для block', () => {
     const myComponent = mount(<Picker {...props} />);
-    console.log(myComponent.props());
-    // let label = myComponent.state('label');
-    // expect(+label).toEqual(14);
+    let { style } = myComponent.find('#cp_block-picker').props();
+    let rgb = 'rgb(' + Convert.hsv_rgb(props.H, 100, 100) + ')';
+    let { width: w, height: h } = default_style_options.picker;
+    let b = `linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, ${rgb} , rgb(255, 255, 255))`;
+
+    let { width, height, background } = style;
+    expect([width, height, background]).toEqual([w + 'px', h + 'px', b]);
+  });
+  it('Проверка правильных стилей для circle', () => {
+    const myComponent = mount(<Picker {...props} />);
+    let { style } = myComponent.find('#cp_block-circle').props();
+    let { width, height } = default_style_options.circle;
+    const backgroundColor = Model.rgb.getStr(props.rgbMain);
+
+    let left = '250px';
+    let top = '0px';
+    expect(style).toEqual({
+      width: width + 'px',
+      height: height + 'px',
+      left,
+      top,
+      backgroundColor,
+    });
   });
 });
