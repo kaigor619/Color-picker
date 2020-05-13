@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Swatch from './Swatch';
 import { connect } from 'react-redux';
 import * as Action from '../../actions';
-import { Icolors, IDescription } from '../../interfaces';
+import { Icolors } from '../../interfaces';
 import DescriptionColor from '../DescriptionColor';
 import './styles.css';
 
 // Interfaces
 interface StateProps {
   colors: Icolors[];
-  description: IDescription;
+  descr_enable: boolean;
 }
 
 interface DispatchProps {
@@ -19,44 +19,48 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-class Colors extends Component<Props> {
-  shouldComponentUpdate(nextProps) {
-    let bool = false;
-    const { description: d, colors: cls } = this.props;
-    if (nextProps.colors !== cls || nextProps.description.enable !== d.enable) {
-      bool = true;
-    }
-    return bool;
+export class Colors extends PureComponent<Props> {
+  constructor(props) {
+    super(props);
+    this.handleAddSwatch = this.handleAddSwatch.bind(this);
   }
-  count = -1;
-  swatches;
+  handleAddSwatch(e) {
+    this.props.swatchAdd();
+  }
 
-  render() {
-    const { colors } = this.props;
-    this.swatches = colors.map(({ name, color }, index) => {
-      this.count++;
+  updateElems(colors) {
+    this.swatches = colors.map(({ name, color, id }, index) => {
       return (
         <Swatch
-          key={this.count}
-          color={color}
-          index={index}
-          name={name}
+          {...{ key: id, color, index, name }}
           handleClick={() => this.props.swatchClick(index)}
         />
       );
     });
+  }
 
-    let DescriptionComponent;
-    if (this.props.description.enable) {
-      DescriptionComponent = <DescriptionColor />;
+  UNSAFE_componentWillMount() {
+    this.updateElems(this.props.colors);
+  }
+
+  UNSAFE_componentWillUpdate(nextProps) {
+    const { colors } = nextProps;
+    if (this.props.colors !== nextProps.colors) {
+      this.updateElems(colors);
     }
+  }
+  swatches;
 
+  render() {
+    let DescriptionComponent = this.props.descr_enable ? (
+      <DescriptionColor />
+    ) : null;
     return (
       <React.Fragment>
         <div className="cp_custom-colors">
           {this.swatches}
           <div
-            onClick={() => this.props.swatchAdd()}
+            onClick={this.handleAddSwatch}
             className="cp_add-color"
             id="cp_add-color"
           >
@@ -70,10 +74,10 @@ class Colors extends Component<Props> {
 }
 
 // Redux Options
-const mapStateToProps = ({ colors, description }): StateProps => {
+const mapStateToProps = ({ colors, description: { enable } }): StateProps => {
   return {
     colors,
-    description,
+    descr_enable: enable,
   };
 };
 

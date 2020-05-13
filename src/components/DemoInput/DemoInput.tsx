@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import WithDataCP from '../hoc/WithDataCP';
 
 interface OwnProps {
   getPickerOptions: (...arg) => void;
+  setColor: (color, options) => void;
+  setColors: (colors) => void;
+  setStyleOptions: (style_options) => void;
+  switchOn: () => void;
+  switchOff: () => void;
+  colorsCP: any;
 }
 type Props = OwnProps;
-export default class DemoInput extends Component<Props> {
+class DemoInput extends Component<Props> {
   state = {
     color: 'hsla(154, 64%, 44%, 0.22)',
     on: false,
@@ -25,6 +32,24 @@ export default class DemoInput extends Component<Props> {
     },
   };
 
+  componentDidMount() {
+    const { color, colorOptions } = this.state;
+    this.props.setColors(this.colors);
+    this.props.setColor(color, colorOptions);
+  }
+  colors = [
+    { name: 'dwdw', color: '#F44336', id: 'q' },
+    { name: 'fefef', color: '#E91E63', id: 'w' },
+    { name: 'fefe', color: 'rgb(156, 39, 176)', id: 'e' },
+    { name: 'Color 4', color: 'hsl(262, 52%, 47%)', id: 'r' },
+    { name: 'Color 5', color: '#3F51B5', id: 't' },
+    { name: 'Color 6', color: '#2196F3', id: 'y' },
+    { name: 'Color 7', color: '#03A9F4', id: 'u' },
+    { name: 'Color 8', color: '#009688', id: 'i' },
+    { name: 'Color 9', color: '#4CAF50', id: 'o' },
+    { name: 'Color 10', color: '#8BC34A', id: 'p' },
+  ];
+
   syncColor(color) {
     this.setState({ color });
   }
@@ -39,21 +64,16 @@ export default class DemoInput extends Component<Props> {
     this.setState({ color: e.target.value });
   }
   handleClick() {
-    const { color, colorOptions, picker_settings } = this.state;
-    this.props.getPickerOptions(color, colorOptions, picker_settings);
+    const { color, colorOptions } = this.state;
+    this.props.setColors(this.colors);
+    this.props.setColor(color, colorOptions);
   }
   handleClickScale() {
-    let { width } = this.state.picker_settings.picker;
-    const { picker_settings } = this.state;
-    width += 20;
-    let res_obj = {
-      ...picker_settings,
-      picker: { ...picker_settings.picker, width },
-    };
-    this.props.getPickerOptions(null, null, res_obj);
-    this.setState({
-      picker_settings: res_obj,
-    });
+    let width = 500;
+    this.props.setStyleOptions({ picker: { width } });
+    this.props.colorsCP.add('rgb(0,0,0)', 'simple black');
+    this.props.colorsCP.remove('Color 5');
+    this.props.colorsCP.change('Color 6', '666');
   }
 
   render() {
@@ -72,14 +92,15 @@ export default class DemoInput extends Component<Props> {
           </div>
           <input
             type="text"
-            onChange={e => this.handleChange(e)}
+            onChange={(e) => this.handleChange(e)}
             className="my_color_value"
             id="my_swatch_input"
             value={color}
           />
         </div>
-        <button onClick={() => this.handleClickScale()}>width++ </button>
       </div>
     );
   }
 }
+
+export default WithDataCP(DemoInput);

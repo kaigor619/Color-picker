@@ -4,6 +4,9 @@ import './styles.css';
 
 const Swatch = ({ color, name, handleClick, index }) => {
   const style = { backgroundColor: color };
+  function handleClickSwatch() {
+    handleClick(index);
+  }
   return (
     <div className="cp_swatch-opacity">
       {/* 
@@ -12,9 +15,7 @@ const Swatch = ({ color, name, handleClick, index }) => {
         className="cp_swatch-color"
         style={style}
         name={name}
-        onClick={() => {
-          handleClick(index);
-        }}
+        onClick={handleClickSwatch}
       ></div>
     </div>
   );

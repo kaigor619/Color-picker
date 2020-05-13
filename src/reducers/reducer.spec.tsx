@@ -1,161 +1,155 @@
-import reducer, { InitialState } from "./index";
+import reducer, { InitialState } from './index';
 
-describe("Проверка reducer", () => {
-  it("Изменение rgbMain", () => {
+describe('Проверка reducer', () => {
+  it('Изменение rgbMain', () => {
     const action = {
-      type: "CHANGE_RGB",
-      payload: [0, 0, 0]
+      type: 'CHANGE_RGB',
+      payload: [0, 0, 0],
     };
     const state = {
       ...InitialState,
-      rgbMain: action.payload
+      rgbMain: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение opacity", () => {
+  it('Изменение model', () => {
     const action = {
-      type: "CHANGE_OPACITY",
-      payload: 0.7
-    };
-    const state = {
-      ...InitialState,
-      opacity: action.payload
-    };
-
-    expect(reducer(InitialState, action)).toEqual(state);
-  });
-  it("Изменение type", () => {
-    const action = {
-      type: "CHANGE_TYPE",
-      payload: "hex"
-    };
-    const state = {
-      ...InitialState,
-      type: action.payload
-    };
-
-    expect(reducer(InitialState, action)).toEqual(state);
-  });
-  it("Изменение hex", () => {
-    const action = {
-      type: "CHANGE_HEX",
-      payload: "#000000"
+      type: 'CHANGE_MODEL',
+      payload: '#fff',
     };
     const state = {
       ...InitialState,
       models: {
         ...InitialState.models,
-        hex: "#000000"
-      }
+        [InitialState.type]: action.payload,
+      },
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение index", () => {
+  it('Изменение opacity', () => {
     const action = {
-      type: "CHANGE_USER_COLORS_INDEX",
-      payload: 2
+      type: 'CHANGE_OPACITY',
+      payload: 0.7,
     };
     const state = {
       ...InitialState,
-      userColors: {
-        ...InitialState.userColors,
-        description: {
-          ...InitialState.userColors.description,
-          index: action.payload
-        }
-      }
+      opacity: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение edit", () => {
+  it('Изменение prevColor', () => {
     const action = {
-      type: "CHANGE_USER_COLORS_EDIT",
-      payload: true
+      type: 'CHANGE_PREV_COLOR',
+      payload: 'rgb(32, 178, 20)',
     };
     const state = {
       ...InitialState,
-      userColors: {
-        ...InitialState.userColors,
-        description: {
-          ...InitialState.userColors.description,
-          edit: action.payload
-        }
-      }
+      prevColor: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение enable", () => {
+  it('Изменение description', () => {
     const action = {
-      type: "CHANGE_USER_COLORS_ENABLE",
-      payload: true
+      type: 'CHANGE_DESCRIPTION',
+      payload: {
+        enable: true,
+        remove: false,
+        edit: false,
+        save: false,
+        index: 0,
+      },
     };
     const state = {
       ...InitialState,
-      userColors: {
-        ...InitialState.userColors,
-        description: {
-          ...InitialState.userColors.description,
-          enable: action.payload
-        }
-      }
+      description: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение colors", () => {
+  it('Изменение options', () => {
     const action = {
-      type: "CHANGE_USER_COLORS",
+      type: 'CHANGE_OPTIONS',
+      payload: {
+        picker: {
+          width: 250,
+          height: 140,
+        },
+        circle: {
+          width: 12,
+          height: 12,
+        },
+      },
+    };
+    const state = {
+      ...InitialState,
+      options: action.payload,
+    };
+
+    expect(reducer(InitialState, action)).toEqual(state);
+  });
+  it('Изменение type', () => {
+    const action = {
+      type: 'CHANGE_TYPE',
+      payload: 'hex',
+    };
+    const state = {
+      ...InitialState,
+      type: action.payload,
+    };
+
+    expect(reducer(InitialState, action)).toEqual(state);
+  });
+  it('Изменение colors', () => {
+    const action = {
+      type: 'CHANGE_USER_COLORS',
       payload: [
-        { name: "Color 3", color: "#e91e63" },
-        { name: "Color 4", color: "#ff0000ff" }
-      ]
+        { name: 'Color 3', color: '#e91e63' },
+        { name: 'Color 4', color: '#ff0000ff' },
+      ],
     };
     const state = {
       ...InitialState,
-      userColors: {
-        ...InitialState.userColors,
-        colors: action.payload
-      }
+      colors: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение H", () => {
+  it('Изменение H', () => {
     const action = {
-      type: "CHANGE_H",
-      payload: 20
+      type: 'CHANGE_H',
+      payload: 20,
     };
     const state = {
       ...InitialState,
-      H: action.payload
+      H: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение S", () => {
+  it('Изменение S', () => {
     const action = {
-      type: "CHANGE_S",
-      payload: 20
+      type: 'CHANGE_S',
+      payload: 20,
     };
     const state = {
       ...InitialState,
-      S: action.payload
+      S: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);
   });
-  it("Изменение S", () => {
+  it('Изменение V', () => {
     const action = {
-      type: "CHANGE_S",
-      payload: 20
+      type: 'CHANGE_V',
+      payload: 20,
     };
     const state = {
       ...InitialState,
-      S: action.payload
+      V: action.payload,
     };
 
     expect(reducer(InitialState, action)).toEqual(state);

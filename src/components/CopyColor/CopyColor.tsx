@@ -1,71 +1,51 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
+import { ReactReduxContext } from 'react-redux';
 import copy from 'copy-text-to-clipboard';
 import Model from '../../options/modelsColor';
+import classNames from 'classnames';
 import './styles.css';
 
-// Interfaces
-interface StateProps {
-  model: string | number[];
-  type: string;
-  opacity: number;
-}
+function CopyColor({ store }) {
+  let [copied, setCopied] = useState(false);
 
-type Props = StateProps;
+  function handleClick() {
+    const { models, type, opacity } = store.getState();
+    let color = Model[type].getString(models[type], opacity);
 
-export class CopyColor extends Component<Props> {
-  state = {
-    copied: false,
-  };
-  handleClick() {
-    let { model, type, opacity } = this.props;
-
-    let value = Model[type].getString(model, opacity);
-    let bool = copy(value);
+    let bool = copy(color);
     if (bool) {
-      this.setState({ copied: true });
+      setCopied(true);
       setTimeout(() => {
-        this.setState({ copied: false });
+        setCopied(false);
       }, 2000);
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.copied !== this.state.copied;
-  }
 
-  render() {
-    const { copied } = this.state;
-    let classNames = copied ? 'cp_copy-color active' : 'cp_copy-color';
-
-    return (
-      <React.Fragment>
-        {/* 
-  // @ts-ignore */}
-        <div
-          className={classNames}
-          name="Copied"
-          onClick={() => this.handleClick()}
-        >
-          <img
-            src="svg/copy.svg"
-            className="copy-color"
-            id="copy-color"
-            alt="Copy color"
-          />
-        </div>
-      </React.Fragment>
-    );
-  }
+  let elemClass = classNames('cp_copy-color', { active: copied });
+  return (
+    <React.Fragment>
+      {/* 
+      // @ts-ignore */}
+      <div className={elemClass} name="Copied" onClick={() => handleClick()}>
+        <img
+          src="svg/copy.svg"
+          className="copy-color"
+          id="copy-color"
+          alt="Copy color"
+        />
+      </div>
+    </React.Fragment>
+  );
 }
 
-// Redux Options
-const mapStateToProps = ({ models, type, opacity }) => ({
-  model: models[type],
-  type,
-  opacity,
-});
+function CopyWrapper() {
+  return (
+    <ReactReduxContext.Consumer>
+      {({ store }) => {
+        return <CopyColor store={store} />;
+      }}
+    </ReactReduxContext.Consumer>
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  {},
-)(CopyColor);
+export default CopyWrapper;

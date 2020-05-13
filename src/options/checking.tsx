@@ -16,7 +16,7 @@ const Checking = {
   check_arrFunctions: (functions): boolean => {
     let bool = false;
 
-    if (functions === undefined) return false;
+    if (functions === undefined || !functions) return false;
 
     if (typeof functions == 'object' && functions.slice) {
       if (functions.length > 0) {

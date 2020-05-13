@@ -1,7 +1,8 @@
-import { IDescription, Ifunctions, IOptions } from '../interfaces';
+import { IDescription, Ifunctions, IOptions, Icolors } from '../interfaces';
 import Convert from '../options/convert';
 import Model from '../options/modelsColor';
 import Checking from '../options/checking';
+import { default_description } from '../reducers';
 
 export function connect_obj(...mas) {
   let obj = {};
@@ -116,14 +117,17 @@ export const cx_opacity_hex = (opacity: number, store) => {
   let a = change_opacity(opacity);
 
   const { models, main, sync, type } = store;
-  let b = { models };
+  let b;
   let { syncColors } = sync;
   if (type === 'hex') {
     b = sync_model_from_rgbMain({ ...store, ...a });
   }
 
   if (main) {
-    let color = Model[type].getString(b.models[type], a.opacity);
+    let color = Model[type].getString(
+      b ? b.models[type] : models[type],
+      a.opacity,
+    );
     syncColors.forEach(element => {
       element(color);
     });
@@ -190,7 +194,8 @@ export const addColor = (value: string, main: boolean, store) => {
   let c = change_type(type);
   let d = change_model(val, { ...store, type });
   let k = change_prevColor(value, main);
-  return connect_obj(a, b, c, d, e, k);
+  let x = change_description(default_description);
+  return connect_obj(a, b, c, d, e, k, x);
 };
 
 export const cx_HSV_rgbMain_model_from_model = (
@@ -242,14 +247,13 @@ export const eventBtnChangeType = type => (dispatch, getStore) => {
   dispatch(change_store(obj));
 };
 
-export const eventChangeColors = colors => (dispatch, getStore) => {
-  let obj = change_colors(colors);
-  dispatch(change_store(obj));
-};
-
 export const eventChangeDescription = description => (dispatch, getStore) => {
   let obj = change_description(description);
-  dispatch(change_store(obj));
+  let action = {
+    type: 'CHANGE_DESCRIPTION',
+    payload: obj.description,
+  };
+  dispatch(action);
 };
 
 export const eventClickSwatch = index => (dispatch, getStore) => {
@@ -263,6 +267,7 @@ export const eventClickSwatch = index => (dispatch, getStore) => {
   let store = getStore();
   let color = store.colors[index].color;
   let a = addColor(color, false, store);
+
   let b = change_description(description);
 
   let obj = connect_obj(a, b);
@@ -278,8 +283,11 @@ export const eventClickAddSwatch = () => (dispatch, getStore) => {
     enable: true,
     index: 0,
   };
-  let obj = change_description(description);
-  dispatch(change_store(obj));
+  let action = {
+    type: 'CHANGE_DESCRIPTION',
+    payload: description,
+  };
+  dispatch(action);
 };
 
 export const eventChangeInputModel = (val, index) => (dispatch, getStore) => {
@@ -351,7 +359,9 @@ export const eventClickOk = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let sync = connect_obj(c, d, e);
+
+  let obj = connect_obj(a, b, { sync });
 
   dispatch(change_store(obj));
 
@@ -381,9 +391,12 @@ export const eventClickCancel = () => (dispatch, getStore) => {
   let d = change_callSave([]);
   let e = change_callCancel([]);
 
-  let obj = connect_obj(a, b, c, d, e);
+  let sync = connect_obj(c, d, e);
+
+  let obj = connect_obj(a, b, { sync });
 
   dispatch(change_store(obj));
+  // Исправить
   if (main) {
     Promise.resolve().then(() => {
       callCancel.forEach(func => {
@@ -395,20 +408,35 @@ export const eventClickCancel = () => (dispatch, getStore) => {
 
 export const event_change_enable = (enable: boolean) => dispatch => {
   let a = change_enable(enable);
-  let obj = connect_obj(a);
+  let b = change_description(default_description);
+  let obj = connect_obj(a, b);
   dispatch(change_store(obj));
 };
 
-export const event_change_resize = () => dispatch => {
-  let action = {
-    type: 'CHANGE_RESIZE',
-  };
-  dispatch(action);
-};
-export const event_change_options = (options: IOptions) => dispatch => {
+export const event_change_options = (style_options: IOptions) => (
+  dispatch,
+  getStore,
+) => {
+  let { options } = getStore();
+  let nw_obj = {};
+  for (let key in options) {
+    nw_obj[key] = {
+      ...options[key],
+      ...style_options[key],
+    };
+  }
   let action = {
     type: 'CHANGE_OPTIONS',
-    payload: options,
+    payload: nw_obj,
+  };
+
+  dispatch(action);
+};
+
+export const event_change_colors = (colors: Icolors[] | []) => dispatch => {
+  let action = {
+    type: 'CHANGE_USER_COLORS',
+    payload: colors,
   };
   dispatch(action);
 };

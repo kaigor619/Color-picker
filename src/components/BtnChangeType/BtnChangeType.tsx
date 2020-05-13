@@ -12,7 +12,7 @@ interface IBtnChangeProps {
   changeType: (type: string) => void;
 }
 
-const BtnChangeType = function({
+export const BtnChangeType = function({
   name,
   text,
   type,

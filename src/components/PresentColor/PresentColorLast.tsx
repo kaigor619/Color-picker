@@ -20,9 +20,8 @@ class PresentColorLast extends PresentColorTheme<Props> {
   }
 
   stylingPresent() {
-    const backgroundColor = this.props.prevColor;
     this.stylePresent = {
-      backgroundColor,
+      backgroundColor: this.props.prevColor,
     };
   }
 }
